@@ -5,8 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import { getLocalProfile } from '@/lib/indexeddb';
-import { trackMetadataFetch } from '@/lib/data-tracker';
-import { ArrowLeft, CheckCircle2, XCircle, BarChart3, RefreshCw, BookOpen, ExternalLink } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, BarChart3, RefreshCw, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
@@ -56,19 +55,6 @@ interface QuizItem {
     result: 'correct' | 'incorrect' | null;
 }
 
-interface Resource {
-    id: string;
-    title: string;
-    type: string;
-    size_kb: number;
-    preview_text: string;
-    thumbnail_url: string | null;
-    subject: string;
-    grade: number;
-    subtopic: string;
-    difficulty: string;
-}
-
 function gradeBandToLevel(gb: number) {
     if (gb <= 1) return 1;
     if (gb <= 3) return 2;
@@ -87,9 +73,6 @@ export default function CapsuleView() {
     const [selected, setSelected] = useState<string | null>(null);
     const [phase, setPhase] = useState<'loading' | 'quiz' | 'results'>('loading');
     const [initialized, setInitialized] = useState(false);
-    const [resources, setResources] = useState<Resource[]>([]);
-    const [resLoading, setResLoading] = useState(false);
-    const [showResources, setShowResources] = useState(false);
 
     // ── Load all topics then pre-fetch 1 question per topic ───────────────────
     const runSession = useCallback(async (gb: number) => {
@@ -185,30 +168,18 @@ export default function CapsuleView() {
         setItems(prev => prev.map(it => ({ ...it, result: null })));
         setCurrentIdx(0);
         setSelected(null);
-        setShowResources(false);
-        setResources([]);
         setPhase('quiz');
     }, []);
 
-    // ── View Resources — fetch from Supabase ────────────────────────────────
-    const handleViewResources = useCallback(async () => {
-        if (resources.length > 0) { setShowResources(s => !s); return; }
-        setResLoading(true);
-        try {
-            const res = await fetch(
-                `/api/resources/browse?subject=${subject}&grade_band=${gradeBand}`
-            );
-            const data = await res.json();
-            setResources(data.resources ?? []);
-            trackMetadataFetch(Array.isArray(data.resources) ? data.resources.length : 0);
-            setShowResources(true);
-        } catch {
-            setResources([]);
-            setShowResources(true);
-        } finally {
-            setResLoading(false);
-        }
-    }, [subject, gradeBand, resources.length]);
+    // ── View Resources — navigate to dedicated resources page ───────────────
+    const handleViewResources = useCallback(() => {
+        const weak = items
+            .filter(it => it.result === 'incorrect')
+            .map(it => it.topic);
+        const params = new URLSearchParams({ grade_band: String(gradeBand) });
+        if (weak.length > 0) params.set('weak', weak.join(','));
+        router.push(`/resources/${subject}?${params.toString()}`);
+    }, [items, gradeBand, router, subject]);
 
     // ── Loading ───────────────────────────────────────────────────────────────
     if (!ready || !initialized) {
@@ -374,61 +345,11 @@ export default function CapsuleView() {
                                 <Button variant="outline" onClick={handleRetry} className="font-brand gap-1.5">
                                     <RefreshCw className="h-3.5 w-3.5" /> Retry
                                 </Button>
-                                <Button
-                                    variant="outline"
-                                    onClick={handleViewResources}
-                                    disabled={resLoading}
-                                    className="font-brand gap-1.5"
-                                >
-                                    <BookOpen className={cn('h-3.5 w-3.5', resLoading && 'animate-spin')} />
-                                    {resLoading ? 'Loading…' : 'View Resources'}
+                                <Button variant="outline" onClick={handleViewResources} className="font-brand gap-1.5">
+                                    <BookOpen className="h-3.5 w-3.5" />
+                                    View Resources
                                 </Button>
                             </div>
-
-                            {/* Resources panel */}
-                            {showResources && (
-                                <div className="space-y-3 pt-3">
-                                    <p className="text-xs font-brand uppercase tracking-wider text-muted-foreground">
-                                        Study Resources
-                                    </p>
-                                    {resources.length === 0 ? (
-                                        <p className="text-sm text-muted-foreground text-center py-4">
-                                            No resources available for this subject and grade yet.
-                                        </p>
-                                    ) : (
-                                        resources.map(r => (
-                                            <div
-                                                key={r.id}
-                                                className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-secondary/30 transition-colors"
-                                            >
-                                                <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium font-brand text-foreground truncate">
-                                                        {r.title}
-                                                    </p>
-                                                    <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
-                                                        {r.preview_text || `${r.type} · ${r.difficulty}`}
-                                                    </p>
-                                                    <div className="mt-1 flex items-center gap-2">
-                                                        <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-brand uppercase text-muted-foreground">
-                                                            {r.type}
-                                                        </span>
-                                                        <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-brand uppercase text-muted-foreground">
-                                                            {r.difficulty}
-                                                        </span>
-                                                        {r.subtopic && (
-                                                            <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-brand text-primary">
-                                                                {r.subtopic.replace(/_/g, ' ')}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            )}
                         </div>
                     )}
 

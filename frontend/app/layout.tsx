@@ -19,9 +19,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: 'KMAP – Knowledge Allocated Intelligently',
+    title: 'KMAP – Knowledge Mapping Adaptive Platform',
     description:
-        'Privacy-first adaptive learning through Knowledge Capsules. No videos. No chatbots. Minimal bandwidth. Offline capable.',
+        'Privacy-first adaptive learning through Knowledge Capsules. Minimal bandwidth. Offline capable.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

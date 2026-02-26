@@ -45,7 +45,16 @@ export async function GET(request: NextRequest) {
     ].join(' ');
 
     try {
-        const { stdout } = await execAsync(args, { cwd: engineDir, timeout: 15000 });
+        const { stdout } = await execAsync(args, {
+            cwd: engineDir,
+            timeout: 15000,
+            maxBuffer: 2 * 1024 * 1024,
+            encoding: 'utf8',
+            env: {
+                ...process.env,
+                PYTHONIOENCODING: 'utf-8',
+            },
+        } as any);
         const data = JSON.parse(stdout.trim());
         return NextResponse.json(data);
     } catch (err: unknown) {
