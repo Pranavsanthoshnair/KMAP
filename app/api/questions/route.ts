@@ -6,10 +6,10 @@ import path from 'path';
 const execAsync = promisify(exec);
 
 /**
- * GET /api/questions?topic=cell_structure&grade_band=2&level=2&count=6
+ * GET /api/questions?topic=cell_structure&grade_band=2&level=2&count=6&reset=true
  *
- * Calls the local Python engine and returns JSON questions.
- * Logs go to stderr (hidden); only JSON comes through stdout.
+ * Calls the local Python engine and returns generated questions as JSON.
+ * Pass reset=true to clear seen-state for the topic (used by "New Set" button).
  */
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
@@ -17,25 +17,29 @@ export async function GET(request: NextRequest) {
     const grade_band = parseInt(searchParams.get('grade_band') || '2');
     const level = parseInt(searchParams.get('level') || '2');
     const count = parseInt(searchParams.get('count') || '6');
+    const reset = searchParams.get('reset') === 'true';
 
     const engineDir = path.join(process.cwd(), 'question_engine');
 
-    // Build the command — quote topic in case it has spaces
-    const cmd = `python run.py --topic="${topic}" --grade_band=${grade_band} --level=${level} --count=${count}`;
+    const args = [
+        `python run.py`,
+        `--topic="${topic}"`,
+        `--grade_band=${grade_band}`,
+        `--level=${level}`,
+        `--count=${count}`,
+        ...(reset ? ['--reset'] : []),
+    ].join(' ');
 
     try {
-        const { stdout } = await execAsync(cmd, {
+        const { stdout } = await execAsync(args, {
             cwd: engineDir,
-            timeout: 10000, // 10 second safety timeout
+            timeout: 15000,
         });
-
-        // stdout is pure JSON (logs go to stderr)
-        const result = JSON.parse(stdout.trim());
-        return NextResponse.json(result);
+        return NextResponse.json(JSON.parse(stdout.trim()));
     } catch (err: any) {
-        console.error('[API/questions] Engine error:', err?.message || err);
+        console.error('[API/questions] Engine error:', err?.stderr || err?.message);
         return NextResponse.json(
-            { questions: [], exhausted: true, error: 'Engine failed to generate questions.' },
+            { questions: [], exhausted: true, error: 'Question engine failed.' },
             { status: 500 }
         );
     }

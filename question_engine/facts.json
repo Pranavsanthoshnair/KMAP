@@ -1,5 +1,247 @@
 [
     {
+        "id": "sci_bio_001",
+        "fact": "Roots absorb water from the soil",
+        "subject": "science",
+        "topic": "basic_biology",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Roots",
+        "key_term_2": "water",
+        "verb": "absorb",
+        "category": "part",
+        "wrong_terms": [
+            "Leaves",
+            "Stem",
+            "Flower"
+        ],
+        "wrong_term_2_options": [
+            "sunlight",
+            "minerals",
+            "oxygen"
+        ]
+    },
+    {
+        "id": "sci_bio_002",
+        "fact": "Leaves make food for the plant through sunlight",
+        "subject": "science",
+        "topic": "basic_biology",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Leaves",
+        "key_term_2": "food",
+        "verb": "make",
+        "category": "part",
+        "wrong_terms": [
+            "Roots",
+            "Stem",
+            "Flower"
+        ],
+        "wrong_term_2_options": [
+            "water",
+            "oxygen",
+            "minerals"
+        ]
+    },
+    {
+        "id": "sci_bio_003",
+        "fact": "Heart pumps blood throughout the body",
+        "subject": "science",
+        "topic": "basic_biology",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Heart",
+        "key_term_2": "blood",
+        "verb": "pumps",
+        "category": "organ",
+        "wrong_terms": [
+            "Lungs",
+            "Brain",
+            "Kidney"
+        ],
+        "wrong_term_2_options": [
+            "oxygen",
+            "food",
+            "water"
+        ]
+    },
+    {
+        "id": "sci_bio_004",
+        "fact": "Lungs breathe air into the body",
+        "subject": "science",
+        "topic": "basic_biology",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Lungs",
+        "key_term_2": "air",
+        "verb": "breathe",
+        "category": "organ",
+        "wrong_terms": [
+            "Heart",
+            "Stomach",
+            "Brain"
+        ],
+        "wrong_term_2_options": [
+            "blood",
+            "food",
+            "water"
+        ]
+    },
+    {
+        "id": "sci_bio_005",
+        "fact": "Skin protects the internal organs of the body",
+        "subject": "science",
+        "topic": "basic_biology",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Skin",
+        "key_term_2": "organs",
+        "verb": "protects",
+        "category": "organ",
+        "wrong_terms": [
+            "Bone",
+            "Muscle",
+            "Brain"
+        ],
+        "wrong_term_2_options": [
+            "blood",
+            "air",
+            "water"
+        ]
+    },
+    {
+        "id": "sci_state_001",
+        "fact": "Solid maintains a fixed shape and volume",
+        "subject": "science",
+        "topic": "states_of_matter",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Solid",
+        "key_term_2": "shape",
+        "verb": "maintains",
+        "category": "state",
+        "wrong_terms": [
+            "Liquid",
+            "Gas",
+            "Plasma"
+        ],
+        "wrong_term_2_options": [
+            "volume",
+            "mass",
+            "colour"
+        ]
+    },
+    {
+        "id": "sci_state_002",
+        "fact": "Liquid flows and takes the shape of its container",
+        "subject": "science",
+        "topic": "states_of_matter",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Liquid",
+        "key_term_2": "container",
+        "verb": "fills",
+        "category": "state",
+        "wrong_terms": [
+            "Solid",
+            "Gas",
+            "Plasma"
+        ],
+        "wrong_term_2_options": [
+            "shape",
+            "volume",
+            "mass"
+        ]
+    },
+    {
+        "id": "sci_state_003",
+        "fact": "Gas expands to fill any available space",
+        "subject": "science",
+        "topic": "states_of_matter",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Gas",
+        "key_term_2": "space",
+        "verb": "fills",
+        "category": "state",
+        "wrong_terms": [
+            "Solid",
+            "Liquid",
+            "Plasma"
+        ],
+        "wrong_term_2_options": [
+            "container",
+            "volume",
+            "shape"
+        ]
+    },
+    {
+        "id": "sci_state_004",
+        "fact": "Evaporation converts liquid into gas",
+        "subject": "science",
+        "topic": "states_of_matter",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Evaporation",
+        "key_term_2": "gas",
+        "verb": "converts",
+        "category": "process",
+        "wrong_terms": [
+            "Condensation",
+            "Freezing",
+            "Melting"
+        ],
+        "wrong_term_2_options": [
+            "liquid",
+            "solid",
+            "plasma"
+        ]
+    },
+    {
+        "id": "sci_mach_001",
+        "fact": "Lever reduces the force needed to lift objects",
+        "subject": "science",
+        "topic": "simple_machines",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Lever",
+        "key_term_2": "force",
+        "verb": "reduces",
+        "category": "machine",
+        "wrong_terms": [
+            "Pulley",
+            "Wheel",
+            "Wedge"
+        ],
+        "wrong_term_2_options": [
+            "mass",
+            "distance",
+            "speed"
+        ]
+    },
+    {
+        "id": "sci_mach_002",
+        "fact": "Pulley redirects force to move heavy loads",
+        "subject": "science",
+        "topic": "simple_machines",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Pulley",
+        "key_term_2": "force",
+        "verb": "redirects",
+        "category": "machine",
+        "wrong_terms": [
+            "Lever",
+            "Wedge",
+            "Screw"
+        ],
+        "wrong_term_2_options": [
+            "mass",
+            "distance",
+            "speed"
+        ]
+    },
+    {
         "id": "sci_cell_001",
         "fact": "Mitochondria produces energy in the form of ATP",
         "subject": "science",
@@ -116,7 +358,7 @@
         "topic": "cell_structure",
         "grade_band": 2,
         "level": 2,
-        "key_term_1": "Cell membrane",
+        "key_term_1": "Membrane",
         "key_term_2": "passage",
         "verb": "regulates",
         "category": "structure",
@@ -133,17 +375,17 @@
     },
     {
         "id": "sci_cell_007",
-        "fact": "Cell wall provides rigidity and support to plant cells",
+        "fact": "Cell wall provides rigidity to plant cells",
         "subject": "science",
         "topic": "cell_structure",
         "grade_band": 2,
         "level": 3,
-        "key_term_1": "Cell wall",
+        "key_term_1": "Wall",
         "key_term_2": "rigidity",
         "verb": "provides",
         "category": "structure",
         "wrong_terms": [
-            "Cell membrane",
+            "Membrane",
             "Vacuole",
             "Chloroplast"
         ],
@@ -160,7 +402,7 @@
         "topic": "cell_structure",
         "grade_band": 2,
         "level": 3,
-        "key_term_1": "Golgi apparatus",
+        "key_term_1": "Golgi",
         "key_term_2": "proteins",
         "verb": "packages",
         "category": "organelle",
@@ -176,47 +418,25 @@
         ]
     },
     {
-        "id": "math_add_001",
-        "fact": "Addition combines two numbers to produce a sum",
-        "subject": "math",
-        "topic": "arithmetic",
-        "grade_band": 1,
+        "id": "sci_cell_009",
+        "fact": "Cytoplasm holds organelles inside the cell",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
         "level": 1,
-        "key_term_1": "Addition",
-        "key_term_2": "sum",
-        "verb": "produces",
-        "category": "operation",
+        "key_term_1": "Cytoplasm",
+        "key_term_2": "organelles",
+        "verb": "holds",
+        "category": "component",
         "wrong_terms": [
-            "Subtraction",
-            "Multiplication",
-            "Division"
+            "Nucleus",
+            "Membrane",
+            "Ribosome"
         ],
         "wrong_term_2_options": [
-            "difference",
-            "product",
-            "quotient"
-        ]
-    },
-    {
-        "id": "math_mul_001",
-        "fact": "Multiplication produces a product from two factors",
-        "subject": "math",
-        "topic": "arithmetic",
-        "grade_band": 1,
-        "level": 2,
-        "key_term_1": "Multiplication",
-        "key_term_2": "product",
-        "verb": "produces",
-        "category": "operation",
-        "wrong_terms": [
-            "Addition",
-            "Subtraction",
-            "Division"
-        ],
-        "wrong_term_2_options": [
-            "sum",
-            "difference",
-            "quotient"
+            "water",
+            "proteins",
+            "glucose"
         ]
     },
     {
@@ -249,7 +469,7 @@
         "grade_band": 2,
         "level": 2,
         "key_term_1": "Stomata",
-        "key_term_2": "gas exchange",
+        "key_term_2": "exchange",
         "verb": "allows",
         "category": "structure",
         "wrong_terms": [
@@ -258,9 +478,2011 @@
             "Mesophyll"
         ],
         "wrong_term_2_options": [
-            "water transport",
-            "protein synthesis",
-            "mineral absorption"
+            "transport",
+            "synthesis",
+            "absorption"
+        ]
+    },
+    {
+        "id": "sci_photo_003",
+        "fact": "Chlorophyll absorbs sunlight for photosynthesis",
+        "subject": "science",
+        "topic": "photosynthesis",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Chlorophyll",
+        "key_term_2": "sunlight",
+        "verb": "absorbs",
+        "category": "pigment",
+        "wrong_terms": [
+            "Carotenoid",
+            "Anthocyanin",
+            "Xanthophyll"
+        ],
+        "wrong_term_2_options": [
+            "water",
+            "glucose",
+            "oxygen"
+        ]
+    },
+    {
+        "id": "sci_photo_004",
+        "fact": "Oxygen is released as a byproduct of photosynthesis",
+        "subject": "science",
+        "topic": "photosynthesis",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Oxygen",
+        "key_term_2": "byproduct",
+        "verb": "released",
+        "category": "molecule",
+        "wrong_terms": [
+            "Carbon dioxide",
+            "Glucose",
+            "Water"
+        ],
+        "wrong_term_2_options": [
+            "product",
+            "reactant",
+            "catalyst"
+        ]
+    },
+    {
+        "id": "sci_body_001",
+        "fact": "Brain controls the nervous system",
+        "subject": "science",
+        "topic": "human_body",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Brain",
+        "key_term_2": "nervous",
+        "verb": "controls",
+        "category": "organ",
+        "wrong_terms": [
+            "Heart",
+            "Kidneys",
+            "Lungs"
+        ],
+        "wrong_term_2_options": [
+            "digestive",
+            "circulatory",
+            "skeletal"
+        ]
+    },
+    {
+        "id": "sci_body_002",
+        "fact": "Kidneys filter waste from the blood",
+        "subject": "science",
+        "topic": "human_body",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Kidneys",
+        "key_term_2": "waste",
+        "verb": "filter",
+        "category": "organ",
+        "wrong_terms": [
+            "Liver",
+            "Lungs",
+            "Brain"
+        ],
+        "wrong_term_2_options": [
+            "oxygen",
+            "glucose",
+            "minerals"
+        ]
+    },
+    {
+        "id": "sci_body_003",
+        "fact": "Stomach digests food using acids",
+        "subject": "science",
+        "topic": "human_body",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Stomach",
+        "key_term_2": "food",
+        "verb": "digests",
+        "category": "organ",
+        "wrong_terms": [
+            "Liver",
+            "Kidneys",
+            "Intestine"
+        ],
+        "wrong_term_2_options": [
+            "blood",
+            "oxygen",
+            "water"
+        ]
+    },
+    {
+        "id": "sci_body_004",
+        "fact": "Intestine absorbs nutrients from digested food",
+        "subject": "science",
+        "topic": "human_body",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Intestine",
+        "key_term_2": "nutrients",
+        "verb": "absorbs",
+        "category": "organ",
+        "wrong_terms": [
+            "Stomach",
+            "Liver",
+            "Kidneys"
+        ],
+        "wrong_term_2_options": [
+            "waste",
+            "oxygen",
+            "glucose"
+        ]
+    },
+    {
+        "id": "sci_body_005",
+        "fact": "Liver produces bile to help digest fats",
+        "subject": "science",
+        "topic": "human_body",
+        "grade_band": 2,
+        "level": 3,
+        "key_term_1": "Liver",
+        "key_term_2": "bile",
+        "verb": "produces",
+        "category": "organ",
+        "wrong_terms": [
+            "Stomach",
+            "Kidneys",
+            "Pancreas"
+        ],
+        "wrong_term_2_options": [
+            "insulin",
+            "acid",
+            "enzyme"
+        ]
+    },
+    {
+        "id": "sci_force_001",
+        "fact": "Gravity attracts objects towards the Earth",
+        "subject": "science",
+        "topic": "force_motion",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Gravity",
+        "key_term_2": "objects",
+        "verb": "attracts",
+        "category": "force",
+        "wrong_terms": [
+            "Friction",
+            "Magnetism",
+            "Tension"
+        ],
+        "wrong_term_2_options": [
+            "planets",
+            "particles",
+            "waves"
+        ]
+    },
+    {
+        "id": "sci_force_002",
+        "fact": "Friction opposes the motion of moving surfaces",
+        "subject": "science",
+        "topic": "force_motion",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Friction",
+        "key_term_2": "motion",
+        "verb": "opposes",
+        "category": "force",
+        "wrong_terms": [
+            "Gravity",
+            "Tension",
+            "Magnetism"
+        ],
+        "wrong_term_2_options": [
+            "speed",
+            "mass",
+            "energy"
+        ]
+    },
+    {
+        "id": "sci_force_003",
+        "fact": "Inertia resists change in an object's motion",
+        "subject": "science",
+        "topic": "force_motion",
+        "grade_band": 2,
+        "level": 3,
+        "key_term_1": "Inertia",
+        "key_term_2": "change",
+        "verb": "resists",
+        "category": "property",
+        "wrong_terms": [
+            "Gravity",
+            "Friction",
+            "Momentum"
+        ],
+        "wrong_term_2_options": [
+            "speed",
+            "mass",
+            "direction"
+        ]
+    },
+    {
+        "id": "sci_gen_001",
+        "fact": "DNA stores genetic information in the cell nucleus",
+        "subject": "science",
+        "topic": "genetics",
+        "grade_band": 3,
+        "level": 1,
+        "key_term_1": "DNA",
+        "key_term_2": "information",
+        "verb": "stores",
+        "category": "molecule",
+        "wrong_terms": [
+            "RNA",
+            "Protein",
+            "Enzyme"
+        ],
+        "wrong_term_2_options": [
+            "energy",
+            "oxygen",
+            "glucose"
+        ]
+    },
+    {
+        "id": "sci_gen_002",
+        "fact": "Chromosome carries genes for inheritance",
+        "subject": "science",
+        "topic": "genetics",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Chromosome",
+        "key_term_2": "genes",
+        "verb": "carries",
+        "category": "structure",
+        "wrong_terms": [
+            "Ribosome",
+            "Mitochondria",
+            "Vacuole"
+        ],
+        "wrong_term_2_options": [
+            "proteins",
+            "water",
+            "energy"
+        ]
+    },
+    {
+        "id": "sci_gen_003",
+        "fact": "Mutation changes the sequence of DNA",
+        "subject": "science",
+        "topic": "genetics",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Mutation",
+        "key_term_2": "sequence",
+        "verb": "changes",
+        "category": "event",
+        "wrong_terms": [
+            "Replication",
+            "Transcription",
+            "Translation"
+        ],
+        "wrong_term_2_options": [
+            "structure",
+            "function",
+            "location"
+        ]
+    },
+    {
+        "id": "sci_gen_004",
+        "fact": "Meiosis produces gametes for sexual reproduction",
+        "subject": "science",
+        "topic": "genetics",
+        "grade_band": 3,
+        "level": 3,
+        "key_term_1": "Meiosis",
+        "key_term_2": "gametes",
+        "verb": "produces",
+        "category": "process",
+        "wrong_terms": [
+            "Mitosis",
+            "Transcription",
+            "Replication"
+        ],
+        "wrong_term_2_options": [
+            "proteins",
+            "chromosomes",
+            "enzymes"
+        ]
+    },
+    {
+        "id": "sci_gen_005",
+        "fact": "RNA carries genetic code from DNA to ribosomes",
+        "subject": "science",
+        "topic": "genetics",
+        "grade_band": 3,
+        "level": 3,
+        "key_term_1": "RNA",
+        "key_term_2": "code",
+        "verb": "carries",
+        "category": "molecule",
+        "wrong_terms": [
+            "DNA",
+            "Protein",
+            "Enzyme"
+        ],
+        "wrong_term_2_options": [
+            "energy",
+            "signal",
+            "message"
+        ]
+    },
+    {
+        "id": "sci_chem_001",
+        "fact": "Enzyme speeds up chemical reactions",
+        "subject": "science",
+        "topic": "chemical_reactions",
+        "grade_band": 3,
+        "level": 1,
+        "key_term_1": "Enzyme",
+        "key_term_2": "reactions",
+        "verb": "speeds",
+        "category": "catalyst",
+        "wrong_terms": [
+            "Substrate",
+            "Inhibitor",
+            "Coenzyme"
+        ],
+        "wrong_term_2_options": [
+            "molecules",
+            "proteins",
+            "bonds"
+        ]
+    },
+    {
+        "id": "sci_chem_002",
+        "fact": "Oxidation loses electrons during a reaction",
+        "subject": "science",
+        "topic": "chemical_reactions",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Oxidation",
+        "key_term_2": "electrons",
+        "verb": "loses",
+        "category": "process",
+        "wrong_terms": [
+            "Reduction",
+            "Hydrolysis",
+            "Condensation"
+        ],
+        "wrong_term_2_options": [
+            "protons",
+            "neutrons",
+            "ions"
+        ]
+    },
+    {
+        "id": "sci_chem_003",
+        "fact": "Catalyst lowers the activation energy of a reaction",
+        "subject": "science",
+        "topic": "chemical_reactions",
+        "grade_band": 3,
+        "level": 3,
+        "key_term_1": "Catalyst",
+        "key_term_2": "energy",
+        "verb": "lowers",
+        "category": "substance",
+        "wrong_terms": [
+            "Inhibitor",
+            "Solvent",
+            "Reactant"
+        ],
+        "wrong_term_2_options": [
+            "temperature",
+            "pressure",
+            "concentration"
+        ]
+    },
+    {
+        "id": "sci_chem_004",
+        "fact": "Acid donates a proton in a chemical reaction",
+        "subject": "science",
+        "topic": "chemical_reactions",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Acid",
+        "key_term_2": "proton",
+        "verb": "donates",
+        "category": "substance",
+        "wrong_terms": [
+            "Base",
+            "Salt",
+            "Solvent"
+        ],
+        "wrong_term_2_options": [
+            "electron",
+            "neutron",
+            "ion"
+        ]
+    },
+    {
+        "id": "sci_wave_001",
+        "fact": "Frequency measures the number of wave cycles per second",
+        "subject": "science",
+        "topic": "waves",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Frequency",
+        "key_term_2": "cycles",
+        "verb": "measures",
+        "category": "property",
+        "wrong_terms": [
+            "Amplitude",
+            "Wavelength",
+            "Period"
+        ],
+        "wrong_term_2_options": [
+            "waves",
+            "particles",
+            "photons"
+        ]
+    },
+    {
+        "id": "sci_wave_002",
+        "fact": "Amplitude measures the height of a wave",
+        "subject": "science",
+        "topic": "waves",
+        "grade_band": 3,
+        "level": 1,
+        "key_term_1": "Amplitude",
+        "key_term_2": "height",
+        "verb": "measures",
+        "category": "property",
+        "wrong_terms": [
+            "Frequency",
+            "Wavelength",
+            "Period"
+        ],
+        "wrong_term_2_options": [
+            "speed",
+            "direction",
+            "energy"
+        ]
+    },
+    {
+        "id": "sci_wave_003",
+        "fact": "Wavelength measures the distance between two wave peaks",
+        "subject": "science",
+        "topic": "waves",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Wavelength",
+        "key_term_2": "distance",
+        "verb": "measures",
+        "category": "property",
+        "wrong_terms": [
+            "Frequency",
+            "Amplitude",
+            "Period"
+        ],
+        "wrong_term_2_options": [
+            "height",
+            "speed",
+            "direction"
+        ]
+    },
+    {
+        "id": "sci_thermo_001",
+        "fact": "Entropy measures disorder in a thermodynamic system",
+        "subject": "science",
+        "topic": "thermodynamics",
+        "grade_band": 4,
+        "level": 2,
+        "key_term_1": "Entropy",
+        "key_term_2": "disorder",
+        "verb": "measures",
+        "category": "quantity",
+        "wrong_terms": [
+            "Enthalpy",
+            "Energy",
+            "Temperature"
+        ],
+        "wrong_term_2_options": [
+            "energy",
+            "pressure",
+            "volume"
+        ]
+    },
+    {
+        "id": "sci_thermo_002",
+        "fact": "Conduction transfers heat through direct contact",
+        "subject": "science",
+        "topic": "thermodynamics",
+        "grade_band": 4,
+        "level": 1,
+        "key_term_1": "Conduction",
+        "key_term_2": "heat",
+        "verb": "transfers",
+        "category": "process",
+        "wrong_terms": [
+            "Convection",
+            "Radiation",
+            "Evaporation"
+        ],
+        "wrong_term_2_options": [
+            "light",
+            "sound",
+            "electricity"
+        ]
+    },
+    {
+        "id": "sci_thermo_003",
+        "fact": "Convection transfers heat through fluid movement",
+        "subject": "science",
+        "topic": "thermodynamics",
+        "grade_band": 4,
+        "level": 2,
+        "key_term_1": "Convection",
+        "key_term_2": "heat",
+        "verb": "transfers",
+        "category": "process",
+        "wrong_terms": [
+            "Conduction",
+            "Radiation",
+            "Evaporation"
+        ],
+        "wrong_term_2_options": [
+            "light",
+            "sound",
+            "electricity"
+        ]
+    },
+    {
+        "id": "sci_thermo_004",
+        "fact": "Radiation transfers heat through electromagnetic waves",
+        "subject": "science",
+        "topic": "thermodynamics",
+        "grade_band": 4,
+        "level": 3,
+        "key_term_1": "Radiation",
+        "key_term_2": "heat",
+        "verb": "transfers",
+        "category": "process",
+        "wrong_terms": [
+            "Conduction",
+            "Convection",
+            "Evaporation"
+        ],
+        "wrong_term_2_options": [
+            "light",
+            "sound",
+            "electricity"
+        ]
+    },
+    {
+        "id": "sci_elec_001",
+        "fact": "Voltage drives electric current through a circuit",
+        "subject": "science",
+        "topic": "electricity",
+        "grade_band": 4,
+        "level": 1,
+        "key_term_1": "Voltage",
+        "key_term_2": "current",
+        "verb": "drives",
+        "category": "quantity",
+        "wrong_terms": [
+            "Resistance",
+            "Capacitance",
+            "Inductance"
+        ],
+        "wrong_term_2_options": [
+            "power",
+            "energy",
+            "charge"
+        ]
+    },
+    {
+        "id": "sci_elec_002",
+        "fact": "Resistance opposes the flow of electric current",
+        "subject": "science",
+        "topic": "electricity",
+        "grade_band": 4,
+        "level": 2,
+        "key_term_1": "Resistance",
+        "key_term_2": "current",
+        "verb": "opposes",
+        "category": "quantity",
+        "wrong_terms": [
+            "Voltage",
+            "Capacitance",
+            "Conductance"
+        ],
+        "wrong_term_2_options": [
+            "power",
+            "energy",
+            "charge"
+        ]
+    },
+    {
+        "id": "sci_elec_003",
+        "fact": "Capacitor stores electric charge in a circuit",
+        "subject": "science",
+        "topic": "electricity",
+        "grade_band": 4,
+        "level": 3,
+        "key_term_1": "Capacitor",
+        "key_term_2": "charge",
+        "verb": "stores",
+        "category": "component",
+        "wrong_terms": [
+            "Resistor",
+            "Inductor",
+            "Transistor"
+        ],
+        "wrong_term_2_options": [
+            "current",
+            "voltage",
+            "power"
+        ]
+    },
+    {
+        "id": "sci_quant_001",
+        "fact": "Photon carries electromagnetic energy in discrete packets",
+        "subject": "science",
+        "topic": "quantum",
+        "grade_band": 5,
+        "level": 2,
+        "key_term_1": "Photon",
+        "key_term_2": "energy",
+        "verb": "carries",
+        "category": "particle",
+        "wrong_terms": [
+            "Electron",
+            "Neutron",
+            "Proton"
+        ],
+        "wrong_term_2_options": [
+            "mass",
+            "charge",
+            "spin"
+        ]
+    },
+    {
+        "id": "sci_quant_002",
+        "fact": "Electron occupies a quantum orbital around the nucleus",
+        "subject": "science",
+        "topic": "quantum",
+        "grade_band": 5,
+        "level": 3,
+        "key_term_1": "Electron",
+        "key_term_2": "orbital",
+        "verb": "occupies",
+        "category": "particle",
+        "wrong_terms": [
+            "Proton",
+            "Neutron",
+            "Photon"
+        ],
+        "wrong_term_2_options": [
+            "shell",
+            "nucleus",
+            "cloud"
+        ]
+    },
+    {
+        "id": "sci_micro_001",
+        "fact": "Bacteria reproduces through binary fission",
+        "subject": "science",
+        "topic": "microbiology",
+        "grade_band": 5,
+        "level": 2,
+        "key_term_1": "Bacteria",
+        "key_term_2": "fission",
+        "verb": "reproduces",
+        "category": "organism",
+        "wrong_terms": [
+            "Virus",
+            "Fungi",
+            "Protozoa"
+        ],
+        "wrong_term_2_options": [
+            "mitosis",
+            "meiosis",
+            "budding"
+        ]
+    },
+    {
+        "id": "sci_micro_002",
+        "fact": "Virus injects genetic material into a host cell",
+        "subject": "science",
+        "topic": "microbiology",
+        "grade_band": 5,
+        "level": 3,
+        "key_term_1": "Virus",
+        "key_term_2": "material",
+        "verb": "injects",
+        "category": "organism",
+        "wrong_terms": [
+            "Bacteria",
+            "Fungi",
+            "Prion"
+        ],
+        "wrong_term_2_options": [
+            "protein",
+            "glucose",
+            "enzyme"
+        ]
+    },
+    {
+        "id": "math_add_001",
+        "fact": "Addition combines two numbers to produce a sum",
+        "subject": "math",
+        "topic": "arithmetic",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Addition",
+        "key_term_2": "sum",
+        "verb": "produces",
+        "category": "operation",
+        "wrong_terms": [
+            "Subtraction",
+            "Multiplication",
+            "Division"
+        ],
+        "wrong_term_2_options": [
+            "difference",
+            "product",
+            "quotient"
+        ]
+    },
+    {
+        "id": "math_sub_001",
+        "fact": "Subtraction finds the difference between two numbers",
+        "subject": "math",
+        "topic": "arithmetic",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Subtraction",
+        "key_term_2": "difference",
+        "verb": "finds",
+        "category": "operation",
+        "wrong_terms": [
+            "Addition",
+            "Multiplication",
+            "Division"
+        ],
+        "wrong_term_2_options": [
+            "sum",
+            "product",
+            "quotient"
+        ]
+    },
+    {
+        "id": "math_mul_001",
+        "fact": "Multiplication produces a product from two factors",
+        "subject": "math",
+        "topic": "arithmetic",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Multiplication",
+        "key_term_2": "product",
+        "verb": "produces",
+        "category": "operation",
+        "wrong_terms": [
+            "Addition",
+            "Subtraction",
+            "Division"
+        ],
+        "wrong_term_2_options": [
+            "sum",
+            "difference",
+            "quotient"
+        ]
+    },
+    {
+        "id": "math_div_001",
+        "fact": "Division produces a quotient from the dividend",
+        "subject": "math",
+        "topic": "arithmetic",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Division",
+        "key_term_2": "quotient",
+        "verb": "produces",
+        "category": "operation",
+        "wrong_terms": [
+            "Multiplication",
+            "Addition",
+            "Subtraction"
+        ],
+        "wrong_term_2_options": [
+            "sum",
+            "difference",
+            "product"
+        ]
+    },
+    {
+        "id": "math_shape_001",
+        "fact": "Triangle has three sides and three angles",
+        "subject": "math",
+        "topic": "shapes",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Triangle",
+        "key_term_2": "sides",
+        "verb": "has",
+        "category": "shape",
+        "wrong_terms": [
+            "Square",
+            "Circle",
+            "Pentagon"
+        ],
+        "wrong_term_2_options": [
+            "angles",
+            "vertices",
+            "faces"
+        ]
+    },
+    {
+        "id": "math_shape_002",
+        "fact": "Square has four equal sides and four right angles",
+        "subject": "math",
+        "topic": "shapes",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Square",
+        "key_term_2": "sides",
+        "verb": "has",
+        "category": "shape",
+        "wrong_terms": [
+            "Triangle",
+            "Circle",
+            "Hexagon"
+        ],
+        "wrong_term_2_options": [
+            "angles",
+            "vertices",
+            "faces"
+        ]
+    },
+    {
+        "id": "math_shape_003",
+        "fact": "Circle has no corners and one continuously curved boundary",
+        "subject": "math",
+        "topic": "shapes",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Circle",
+        "key_term_2": "corners",
+        "verb": "has",
+        "category": "shape",
+        "wrong_terms": [
+            "Square",
+            "Triangle",
+            "Rectangle"
+        ],
+        "wrong_term_2_options": [
+            "sides",
+            "angles",
+            "faces"
+        ]
+    },
+    {
+        "id": "math_frac_001",
+        "fact": "Numerator represents the top number of a fraction",
+        "subject": "math",
+        "topic": "fractions",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Numerator",
+        "key_term_2": "top",
+        "verb": "represents",
+        "category": "part",
+        "wrong_terms": [
+            "Denominator",
+            "Dividend",
+            "Quotient"
+        ],
+        "wrong_term_2_options": [
+            "bottom",
+            "whole",
+            "decimal"
+        ]
+    },
+    {
+        "id": "math_frac_002",
+        "fact": "Denominator represents the bottom number of a fraction",
+        "subject": "math",
+        "topic": "fractions",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Denominator",
+        "key_term_2": "bottom",
+        "verb": "represents",
+        "category": "part",
+        "wrong_terms": [
+            "Numerator",
+            "Dividend",
+            "Quotient"
+        ],
+        "wrong_term_2_options": [
+            "top",
+            "whole",
+            "decimal"
+        ]
+    },
+    {
+        "id": "math_frac_003",
+        "fact": "Percentage expresses a fraction as parts per hundred",
+        "subject": "math",
+        "topic": "fractions",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Percentage",
+        "key_term_2": "hundred",
+        "verb": "expresses",
+        "category": "concept",
+        "wrong_terms": [
+            "Fraction",
+            "Decimal",
+            "Ratio"
+        ],
+        "wrong_term_2_options": [
+            "thousand",
+            "ten",
+            "million"
+        ]
+    },
+    {
+        "id": "math_geom_001",
+        "fact": "Perimeter measures the total boundary length of a shape",
+        "subject": "math",
+        "topic": "geometry",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Perimeter",
+        "key_term_2": "boundary",
+        "verb": "measures",
+        "category": "measurement",
+        "wrong_terms": [
+            "Area",
+            "Volume",
+            "Diagonal"
+        ],
+        "wrong_term_2_options": [
+            "surface",
+            "interior",
+            "depth"
+        ]
+    },
+    {
+        "id": "math_geom_002",
+        "fact": "Area measures the surface covered by a two-dimensional shape",
+        "subject": "math",
+        "topic": "geometry",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Area",
+        "key_term_2": "surface",
+        "verb": "measures",
+        "category": "measurement",
+        "wrong_terms": [
+            "Perimeter",
+            "Volume",
+            "Diameter"
+        ],
+        "wrong_term_2_options": [
+            "boundary",
+            "depth",
+            "height"
+        ]
+    },
+    {
+        "id": "math_geom_003",
+        "fact": "Volume measures the space inside a three-dimensional object",
+        "subject": "math",
+        "topic": "geometry",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Volume",
+        "key_term_2": "space",
+        "verb": "measures",
+        "category": "measurement",
+        "wrong_terms": [
+            "Area",
+            "Perimeter",
+            "Diameter"
+        ],
+        "wrong_term_2_options": [
+            "surface",
+            "boundary",
+            "weight"
+        ]
+    },
+    {
+        "id": "math_geom_004",
+        "fact": "Diameter crosses through the centre of a circle",
+        "subject": "math",
+        "topic": "geometry",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Diameter",
+        "key_term_2": "centre",
+        "verb": "crosses",
+        "category": "measurement",
+        "wrong_terms": [
+            "Radius",
+            "Chord",
+            "Tangent"
+        ],
+        "wrong_term_2_options": [
+            "edge",
+            "boundary",
+            "perimeter"
+        ]
+    },
+    {
+        "id": "math_alg_001",
+        "fact": "Variable represents an unknown value in an expression",
+        "subject": "math",
+        "topic": "algebra",
+        "grade_band": 3,
+        "level": 1,
+        "key_term_1": "Variable",
+        "key_term_2": "unknown",
+        "verb": "represents",
+        "category": "element",
+        "wrong_terms": [
+            "Constant",
+            "Coefficient",
+            "Exponent"
+        ],
+        "wrong_term_2_options": [
+            "value",
+            "number",
+            "term"
+        ]
+    },
+    {
+        "id": "math_alg_002",
+        "fact": "Coefficient multiplies a variable in an algebraic term",
+        "subject": "math",
+        "topic": "algebra",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Coefficient",
+        "key_term_2": "variable",
+        "verb": "multiplies",
+        "category": "element",
+        "wrong_terms": [
+            "Constant",
+            "Exponent",
+            "Degree"
+        ],
+        "wrong_term_2_options": [
+            "constant",
+            "exponent",
+            "factor"
+        ]
+    },
+    {
+        "id": "math_alg_003",
+        "fact": "Exponent indicates how many times a base is multiplied",
+        "subject": "math",
+        "topic": "algebra",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Exponent",
+        "key_term_2": "base",
+        "verb": "multiplies",
+        "category": "element",
+        "wrong_terms": [
+            "Coefficient",
+            "Variable",
+            "Constant"
+        ],
+        "wrong_term_2_options": [
+            "factor",
+            "degree",
+            "root"
+        ]
+    },
+    {
+        "id": "math_alg_004",
+        "fact": "Polynomial contains multiple terms with variables and coefficients",
+        "subject": "math",
+        "topic": "algebra",
+        "grade_band": 3,
+        "level": 3,
+        "key_term_1": "Polynomial",
+        "key_term_2": "terms",
+        "verb": "contains",
+        "category": "expression",
+        "wrong_terms": [
+            "Monomial",
+            "Binomial",
+            "Equation"
+        ],
+        "wrong_term_2_options": [
+            "factors",
+            "roots",
+            "constants"
+        ]
+    },
+    {
+        "id": "math_ratio_001",
+        "fact": "Ratio compares two quantities using division",
+        "subject": "math",
+        "topic": "ratio_proportion",
+        "grade_band": 3,
+        "level": 1,
+        "key_term_1": "Ratio",
+        "key_term_2": "quantities",
+        "verb": "compares",
+        "category": "concept",
+        "wrong_terms": [
+            "Proportion",
+            "Percentage",
+            "Fraction"
+        ],
+        "wrong_term_2_options": [
+            "values",
+            "terms",
+            "numbers"
+        ]
+    },
+    {
+        "id": "math_ratio_002",
+        "fact": "Proportion states that two ratios are equivalent",
+        "subject": "math",
+        "topic": "ratio_proportion",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Proportion",
+        "key_term_2": "ratios",
+        "verb": "equates",
+        "category": "concept",
+        "wrong_terms": [
+            "Ratio",
+            "Percentage",
+            "Fraction"
+        ],
+        "wrong_term_2_options": [
+            "values",
+            "fractions",
+            "numbers"
+        ]
+    },
+    {
+        "id": "math_trig_001",
+        "fact": "Sine relates the opposite side to the hypotenuse",
+        "subject": "math",
+        "topic": "trigonometry",
+        "grade_band": 4,
+        "level": 2,
+        "key_term_1": "Sine",
+        "key_term_2": "opposite",
+        "verb": "divides",
+        "category": "function",
+        "wrong_terms": [
+            "Cosine",
+            "Tangent",
+            "Secant"
+        ],
+        "wrong_term_2_options": [
+            "adjacent",
+            "hypotenuse",
+            "base"
+        ]
+    },
+    {
+        "id": "math_trig_002",
+        "fact": "Cosine relates the adjacent side to the hypotenuse",
+        "subject": "math",
+        "topic": "trigonometry",
+        "grade_band": 4,
+        "level": 2,
+        "key_term_1": "Cosine",
+        "key_term_2": "adjacent",
+        "verb": "divides",
+        "category": "function",
+        "wrong_terms": [
+            "Sine",
+            "Tangent",
+            "Cosecant"
+        ],
+        "wrong_term_2_options": [
+            "opposite",
+            "hypotenuse",
+            "base"
+        ]
+    },
+    {
+        "id": "math_trig_003",
+        "fact": "Tangent relates the opposite side to the adjacent side",
+        "subject": "math",
+        "topic": "trigonometry",
+        "grade_band": 4,
+        "level": 3,
+        "key_term_1": "Tangent",
+        "key_term_2": "opposite",
+        "verb": "divides",
+        "category": "function",
+        "wrong_terms": [
+            "Sine",
+            "Cosine",
+            "Secant"
+        ],
+        "wrong_term_2_options": [
+            "adjacent",
+            "hypotenuse",
+            "base"
+        ]
+    },
+    {
+        "id": "math_stat_001",
+        "fact": "Mean calculates the average of a data set",
+        "subject": "math",
+        "topic": "statistics",
+        "grade_band": 4,
+        "level": 1,
+        "key_term_1": "Mean",
+        "key_term_2": "average",
+        "verb": "calculates",
+        "category": "measure",
+        "wrong_terms": [
+            "Median",
+            "Mode",
+            "Range"
+        ],
+        "wrong_term_2_options": [
+            "sum",
+            "difference",
+            "product"
+        ]
+    },
+    {
+        "id": "math_stat_002",
+        "fact": "Median identifies the middle value in an ordered data set",
+        "subject": "math",
+        "topic": "statistics",
+        "grade_band": 4,
+        "level": 1,
+        "key_term_1": "Median",
+        "key_term_2": "middle",
+        "verb": "identifies",
+        "category": "measure",
+        "wrong_terms": [
+            "Mean",
+            "Mode",
+            "Range"
+        ],
+        "wrong_term_2_options": [
+            "highest",
+            "lowest",
+            "average"
+        ]
+    },
+    {
+        "id": "math_stat_003",
+        "fact": "Mode identifies the most frequently occurring value",
+        "subject": "math",
+        "topic": "statistics",
+        "grade_band": 4,
+        "level": 1,
+        "key_term_1": "Mode",
+        "key_term_2": "frequent",
+        "verb": "identifies",
+        "category": "measure",
+        "wrong_terms": [
+            "Mean",
+            "Median",
+            "Range"
+        ],
+        "wrong_term_2_options": [
+            "middle",
+            "average",
+            "highest"
+        ]
+    },
+    {
+        "id": "math_stat_004",
+        "fact": "Standard deviation measures the spread of data around the mean",
+        "subject": "math",
+        "topic": "statistics",
+        "grade_band": 4,
+        "level": 3,
+        "key_term_1": "Deviation",
+        "key_term_2": "spread",
+        "verb": "measures",
+        "category": "measure",
+        "wrong_terms": [
+            "Variance",
+            "Range",
+            "Median"
+        ],
+        "wrong_term_2_options": [
+            "average",
+            "sum",
+            "difference"
+        ]
+    },
+    {
+        "id": "math_calc_001",
+        "fact": "Derivative measures the rate of change of a function",
+        "subject": "math",
+        "topic": "calculus",
+        "grade_band": 5,
+        "level": 2,
+        "key_term_1": "Derivative",
+        "key_term_2": "change",
+        "verb": "measures",
+        "category": "concept",
+        "wrong_terms": [
+            "Integral",
+            "Limit",
+            "Gradient"
+        ],
+        "wrong_term_2_options": [
+            "area",
+            "volume",
+            "slope"
+        ]
+    },
+    {
+        "id": "math_calc_002",
+        "fact": "Integral calculates the area under a curve",
+        "subject": "math",
+        "topic": "calculus",
+        "grade_band": 5,
+        "level": 2,
+        "key_term_1": "Integral",
+        "key_term_2": "area",
+        "verb": "calculates",
+        "category": "concept",
+        "wrong_terms": [
+            "Derivative",
+            "Limit",
+            "Gradient"
+        ],
+        "wrong_term_2_options": [
+            "volume",
+            "slope",
+            "rate"
+        ]
+    },
+    {
+        "id": "math_calc_003",
+        "fact": "Limit describes the value a function approaches at a point",
+        "subject": "math",
+        "topic": "calculus",
+        "grade_band": 5,
+        "level": 3,
+        "key_term_1": "Limit",
+        "key_term_2": "value",
+        "verb": "approaches",
+        "category": "concept",
+        "wrong_terms": [
+            "Derivative",
+            "Integral",
+            "Gradient"
+        ],
+        "wrong_term_2_options": [
+            "slope",
+            "area",
+            "rate"
+        ]
+    },
+    {
+        "id": "eng_pos_001",
+        "fact": "Noun names a person, place, or thing",
+        "subject": "english",
+        "topic": "parts_of_speech",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Noun",
+        "key_term_2": "person",
+        "verb": "names",
+        "category": "part of speech",
+        "wrong_terms": [
+            "Verb",
+            "Adjective",
+            "Adverb"
+        ],
+        "wrong_term_2_options": [
+            "action",
+            "quality",
+            "feeling"
+        ]
+    },
+    {
+        "id": "eng_pos_002",
+        "fact": "Verb describes an action or a state of being",
+        "subject": "english",
+        "topic": "parts_of_speech",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Verb",
+        "key_term_2": "action",
+        "verb": "describes",
+        "category": "part of speech",
+        "wrong_terms": [
+            "Noun",
+            "Adjective",
+            "Adverb"
+        ],
+        "wrong_term_2_options": [
+            "thing",
+            "quality",
+            "place"
+        ]
+    },
+    {
+        "id": "eng_pos_003",
+        "fact": "Adjective modifies or describes a noun",
+        "subject": "english",
+        "topic": "parts_of_speech",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Adjective",
+        "key_term_2": "noun",
+        "verb": "modifies",
+        "category": "part of speech",
+        "wrong_terms": [
+            "Adverb",
+            "Verb",
+            "Pronoun"
+        ],
+        "wrong_term_2_options": [
+            "verb",
+            "pronoun",
+            "adverb"
+        ]
+    },
+    {
+        "id": "eng_pos_004",
+        "fact": "Adverb modifies a verb, adjective, or another adverb",
+        "subject": "english",
+        "topic": "parts_of_speech",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Adverb",
+        "key_term_2": "verb",
+        "verb": "modifies",
+        "category": "part of speech",
+        "wrong_terms": [
+            "Adjective",
+            "Noun",
+            "Pronoun"
+        ],
+        "wrong_term_2_options": [
+            "noun",
+            "pronoun",
+            "conjunction"
+        ]
+    },
+    {
+        "id": "eng_pos_005",
+        "fact": "Pronoun replaces a noun in a sentence",
+        "subject": "english",
+        "topic": "parts_of_speech",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Pronoun",
+        "key_term_2": "noun",
+        "verb": "replaces",
+        "category": "part of speech",
+        "wrong_terms": [
+            "Adjective",
+            "Adverb",
+            "Conjunction"
+        ],
+        "wrong_term_2_options": [
+            "verb",
+            "adjective",
+            "adverb"
+        ]
+    },
+    {
+        "id": "eng_pos_006",
+        "fact": "Conjunction joins words, phrases, or clauses together",
+        "subject": "english",
+        "topic": "parts_of_speech",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Conjunction",
+        "key_term_2": "words",
+        "verb": "joins",
+        "category": "part of speech",
+        "wrong_terms": [
+            "Preposition",
+            "Interjection",
+            "Noun"
+        ],
+        "wrong_term_2_options": [
+            "clauses",
+            "sentences",
+            "paragraphs"
+        ]
+    },
+    {
+        "id": "eng_punc_001",
+        "fact": "Full stop ends a declarative sentence",
+        "subject": "english",
+        "topic": "punctuation",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Full stop",
+        "key_term_2": "sentence",
+        "verb": "ends",
+        "category": "punctuation",
+        "wrong_terms": [
+            "Comma",
+            "Colon",
+            "Apostrophe"
+        ],
+        "wrong_term_2_options": [
+            "clause",
+            "phrase",
+            "word"
+        ]
+    },
+    {
+        "id": "eng_punc_002",
+        "fact": "Comma separates items in a list or clauses",
+        "subject": "english",
+        "topic": "punctuation",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Comma",
+        "key_term_2": "items",
+        "verb": "separates",
+        "category": "punctuation",
+        "wrong_terms": [
+            "Full stop",
+            "Colon",
+            "Semicolon"
+        ],
+        "wrong_term_2_options": [
+            "sentences",
+            "paragraphs",
+            "words"
+        ]
+    },
+    {
+        "id": "eng_punc_003",
+        "fact": "Question mark ends an interrogative sentence",
+        "subject": "english",
+        "topic": "punctuation",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Question mark",
+        "key_term_2": "sentence",
+        "verb": "ends",
+        "category": "punctuation",
+        "wrong_terms": [
+            "Exclamation mark",
+            "Full stop",
+            "Comma"
+        ],
+        "wrong_term_2_options": [
+            "clause",
+            "phrase",
+            "word"
+        ]
+    },
+    {
+        "id": "eng_fig_001",
+        "fact": "Simile compares two things using like or as",
+        "subject": "english",
+        "topic": "figures_of_speech",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Simile",
+        "key_term_2": "like",
+        "verb": "compares",
+        "category": "figure",
+        "wrong_terms": [
+            "Metaphor",
+            "Alliteration",
+            "Hyperbole"
+        ],
+        "wrong_term_2_options": [
+            "and",
+            "but",
+            "so"
+        ]
+    },
+    {
+        "id": "eng_fig_002",
+        "fact": "Metaphor compares two things without using like or as",
+        "subject": "english",
+        "topic": "figures_of_speech",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Metaphor",
+        "key_term_2": "comparison",
+        "verb": "makes",
+        "category": "figure",
+        "wrong_terms": [
+            "Simile",
+            "Alliteration",
+            "Onomatopoeia"
+        ],
+        "wrong_term_2_options": [
+            "rhyme",
+            "rhythm",
+            "contrast"
+        ]
+    },
+    {
+        "id": "eng_fig_003",
+        "fact": "Alliteration repeats the same consonant sound at the start of words",
+        "subject": "english",
+        "topic": "figures_of_speech",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Alliteration",
+        "key_term_2": "consonant",
+        "verb": "repeats",
+        "category": "figure",
+        "wrong_terms": [
+            "Assonance",
+            "Metaphor",
+            "Simile"
+        ],
+        "wrong_term_2_options": [
+            "vowel",
+            "syllable",
+            "rhyme"
+        ]
+    },
+    {
+        "id": "eng_fig_004",
+        "fact": "Onomatopoeia uses words that imitate a sound",
+        "subject": "english",
+        "topic": "figures_of_speech",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Onomatopoeia",
+        "key_term_2": "sound",
+        "verb": "imitates",
+        "category": "figure",
+        "wrong_terms": [
+            "Alliteration",
+            "Simile",
+            "Metaphor"
+        ],
+        "wrong_term_2_options": [
+            "meaning",
+            "rhythm",
+            "rhyme"
+        ]
+    },
+    {
+        "id": "eng_sent_001",
+        "fact": "Declarative sentence makes a statement",
+        "subject": "english",
+        "topic": "sentence_types",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Declarative",
+        "key_term_2": "statement",
+        "verb": "makes",
+        "category": "sentence type",
+        "wrong_terms": [
+            "Interrogative",
+            "Imperative",
+            "Exclamatory"
+        ],
+        "wrong_term_2_options": [
+            "question",
+            "command",
+            "exclamation"
+        ]
+    },
+    {
+        "id": "eng_sent_002",
+        "fact": "Interrogative sentence asks a question",
+        "subject": "english",
+        "topic": "sentence_types",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Interrogative",
+        "key_term_2": "question",
+        "verb": "asks",
+        "category": "sentence type",
+        "wrong_terms": [
+            "Declarative",
+            "Imperative",
+            "Exclamatory"
+        ],
+        "wrong_term_2_options": [
+            "statement",
+            "command",
+            "exclamation"
+        ]
+    },
+    {
+        "id": "eng_sent_003",
+        "fact": "Imperative sentence gives a command or instruction",
+        "subject": "english",
+        "topic": "sentence_types",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Imperative",
+        "key_term_2": "command",
+        "verb": "gives",
+        "category": "sentence type",
+        "wrong_terms": [
+            "Declarative",
+            "Interrogative",
+            "Exclamatory"
+        ],
+        "wrong_term_2_options": [
+            "question",
+            "statement",
+            "exclamation"
+        ]
+    },
+    {
+        "id": "eng_lit_001",
+        "fact": "Irony expresses meaning through contrast with literal words",
+        "subject": "english",
+        "topic": "literary_devices",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Irony",
+        "key_term_2": "contrast",
+        "verb": "expresses",
+        "category": "device",
+        "wrong_terms": [
+            "Metaphor",
+            "Simile",
+            "Hyperbole"
+        ],
+        "wrong_term_2_options": [
+            "similarity",
+            "repetition",
+            "exaggeration"
+        ]
+    },
+    {
+        "id": "eng_lit_002",
+        "fact": "Hyperbole exaggerates for dramatic or comic effect",
+        "subject": "english",
+        "topic": "literary_devices",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Hyperbole",
+        "key_term_2": "effect",
+        "verb": "exaggerates",
+        "category": "device",
+        "wrong_terms": [
+            "Irony",
+            "Simile",
+            "Personification"
+        ],
+        "wrong_term_2_options": [
+            "emphasis",
+            "comparison",
+            "rhythm"
+        ]
+    },
+    {
+        "id": "eng_lit_003",
+        "fact": "Personification gives human qualities to non-human things",
+        "subject": "english",
+        "topic": "literary_devices",
+        "grade_band": 3,
+        "level": 1,
+        "key_term_1": "Personification",
+        "key_term_2": "qualities",
+        "verb": "gives",
+        "category": "device",
+        "wrong_terms": [
+            "Irony",
+            "Hyperbole",
+            "Alliteration"
+        ],
+        "wrong_term_2_options": [
+            "features",
+            "actions",
+            "sounds"
+        ]
+    },
+    {
+        "id": "eng_lit_004",
+        "fact": "Foreshadowing hints at future events in the story",
+        "subject": "english",
+        "topic": "literary_devices",
+        "grade_band": 3,
+        "level": 3,
+        "key_term_1": "Foreshadowing",
+        "key_term_2": "events",
+        "verb": "hints",
+        "category": "device",
+        "wrong_terms": [
+            "Flashback",
+            "Irony",
+            "Imagery"
+        ],
+        "wrong_term_2_options": [
+            "characters",
+            "settings",
+            "conflicts"
+        ]
+    },
+    {
+        "id": "eng_lit_005",
+        "fact": "Imagery creates vivid mental pictures through descriptive language",
+        "subject": "english",
+        "topic": "literary_devices",
+        "grade_band": 3,
+        "level": 2,
+        "key_term_1": "Imagery",
+        "key_term_2": "pictures",
+        "verb": "creates",
+        "category": "device",
+        "wrong_terms": [
+            "Metaphor",
+            "Simile",
+            "Alliteration"
+        ],
+        "wrong_term_2_options": [
+            "sounds",
+            "feelings",
+            "ideas"
+        ]
+    },
+    {
+        "id": "eng_adv_001",
+        "fact": "Thesis states the central argument of an essay",
+        "subject": "english",
+        "topic": "advanced_writing",
+        "grade_band": 4,
+        "level": 2,
+        "key_term_1": "Thesis",
+        "key_term_2": "argument",
+        "verb": "states",
+        "category": "element",
+        "wrong_terms": [
+            "Introduction",
+            "Conclusion",
+            "Paragraph"
+        ],
+        "wrong_term_2_options": [
+            "evidence",
+            "example",
+            "opinion"
+        ]
+    },
+    {
+        "id": "eng_adv_002",
+        "fact": "Rhetoric persuades an audience through language techniques",
+        "subject": "english",
+        "topic": "advanced_writing",
+        "grade_band": 4,
+        "level": 3,
+        "key_term_1": "Rhetoric",
+        "key_term_2": "audience",
+        "verb": "persuades",
+        "category": "technique",
+        "wrong_terms": [
+            "Narration",
+            "Description",
+            "Exposition"
+        ],
+        "wrong_term_2_options": [
+            "writer",
+            "reader",
+            "character"
+        ]
+    },
+    {
+        "id": "eng_adv_003",
+        "fact": "Counterargument acknowledges an opposing point of view",
+        "subject": "english",
+        "topic": "advanced_writing",
+        "grade_band": 4,
+        "level": 3,
+        "key_term_1": "Counterargument",
+        "key_term_2": "opposing",
+        "verb": "acknowledges",
+        "category": "element",
+        "wrong_terms": [
+            "Thesis",
+            "Evidence",
+            "Conclusion"
+        ],
+        "wrong_term_2_options": [
+            "supporting",
+            "agreeing",
+            "central"
+        ]
+    },
+    {
+        "id": "eng_ling_001",
+        "fact": "Syntax governs the rules for arranging words into sentences",
+        "subject": "english",
+        "topic": "linguistics",
+        "grade_band": 5,
+        "level": 2,
+        "key_term_1": "Syntax",
+        "key_term_2": "rules",
+        "verb": "governs",
+        "category": "branch",
+        "wrong_terms": [
+            "Semantics",
+            "Phonology",
+            "Morphology"
+        ],
+        "wrong_term_2_options": [
+            "sounds",
+            "meanings",
+            "words"
+        ]
+    },
+    {
+        "id": "eng_ling_002",
+        "fact": "Semantics studies the meaning of words and sentences",
+        "subject": "english",
+        "topic": "linguistics",
+        "grade_band": 5,
+        "level": 2,
+        "key_term_1": "Semantics",
+        "key_term_2": "meaning",
+        "verb": "studies",
+        "category": "branch",
+        "wrong_terms": [
+            "Syntax",
+            "Phonology",
+            "Morphology"
+        ],
+        "wrong_term_2_options": [
+            "structure",
+            "sound",
+            "form"
+        ]
+    },
+    {
+        "id": "eng_ling_003",
+        "fact": "Morphology analyzes the structure and formation of words",
+        "subject": "english",
+        "topic": "linguistics",
+        "grade_band": 5,
+        "level": 3,
+        "key_term_1": "Morphology",
+        "key_term_2": "structure",
+        "verb": "analyzes",
+        "category": "branch",
+        "wrong_terms": [
+            "Syntax",
+            "Semantics",
+            "Phonology"
+        ],
+        "wrong_term_2_options": [
+            "meaning",
+            "sound",
+            "context"
+        ]
+    },
+    {
+        "id": "eng_ling_004",
+        "fact": "Phonology studies the sound systems of language",
+        "subject": "english",
+        "topic": "linguistics",
+        "grade_band": 5,
+        "level": 2,
+        "key_term_1": "Phonology",
+        "key_term_2": "sound",
+        "verb": "studies",
+        "category": "branch",
+        "wrong_terms": [
+            "Syntax",
+            "Semantics",
+            "Morphology"
+        ],
+        "wrong_term_2_options": [
+            "meaning",
+            "structure",
+            "grammar"
         ]
     }
 ]

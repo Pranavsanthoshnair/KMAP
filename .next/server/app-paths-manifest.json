@@ -1,6 +1,4 @@
 {
-  "/api/topics/route": "app/api/topics/route.js",
-  "/api/questions/route": "app/api/questions/route.js",
   "/page": "app/page.js",
   "/login/page": "app/login/page.js",
   "/signup/page": "app/signup/page.js",

@@ -29,9 +29,11 @@ const CHOICE_LETTERS = ['A', 'B', 'C', 'D'];
 interface QuestionCardProps {
     question: EngineQuestion;
     index: number;
+    /** Topic slug used as the IndexedDB skill key (e.g. "cell_structure"). Falls back to fact id. */
+    topic?: string;
 }
 
-export default function QuestionCard({ question, index }: QuestionCardProps) {
+export default function QuestionCard({ question, index, topic }: QuestionCardProps) {
     const [selected, setSelected] = useState<string | null>(null);
     const [submitted, setSubmitted] = useState(false);
 
@@ -39,9 +41,9 @@ export default function QuestionCard({ question, index }: QuestionCardProps) {
         if (submitted) return;
         setSelected(choice);
         setSubmitted(true);
-        // Track skill progress in IndexedDB
+        // Track skill using topic slug (shows better labels on Profile page)
         try {
-            await updateSkill(question.id, choice === question.answer);
+            await updateSkill(topic ?? question.id, choice === question.answer);
         } catch {
             // IndexedDB may not be available — silently ignore
         }

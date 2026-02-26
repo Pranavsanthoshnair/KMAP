@@ -4,12 +4,12 @@ engine.py — Core Question Generation Engine.
 Orchestrates the full pipeline:
   1. Load facts and seen state
   2. Filter facts by topic / grade_band / level
-  3. Build a shuffled pool of (fact, form) pairs not yet seen
-  4. Generate the requested number of questions
-  5. Persist updated seen state
-  6. Return an EngineResult
-
-All heavy logic lives in utils.py and generator.py — this file just connects them.
+  3. (Optionally reset seen state for this topic)
+  4. Build a shuffled pool of (fact, form) pairs not yet seen
+  5. Auto-reset if pool is completely empty (guarantees New Set always works)
+  6. Generate the requested number of questions
+  7. Persist updated seen state
+  8. Return an EngineResult
 """
 
 import logging
@@ -29,12 +29,14 @@ from utils import (
 log = logging.getLogger(__name__)
 
 
+# ── Private helpers ────────────────────────────────────────────────────────────
+
 def _filter_facts(facts: List[Fact], topic: str, grade_band: int, level: int) -> List[Fact]:
     """
-    Apply the three filter rules:
-      • fact.topic    == topic
+    Return facts where:
+      • fact.topic      == topic
       • fact.grade_band == grade_band
-      • fact.level    <= level   (easier facts are always included)
+      • fact.level      <= level   (easier facts are included at harder levels)
     """
     filtered = [
         f for f in facts
@@ -43,10 +45,18 @@ def _filter_facts(facts: List[Fact], topic: str, grade_band: int, level: int) ->
         and f.level <= level
     ]
     log.info(
-        "Filter: topic='%s', grade_band=%d, level<=%d → %d fact(s) matched.",
+        "Filter: topic='%s', grade_band=%d, level<=%d -> %d fact(s) matched.",
         topic, grade_band, level, len(filtered)
     )
     return filtered
+
+
+def _reset_seen_for_topic(seen: Dict[str, List[int]], facts: List[Fact]) -> None:
+    """Clear seen-state for every fact in the topic so all forms become available again."""
+    for fact in facts:
+        if fact.id in seen:
+            del seen[fact.id]
+    log.info("Seen state cleared for %d fact(s).", len(facts))
 
 
 def _build_candidate_pool(
@@ -55,19 +65,18 @@ def _build_candidate_pool(
     level: int,
 ) -> List[Tuple[Fact, int]]:
     """
-    Build a flat list of (fact, form) pairs where the form has not been seen
-    for that fact yet.  The pool is shuffled so picks are random each run.
+    Build a flat, shuffled list of (fact, form) pairs that have not been seen yet.
     """
     pool: List[Tuple[Fact, int]] = []
     for fact in facts:
-        available = unseen_forms(fact.id, seen, level)
-        for form in available:
+        for form in unseen_forms(fact.id, seen, level):
             pool.append((fact, form))
-
     random.shuffle(pool)
-    log.info("Candidate pool size: %d (fact × form) pairs.", len(pool))
+    log.info("Candidate pool: %d (fact x form) pairs.", len(pool))
     return pool
 
+
+# ── Main entry point ───────────────────────────────────────────────────────────
 
 def generate_questions(
     topic: str,
@@ -75,78 +84,76 @@ def generate_questions(
     level: int,
     count: int,
     seed: Optional[int] = None,
+    reset_seen: bool = False,
 ) -> EngineResult:
     """
-    Main entry point for question generation.
+    Generate multiple-choice questions from the local knowledge base.
 
     Parameters
     ----------
-    topic      : Match facts where fact.topic == topic.
-    grade_band : Match facts where fact.grade_band == grade_band.
-    level      : Maximum difficulty level (1–3). Also controls allowed forms.
-    count      : Number of questions to generate.
-    seed       : Optional integer for deterministic output (useful for testing).
+    topic       : Filter facts where fact.topic == topic.
+    grade_band  : Filter facts where fact.grade_band == grade_band.
+    level       : Max difficulty level (1-3); controls which question forms are allowed.
+    count       : Number of questions to generate.
+    seed        : Optional integer for deterministic/reproducible output.
+    reset_seen  : If True, clear seen-state for this topic before building the pool.
+                  Automatically set True when the pool is empty (infinite replay).
 
     Returns
     -------
-    EngineResult with `.questions` list and `.exhausted` flag.
+    EngineResult with .questions list and .exhausted flag.
     """
-    # ── Optional deterministic mode ──────────────────────────────────────────
+    # ── Deterministic mode ────────────────────────────────────────────────────
     if seed is not None:
         random.seed(seed)
-        log.info("Deterministic mode: random seed set to %d.", seed)
+        log.info("Deterministic mode: seed=%d.", seed)
 
-    # ── Load data ────────────────────────────────────────────────────────────
+    # ── Load data ─────────────────────────────────────────────────────────────
     all_facts = load_facts()
     validate_facts(all_facts)
     seen = load_seen()
 
-    # ── Filter ───────────────────────────────────────────────────────────────
+    # ── Filter ────────────────────────────────────────────────────────────────
     eligible_facts = _filter_facts(all_facts, topic, grade_band, level)
-
     if not eligible_facts:
-        log.warning("No facts matched the given filters. Returning empty result.")
+        log.warning("No facts matched filters — returning empty result.")
         return EngineResult(questions=[], exhausted=True)
 
-    # ── Build candidate pool ─────────────────────────────────────────────────
+    # ── Optional explicit reset (e.g. "New Set" button) ───────────────────────
+    if reset_seen:
+        log.info("Explicit reset requested — clearing seen state for topic '%s'.", topic)
+        _reset_seen_for_topic(seen, eligible_facts)
+
+    # ── Build pool ────────────────────────────────────────────────────────────
     pool = _build_candidate_pool(eligible_facts, seen, level)
 
-    # ── Determine how many we can actually serve ──────────────────────────────
-    available = len(pool)
-    exhausted = available < count
+    # ── Auto-reset when pool is empty (infinite replay guarantee) ─────────────
+    if len(pool) == 0:
+        log.info("Pool exhausted — auto-resetting seen state for topic '%s'.", topic)
+        _reset_seen_for_topic(seen, eligible_facts)
+        pool = _build_candidate_pool(eligible_facts, seen, level)
+
+    # ── Determine how many to serve ───────────────────────────────────────────
+    available   = len(pool)
+    exhausted   = available < count
     to_generate = min(count, available)
 
     if exhausted:
-        log.warning(
-            "Exhausted: only %d unique (fact, form) pair(s) available, %d requested.",
-            available, count
-        )
+        log.warning("Only %d pair(s) available, %d requested.", available, count)
 
-    # ── Generate questions ───────────────────────────────────────────────────
-    selected_pairs = pool[:to_generate]
+    # ── Generate ──────────────────────────────────────────────────────────────
     questions: List[Question] = []
-
-    for fact, form_number in selected_pairs:
+    for fact, form_number in pool[:to_generate]:
         try:
             q = generate_form(fact, form_number)
             questions.append(q)
-
             # Mark this (fact, form) pair as seen
-            if fact.id not in seen:
-                seen[fact.id] = []
+            seen.setdefault(fact.id, [])
             if form_number not in seen[fact.id]:
                 seen[fact.id].append(form_number)
-
         except Exception as exc:
-            # Log and skip bad generations — don't crash the whole run
-            log.error(
-                "Failed to generate form %d for fact '%s': %s",
-                form_number, fact.id, exc
-            )
+            log.error("Form %d / fact '%s' failed: %s", form_number, fact.id, exc)
 
     log.info("Generated %d question(s).", len(questions))
-
-    # ── Persist seen state ───────────────────────────────────────────────────
     save_seen(seen)
-
     return EngineResult(questions=questions, exhausted=exhausted)
