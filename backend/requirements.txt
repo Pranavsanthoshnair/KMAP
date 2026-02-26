@@ -1,0 +1,10 @@
+# KMAP Backend — Python dependencies
+
+# Core
+supabase>=2.0.0
+
+# Question engine utils
+# (no external deps beyond stdlib; engine.py uses json, logging, random only)
+
+# Resource engine
+# (sqlite3 is stdlib on Python 3.x)
