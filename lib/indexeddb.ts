@@ -36,7 +36,24 @@ interface KMAPSchema extends DBSchema {
             correct: number;
             incorrect: number;
             lastAttempt: number;
-            mastery: number; // 0-100
+            mastery: number; // 0–100 (display scale)
+        };
+    };
+    /** Privacy-first mastery map — float 0–1 per subtopic */
+    masteryMap: {
+        key: string; // subtopic slug
+        value: {
+            subtopic: string;
+            score: number;      // 0.0–1.0
+            updatedAt: number;  // timestamp
+        };
+    };
+    /** Resources served to this user — used by allocator for novelty */
+    seenResources: {
+        key: string; // resource id
+        value: {
+            id: string;
+            servedAt: number;
         };
     };
     errorPatterns: {
@@ -55,21 +72,37 @@ let dbPromise: Promise<IDBPDatabase<KMAPSchema>> | null = null;
 
 function getDB() {
     if (!dbPromise) {
-        dbPromise = openDB<KMAPSchema>('kmap-db', 1, {
-            upgrade(db) {
-                db.createObjectStore('profile', { keyPath: 'id' });
-                const capsuleStore = db.createObjectStore('capsuleCache', { keyPath: 'id' });
-                capsuleStore.createIndex('by-subject', 'subject');
-                capsuleStore.createIndex('by-concept', 'concept');
-                db.createObjectStore('skillProfile', { keyPath: 'concept' });
-                db.createObjectStore('errorPatterns', { keyPath: 'id', autoIncrement: true });
+        dbPromise = openDB<KMAPSchema>('kmap-db', 2, {
+            upgrade(db, oldVersion) {
+                // ── Version 1 stores ─────────────────────────────────────────
+                if (!db.objectStoreNames.contains('profile')) {
+                    db.createObjectStore('profile', { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains('capsuleCache')) {
+                    const capsuleStore = db.createObjectStore('capsuleCache', { keyPath: 'id' });
+                    capsuleStore.createIndex('by-subject', 'subject');
+                    capsuleStore.createIndex('by-concept', 'concept');
+                }
+                if (!db.objectStoreNames.contains('skillProfile')) {
+                    db.createObjectStore('skillProfile', { keyPath: 'concept' });
+                }
+                if (!db.objectStoreNames.contains('errorPatterns')) {
+                    db.createObjectStore('errorPatterns', { keyPath: 'id', autoIncrement: true });
+                }
+                // ── Version 2 stores ─────────────────────────────────────────
+                if (!db.objectStoreNames.contains('masteryMap')) {
+                    db.createObjectStore('masteryMap', { keyPath: 'subtopic' });
+                }
+                if (!db.objectStoreNames.contains('seenResources')) {
+                    db.createObjectStore('seenResources', { keyPath: 'id' });
+                }
             },
         });
     }
     return dbPromise;
 }
 
-// Profile
+// ── Profile ──────────────────────────────────────────────────────────────────
 export async function saveLocalProfile(profile: KMAPSchema['profile']['value']) {
     const db = await getDB();
     await db.put('profile', profile);
@@ -81,7 +114,7 @@ export async function getLocalProfile(): Promise<KMAPSchema['profile']['value'] 
     return all[0];
 }
 
-// Capsules
+// ── Capsules ──────────────────────────────────────────────────────────────────
 export async function cacheCapsule(capsule: Omit<KMAPSchema['capsuleCache']['value'], 'cachedAt'>) {
     const db = await getDB();
     await db.put('capsuleCache', { ...capsule, cachedAt: Date.now() });
@@ -111,7 +144,7 @@ export async function getAllCachedCapsules() {
     return db.getAll('capsuleCache');
 }
 
-// Skill Profile
+// ── Skill Profile (100-scale for display) ────────────────────────────────────
 export async function updateSkill(concept: string, correct: boolean) {
     const db = await getDB();
     const existing = await db.get('skillProfile', concept);
@@ -130,7 +163,37 @@ export async function getSkillProfile() {
     return db.getAll('skillProfile');
 }
 
-// Error Patterns
+// ── Mastery Map (float 0–1, privacy-first) ────────────────────────────────────
+/**
+ * Save a mastery score for a subtopic (float 0–1).
+ * This is what gets sent to the server for allocation — nothing else.
+ */
+export async function saveMastery(subtopic: string, score: number) {
+    const db = await getDB();
+    await db.put('masteryMap', { subtopic, score, updatedAt: Date.now() });
+}
+
+export async function getMasteryMap(): Promise<Record<string, number>> {
+    const db = await getDB();
+    const all = await db.getAll('masteryMap');
+    return Object.fromEntries(all.map(m => [m.subtopic, m.score]));
+}
+
+// ── Seen Resources (for novelty in allocation) ────────────────────────────────
+export async function markResourceSeen(id: string) {
+    const db = await getDB();
+    await db.put('seenResources', { id, servedAt: Date.now() });
+}
+
+export async function getSeenResourceIds(): Promise<string[]> {
+    const db = await getDB();
+    const all = await db.getAll('seenResources');
+    // Only consider recently seen (last 7 days)
+    const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return all.filter(r => r.servedAt > cutoff).map(r => r.id);
+}
+
+// ── Error Patterns ────────────────────────────────────────────────────────────
 export async function recordError(concept: string, errorType: string, capsuleId: string) {
     const db = await getDB();
     await db.add('errorPatterns', { concept, errorType, capsuleId, timestamp: Date.now() });
@@ -141,7 +204,7 @@ export async function getErrorPatterns() {
     return db.getAll('errorPatterns');
 }
 
-// Recovery
+// ── Recovery ──────────────────────────────────────────────────────────────────
 export function generateRecoveryKey(): string {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let key = 'KMAP-';
@@ -159,7 +222,11 @@ export async function getRecoveryData() {
     return { profile, skills, errors };
 }
 
-export async function restoreFromRecovery(data: { profile?: KMAPSchema['profile']['value']; skills?: KMAPSchema['skillProfile']['value'][]; errors?: KMAPSchema['errorPatterns']['value'][] }) {
+export async function restoreFromRecovery(data: {
+    profile?: KMAPSchema['profile']['value'];
+    skills?: KMAPSchema['skillProfile']['value'][];
+    errors?: KMAPSchema['errorPatterns']['value'][];
+}) {
     const db = await getDB();
     if (data.profile) await db.put('profile', data.profile);
     if (data.skills) {
