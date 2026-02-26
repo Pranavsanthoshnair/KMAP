@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { clearAllLocalData } from '@/lib/indexeddb';
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * Local Anonymous Identity
@@ -13,6 +14,8 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 
 const LOCAL_USER_KEY = 'kmap_user_id';
 const LOCAL_DATA_KEY = 'kmap_user_data';
+const DATA_USAGE_KEY = 'kmap_data_usage';
+const LOW_DATA_KEY = 'kmap_low_data';
 
 export interface LocalUserData {
     grade: number;
@@ -36,6 +39,7 @@ interface AuthContextType {
     userData: LocalUserData;
     setUserData: (data: Partial<LocalUserData>) => void;
     trackDataUsage: (bytes: number) => void;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -107,8 +111,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
     };
 
+    const logout = async () => {
+        if (typeof window === 'undefined') return;
+
+        // Clear IndexedDB-backed stores
+        await clearAllLocalData();
+
+        // Clear localStorage keys used by auth / data tracking
+        localStorage.removeItem(LOCAL_USER_KEY);
+        localStorage.removeItem(LOCAL_DATA_KEY);
+        localStorage.removeItem(DATA_USAGE_KEY);
+        localStorage.removeItem(LOW_DATA_KEY);
+
+        // Re-initialize as a fresh anonymous user
+        const newId = initLocalUser();
+        const data = loadUserData();
+        setUserId(newId);
+        setUserDataState(data);
+        setReady(true);
+    };
+
     return (
-        <AuthContext.Provider value={{ userId, ready, userData, setUserData, trackDataUsage }}>
+        <AuthContext.Provider value={{ userId, ready, userData, setUserData, trackDataUsage, logout }}>
             {children}
         </AuthContext.Provider>
     );

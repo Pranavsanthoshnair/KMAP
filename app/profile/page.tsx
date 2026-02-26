@@ -40,7 +40,7 @@ function formatKB(kb: number) {
 }
 
 export default function Profile() {
-    const { ready, userId } = useAuth();
+    const { ready, userId, logout } = useAuth();
     const router = useRouter();
 
     const [profileName, setProfileName] = useState('');
@@ -79,16 +79,29 @@ export default function Profile() {
             <Navbar />
             <main className="container mx-auto max-w-lg px-4 py-10">
                 <div className="animate-fade-in">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                         <div>
                             <h1 className="font-brand text-xl font-bold text-foreground">Profile</h1>
                             <p className="mt-1 text-sm text-muted-foreground">Your local learning data</p>
                         </div>
-                        <Link href="/settings">
-                            <Button variant="ghost" size="sm">
-                                <Settings className="h-4 w-4" />
+                        <div className="flex items-center gap-1">
+                            <Link href="/settings">
+                                <Button variant="ghost" size="sm">
+                                    <Settings className="h-4 w-4" />
+                                </Button>
+                            </Link>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs font-brand"
+                                onClick={async () => {
+                                    await logout();
+                                    router.replace('/login');
+                                }}
+                            >
+                                Logout
                             </Button>
-                        </Link>
+                        </div>
                     </div>
 
                     {/* Account card */}
