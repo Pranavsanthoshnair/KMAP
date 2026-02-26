@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import { getLocalProfile } from '@/lib/indexeddb';
+import { trackMetadataFetch } from '@/lib/data-tracker';
 import { ArrowLeft, CheckCircle2, XCircle, BarChart3, RefreshCw, BookOpen, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -149,6 +150,7 @@ export default function CapsuleView() {
             );
             const data = await res.json();
             setResources(data.resources ?? []);
+            trackMetadataFetch(Array.isArray(data.resources) ? data.resources.length : 0);
             setShowResources(true);
         } catch {
             setResources([]);

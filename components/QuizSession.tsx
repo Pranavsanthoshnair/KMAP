@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { updateSkill } from '@/lib/indexeddb';
 import { saveMastery } from '@/lib/indexeddb';
 import { trackQuestionsFetch } from '@/lib/data-tracker';
 import { cn } from '@/lib/utils';
-import ResourceCard from './ResourceCard';
+import ResourceCard, { ResourceMeta } from './ResourceCard';
 
 export interface EngineQuestion {
     id: string;
@@ -43,11 +43,6 @@ const FORM_LABELS: Record<number, string> = {
     4: 'Fill Blank', 5: 'Category', 6: 'Negative',
 };
 
-interface ResourceMeta {
-    id: string; title: string; type: string;
-    size_kb: number; preview_text?: string;
-    thumbnail_url?: string; subtopic?: string;
-}
 
 export default function QuizSession({
     questions,
@@ -73,8 +68,9 @@ export default function QuizSession({
     const selectedChoice = answered.get(currentIndex) ?? null;
     const isSubmitted = selectedChoice !== null;
 
-    // Track questions load
-    trackQuestionsFetch(questions.length);
+    useEffect(() => {
+        trackQuestionsFetch(questions.length);
+    }, [questions]);
 
     const handleAnswer = useCallback(async (choice: string) => {
         if (answered.has(currentIndex)) return; // No reattempt
@@ -133,7 +129,7 @@ export default function QuizSession({
                 const metaRes = await fetch(
                     `/api/resources?ids=${ids.join(',')}&low_data=${lowDataMode}`
                 );
-                const metaData = await metaRes.json();
+                const metaData: ResourceMeta[] = (await metaRes.json()) as ResourceMeta[];
                 setResources(metaData);
             }
 

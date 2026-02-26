@@ -66,7 +66,6 @@ export default function SettingsPage() {
                                         [FileText, 'Only text and small PDFs (< 500 KB)'],
                                     ].map(([Icon, label], i) => (
                                         <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
-                                            {/* @ts-expect-error dynamic icon */}
                                             <Icon className="h-3.5 w-3.5 shrink-0" />
                                             {label as string}
                                         </li>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+/* Google Fonts loaded via next/font in layout.tsx — no @import needed here */
 
 @tailwind base;
 @tailwind components;
@@ -93,5 +93,9 @@
 @layer utilities {
   .font-brand {
     font-family: var(--font-brand);
+  }
+  /* GPU-composited fade — avoids non-composited animation Lighthouse warning */
+  .animate-fade-in {
+    will-change: transform, opacity;
   }
 }
