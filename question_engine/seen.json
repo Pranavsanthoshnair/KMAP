@@ -1,129 +1,92 @@
 {
   "sci_bio_002": [
+    1
+  ],
+  "sci_bio_001": [
+    1,
     4
   ],
   "sci_bio_004": [
-    4
+    1
   ],
-  "sci_bio_003": [
+  "sci_cell_009": [
     1,
+    2
+  ],
+  "sci_cell_004": [
+    1
+  ],
+  "sci_cell_001": [
+    2
+  ],
+  "sci_photo_003": [
+    1,
+    2
+  ],
+  "sci_photo_001": [
+    3
+  ],
+  "sci_photo_002": [
+    1
+  ],
+  "sci_gen_005": [
+    3,
+    2
+  ],
+  "sci_gen_004": [
+    3
+  ],
+  "sci_gen_002": [
+    2
+  ],
+  "sci_elec_001": [
+    3,
+    2
+  ],
+  "sci_elec_003": [
     4
   ],
-  "math_div_001": [
-    2
-  ],
-  "math_mul_001": [
-    2
+  "sci_elec_002": [
+    3
   ],
   "eng_pos_003": [
-    1,
-    4
-  ],
-  "eng_pos_002": [
-    1,
     4
   ],
   "eng_pos_001": [
     4,
     1
   ],
-  "sci_cell_002": [
-    4
-  ],
-  "sci_cell_004": [
-    3
-  ],
-  "sci_cell_001": [
-    3
-  ],
-  "sci_cell_009": [
-    2
-  ],
-  "math_frac_003": [
-    3,
+  "eng_pos_002": [
     1
   ],
-  "math_frac_001": [
-    2
-  ],
   "eng_fig_003": [
+    4
+  ],
+  "eng_fig_002": [
+    1,
     3
   ],
-  "eng_fig_001": [
-    3,
-    4
-  ],
-  "sci_gen_004": [
-    6
-  ],
-  "sci_gen_003": [
-    2
-  ],
-  "sci_gen_002": [
-    6
-  ],
-  "sci_gen_005": [
-    5
-  ],
-  "math_alg_003": [
-    3,
-    2
-  ],
-  "math_alg_002": [
-    6
-  ],
-  "eng_lit_003": [
-    1,
-    4
-  ],
-  "eng_lit_005": [
+  "eng_fig_004": [
     1
   ],
   "eng_lit_002": [
-    4
-  ],
-  "sci_elec_001": [
-    1,
-    4
-  ],
-  "sci_elec_002": [
-    5
-  ],
-  "math_trig_002": [
-    6,
-    4
-  ],
-  "math_trig_003": [
-    2
-  ],
-  "math_calc_001": [
-    3,
     2,
-    1
+    3
   ],
-  "eng_ling_001": [
-    5
+  "eng_lit_005": [
+    4,
+    3
   ],
-  "eng_ling_002": [
+  "eng_ling_004": [
     6
   ],
   "eng_ling_003": [
-    4
+    3
   ],
-  "eng_punc_001": [
-    1,
-    4
+  "eng_ling_002": [
+    3
   ],
-  "eng_punc_002": [
-    4,
-    1
-  ],
-  "math_add_001": [
-    4,
-    1
-  ],
-  "math_sub_001": [
-    1,
-    4
+  "eng_ling_001": [
+    2
   ]
 }

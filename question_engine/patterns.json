@@ -1,0 +1,1344 @@
+[
+    {
+        "id": "math_add_1",
+        "subject": "math",
+        "grade": 1,
+        "subtopic": "arithmetic",
+        "type": "direct_addition",
+        "difficulty": 1,
+        "template": "What is {a} + {b}?",
+        "answer_expr": "a + b",
+        "distractor_exprs": [
+            "a + b + 1",
+            "a + b - 1",
+            "a * b"
+        ],
+        "constraints": {
+            "a": [
+                1,
+                9
+            ],
+            "b": [
+                1,
+                9
+            ]
+        }
+    },
+    {
+        "id": "math_add_word",
+        "subject": "math",
+        "grade": 1,
+        "subtopic": "arithmetic",
+        "type": "word_addition",
+        "difficulty": 1,
+        "template": "Sara has {a} apples. She gets {b} more. How many apples does she have now?",
+        "answer_expr": "a + b",
+        "distractor_exprs": [
+            "a + b + 2",
+            "a + b - 1",
+            "a - b"
+        ],
+        "constraints": {
+            "a": [
+                3,
+                10
+            ],
+            "b": [
+                2,
+                8
+            ]
+        }
+    },
+    {
+        "id": "math_sub_1",
+        "subject": "math",
+        "grade": 1,
+        "subtopic": "arithmetic",
+        "type": "direct_subtraction",
+        "difficulty": 1,
+        "template": "What is {a} - {b}?",
+        "answer_expr": "a - b",
+        "distractor_exprs": [
+            "a - b + 1",
+            "a - b - 1",
+            "a + b"
+        ],
+        "constraints": {
+            "a": [
+                6,
+                15
+            ],
+            "b": [
+                1,
+                5
+            ]
+        }
+    },
+    {
+        "id": "math_sub_word",
+        "subject": "math",
+        "grade": 1,
+        "subtopic": "arithmetic",
+        "type": "word_subtraction",
+        "difficulty": 1,
+        "template": "There are {a} birds on a tree. {b} fly away. How many birds are left?",
+        "answer_expr": "a - b",
+        "distractor_exprs": [
+            "a + b",
+            "a - b + 1",
+            "a - b - 1"
+        ],
+        "constraints": {
+            "a": [
+                8,
+                20
+            ],
+            "b": [
+                2,
+                6
+            ]
+        }
+    },
+    {
+        "id": "math_miss_add",
+        "subject": "math",
+        "grade": 1,
+        "subtopic": "arithmetic",
+        "type": "missing_addend",
+        "difficulty": 2,
+        "template": "{b} + ___ = {c}",
+        "computed": {
+            "c": "a + b"
+        },
+        "answer_expr": "a",
+        "distractor_exprs": [
+            "a + 1",
+            "a - 1",
+            "a + 2"
+        ],
+        "constraints": {
+            "a": [
+                2,
+                8
+            ],
+            "b": [
+                3,
+                9
+            ]
+        }
+    },
+    {
+        "id": "math_d_add",
+        "subject": "math",
+        "grade": 2,
+        "subtopic": "arithmetic",
+        "type": "double_digit_addition",
+        "difficulty": 1,
+        "template": "What is {a} + {b}?",
+        "answer_expr": "a + b",
+        "distractor_exprs": [
+            "a + b + 10",
+            "a + b - 10",
+            "a + b + 1"
+        ],
+        "constraints": {
+            "a": [
+                15,
+                45
+            ],
+            "b": [
+                12,
+                40
+            ]
+        }
+    },
+    {
+        "id": "math_times",
+        "subject": "math",
+        "grade": 2,
+        "subtopic": "arithmetic",
+        "type": "multiplication_table",
+        "difficulty": 1,
+        "template": "{a} × {b} = ?",
+        "answer_expr": "a * b",
+        "distractor_exprs": [
+            "a * b + b",
+            "a * b - a",
+            "a + b"
+        ],
+        "constraints": {
+            "a": [
+                2,
+                5
+            ],
+            "b": [
+                2,
+                10
+            ]
+        }
+    },
+    {
+        "id": "math_times_word",
+        "subject": "math",
+        "grade": 2,
+        "subtopic": "arithmetic",
+        "type": "word_multiplication",
+        "difficulty": 2,
+        "template": "A classroom has {a} rows with {b} desks each. How many desks in total?",
+        "answer_expr": "a * b",
+        "distractor_exprs": [
+            "a * b + b",
+            "a + b",
+            "a * b - a"
+        ],
+        "constraints": {
+            "a": [
+                3,
+                6
+            ],
+            "b": [
+                5,
+                10
+            ]
+        }
+    },
+    {
+        "id": "math_sub_word2",
+        "subject": "math",
+        "grade": 2,
+        "subtopic": "arithmetic",
+        "type": "word_subtraction2",
+        "difficulty": 2,
+        "template": "A shop had {a} items. {b} were sold. How many items remain?",
+        "answer_expr": "a - b",
+        "distractor_exprs": [
+            "a + b",
+            "a - b + b",
+            "a - b - 1"
+        ],
+        "constraints": {
+            "a": [
+                30,
+                80
+            ],
+            "b": [
+                8,
+                25
+            ]
+        }
+    },
+    {
+        "id": "math_frac_half",
+        "subject": "math",
+        "grade": 2,
+        "subtopic": "fractions",
+        "type": "half_of",
+        "difficulty": 1,
+        "template": "What is half of {c}?",
+        "computed": {
+            "c": "k * 2"
+        },
+        "answer_expr": "k",
+        "distractor_exprs": [
+            "k + 1",
+            "k - 1",
+            "k * 2"
+        ],
+        "constraints": {
+            "k": [
+                3,
+                12
+            ]
+        }
+    },
+    {
+        "id": "math_frac_of",
+        "subject": "math",
+        "grade": 2,
+        "subtopic": "fractions",
+        "type": "fraction_of_whole",
+        "difficulty": 1,
+        "template": "What is 1/{d} of {c}?",
+        "computed": {
+            "c": "d * k"
+        },
+        "answer_expr": "k",
+        "distractor_exprs": [
+            "k + 1",
+            "k - 1",
+            "k * 2"
+        ],
+        "constraints": {
+            "d": [
+                2,
+                5
+            ],
+            "k": [
+                2,
+                8
+            ]
+        }
+    },
+    {
+        "id": "math_pizza",
+        "subject": "math",
+        "grade": 2,
+        "subtopic": "fractions",
+        "type": "pizza_slices",
+        "difficulty": 1,
+        "template": "A pizza is cut into {d} equal slices. You eat {a} slices. How many slices remain?",
+        "answer_expr": "d - a",
+        "distractor_exprs": [
+            "d + a",
+            "a",
+            "d - a + 1"
+        ],
+        "constraints": {
+            "d": [
+                6,
+                12
+            ],
+            "a": [
+                2,
+                4
+            ]
+        }
+    },
+    {
+        "id": "math_frac_add_word",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "fractions",
+        "type": "fraction_sum_word",
+        "difficulty": 2,
+        "template": "John ate {n1}/{d} of a pizza and Priya ate {n2}/{d}. How many {d}ths did they eat together?",
+        "answer_expr": "n1 + n2",
+        "distractor_exprs": [
+            "n1 + n2 + 1",
+            "n1",
+            "n2"
+        ],
+        "constraints": {
+            "d": [
+                6,
+                10
+            ],
+            "n1": [
+                1,
+                3
+            ],
+            "n2": [
+                1,
+                3
+            ]
+        }
+    },
+    {
+        "id": "math_share",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "fractions",
+        "type": "equal_share",
+        "difficulty": 2,
+        "template": "{d} friends share {c} chocolates equally. How many does each friend get?",
+        "computed": {
+            "c": "d * k"
+        },
+        "answer_expr": "k",
+        "distractor_exprs": [
+            "k + 1",
+            "k - 1",
+            "d"
+        ],
+        "constraints": {
+            "d": [
+                3,
+                6
+            ],
+            "k": [
+                3,
+                8
+            ]
+        }
+    },
+    {
+        "id": "math_frac_large",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "fractions",
+        "type": "fraction_of_large",
+        "difficulty": 2,
+        "template": "What is 1/{d} of {c}?",
+        "computed": {
+            "c": "d * k"
+        },
+        "answer_expr": "k",
+        "distractor_exprs": [
+            "k + 2",
+            "k - 1",
+            "k * d"
+        ],
+        "constraints": {
+            "d": [
+                3,
+                8
+            ],
+            "k": [
+                5,
+                15
+            ]
+        }
+    },
+    {
+        "id": "math_mult_large",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "multiplication",
+        "type": "large_multiplication",
+        "difficulty": 1,
+        "template": "{a} × {b} = ?",
+        "answer_expr": "a * b",
+        "distractor_exprs": [
+            "a * b + b",
+            "a * b - a",
+            "a * b + a"
+        ],
+        "constraints": {
+            "a": [
+                4,
+                12
+            ],
+            "b": [
+                4,
+                12
+            ]
+        }
+    },
+    {
+        "id": "math_mult_word",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "multiplication",
+        "type": "word_multiplication2",
+        "difficulty": 2,
+        "template": "A garden has {a} rows of {b} flowers each. How many flowers in total?",
+        "answer_expr": "a * b",
+        "distractor_exprs": [
+            "a * b + a",
+            "a + b",
+            "a * b - b"
+        ],
+        "constraints": {
+            "a": [
+                4,
+                9
+            ],
+            "b": [
+                5,
+                12
+            ]
+        }
+    },
+    {
+        "id": "math_div_word",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "multiplication",
+        "type": "reverse_division",
+        "difficulty": 2,
+        "template": "{c} ÷ {b} = ?",
+        "computed": {
+            "c": "a * b"
+        },
+        "answer_expr": "a",
+        "distractor_exprs": [
+            "a + 1",
+            "a - 1",
+            "b"
+        ],
+        "constraints": {
+            "a": [
+                3,
+                9
+            ],
+            "b": [
+                3,
+                9
+            ]
+        }
+    },
+    {
+        "id": "math_area",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "geometry",
+        "type": "rectangle_area",
+        "difficulty": 1,
+        "template": "What is the area of a rectangle with length {l} cm and width {w} cm?",
+        "answer_expr": "l * w",
+        "distractor_exprs": [
+            "l + w",
+            "2 * (l + w)",
+            "l * w + w"
+        ],
+        "constraints": {
+            "l": [
+                4,
+                12
+            ],
+            "w": [
+                2,
+                8
+            ]
+        }
+    },
+    {
+        "id": "math_perim",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "geometry",
+        "type": "rectangle_perimeter",
+        "difficulty": 1,
+        "template": "What is the perimeter of a rectangle with length {l} cm and width {w} cm?",
+        "answer_expr": "2 * (l + w)",
+        "distractor_exprs": [
+            "l + w",
+            "l * w",
+            "2 * l + w"
+        ],
+        "constraints": {
+            "l": [
+                4,
+                10
+            ],
+            "w": [
+                3,
+                7
+            ]
+        }
+    },
+    {
+        "id": "math_sq_area",
+        "subject": "math",
+        "grade": 3,
+        "subtopic": "geometry",
+        "type": "square_area",
+        "difficulty": 2,
+        "template": "What is the area of a square with side {s} cm?",
+        "answer_expr": "s * s",
+        "distractor_exprs": [
+            "s * 4",
+            "s + s",
+            "s * s + s"
+        ],
+        "constraints": {
+            "s": [
+                3,
+                10
+            ]
+        }
+    },
+    {
+        "id": "math_alg_1",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "algebra",
+        "type": "linear_addition",
+        "difficulty": 2,
+        "template": "If x + {a} = {c}, what is x?",
+        "computed": {
+            "c": "a + b"
+        },
+        "answer_expr": "b",
+        "distractor_exprs": [
+            "b + 1",
+            "b - 1",
+            "c"
+        ],
+        "constraints": {
+            "a": [
+                3,
+                15
+            ],
+            "b": [
+                2,
+                12
+            ]
+        }
+    },
+    {
+        "id": "math_alg_2",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "algebra",
+        "type": "linear_multiply",
+        "difficulty": 2,
+        "template": "Solve: {b}x = {c}. What is x?",
+        "computed": {
+            "c": "a * b"
+        },
+        "answer_expr": "a",
+        "distractor_exprs": [
+            "a + 1",
+            "a - 1",
+            "c"
+        ],
+        "constraints": {
+            "a": [
+                2,
+                9
+            ],
+            "b": [
+                2,
+                6
+            ]
+        }
+    },
+    {
+        "id": "math_alg_3",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "algebra",
+        "type": "linear_subtraction",
+        "difficulty": 2,
+        "template": "Solve: x - {a} = {b}. What is x?",
+        "answer_expr": "a + b",
+        "distractor_exprs": [
+            "a - b",
+            "b",
+            "a"
+        ],
+        "constraints": {
+            "a": [
+                5,
+                20
+            ],
+            "b": [
+                3,
+                15
+            ]
+        }
+    },
+    {
+        "id": "math_alg_word",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "algebra",
+        "type": "algebra_word",
+        "difficulty": 3,
+        "template": "A number added to {a} gives {c}. What is the number?",
+        "computed": {
+            "c": "a + b"
+        },
+        "answer_expr": "b",
+        "distractor_exprs": [
+            "b + 2",
+            "b - 1",
+            "c"
+        ],
+        "constraints": {
+            "a": [
+                4,
+                20
+            ],
+            "b": [
+                3,
+                15
+            ]
+        }
+    },
+    {
+        "id": "math_dec_add",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "decimals",
+        "type": "decimal_addition",
+        "difficulty": 2,
+        "template": "What is 0.{a} + 0.{b}?",
+        "answer_expr": "(a + b) / 10",
+        "distractor_exprs": [
+            "(a + b + 1) / 10",
+            "(a + b - 1) / 10",
+            "(a * b) / 10"
+        ],
+        "constraints": {
+            "a": [
+                1,
+                4
+            ],
+            "b": [
+                1,
+                5
+            ]
+        }
+    },
+    {
+        "id": "math_dec_word",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "decimals",
+        "type": "decimal_word",
+        "difficulty": 2,
+        "template": "A bottle holds {a}.{b} litres. Another holds {c}.{d} litres. Total?",
+        "answer_expr": "(10*a + b + 10*c + d) / 10",
+        "distractor_exprs": [
+            "a + c",
+            "(10*a + b + 10*c + d + 1) / 10",
+            "(10*a + b) / 10"
+        ],
+        "constraints": {
+            "a": [
+                1,
+                4
+            ],
+            "b": [
+                1,
+                9
+            ],
+            "c": [
+                1,
+                3
+            ],
+            "d": [
+                1,
+                9
+            ]
+        }
+    },
+    {
+        "id": "math_mean",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "statistics",
+        "type": "mean_three",
+        "difficulty": 2,
+        "template": "Find the mean of {a}, {b}, and {c}.",
+        "answer_expr": "(a + b + c) // 3",
+        "distractor_exprs": [
+            "(a + b + c) // 3 + 1",
+            "(a + b) // 2",
+            "a + b + c"
+        ],
+        "constraints": {
+            "a": [
+                3,
+                9
+            ],
+            "b": [
+                6,
+                15
+            ],
+            "c": [
+                9,
+                18
+            ]
+        }
+    },
+    {
+        "id": "math_mean_word",
+        "subject": "math",
+        "grade": 4,
+        "subtopic": "statistics",
+        "type": "mean_word",
+        "difficulty": 2,
+        "template": "A student scored {a}, {b}, and {c} in three tests. What is the average score?",
+        "answer_expr": "(a + b + c) // 3",
+        "distractor_exprs": [
+            "(a + b + c) // 3 + 2",
+            "a + b",
+            "(a + b) // 2"
+        ],
+        "constraints": {
+            "a": [
+                60,
+                80
+            ],
+            "b": [
+                70,
+                90
+            ],
+            "c": [
+                75,
+                95
+            ]
+        }
+    },
+    {
+        "id": "math_alg5_1",
+        "subject": "math",
+        "grade": 5,
+        "subtopic": "algebra",
+        "type": "two_step_equation",
+        "difficulty": 3,
+        "template": "2x + {b} = {c}. Find x.",
+        "computed": {
+            "c": "2 * k + b"
+        },
+        "answer_expr": "k",
+        "distractor_exprs": [
+            "k + 1",
+            "k - 1",
+            "k * 2"
+        ],
+        "constraints": {
+            "k": [
+                3,
+                10
+            ],
+            "b": [
+                3,
+                12
+            ]
+        }
+    },
+    {
+        "id": "math_alg5_2",
+        "subject": "math",
+        "grade": 5,
+        "subtopic": "algebra",
+        "type": "multi_step_word",
+        "difficulty": 3,
+        "template": "A number tripled and reduced by {b} equals {c}. Find the number.",
+        "computed": {
+            "c": "3 * k - b"
+        },
+        "answer_expr": "k",
+        "distractor_exprs": [
+            "k + 1",
+            "k - 1",
+            "c"
+        ],
+        "constraints": {
+            "k": [
+                3,
+                10
+            ],
+            "b": [
+                2,
+                9
+            ]
+        }
+    },
+    {
+        "id": "math_alg5_3",
+        "subject": "math",
+        "grade": 5,
+        "subtopic": "algebra",
+        "type": "inequality_check",
+        "difficulty": 3,
+        "template": "{a}x - {b} = {c}. Solve for x.",
+        "computed": {
+            "c": "a * k - b"
+        },
+        "answer_expr": "k",
+        "distractor_exprs": [
+            "k + 1",
+            "k - 1",
+            "k + 2"
+        ],
+        "constraints": {
+            "a": [
+                3,
+                5
+            ],
+            "b": [
+                4,
+                12
+            ],
+            "k": [
+                2,
+                8
+            ]
+        }
+    },
+    {
+        "id": "math_vol",
+        "subject": "math",
+        "grade": 5,
+        "subtopic": "geometry",
+        "type": "box_volume",
+        "difficulty": 2,
+        "template": "Find the volume of a rectangular box with length {l} cm, width {w} cm, and height {h} cm.",
+        "answer_expr": "l * w * h",
+        "distractor_exprs": [
+            "l * w * h + h",
+            "2 * (l * w + w * h + h * l)",
+            "l + w + h"
+        ],
+        "constraints": {
+            "l": [
+                2,
+                6
+            ],
+            "w": [
+                2,
+                5
+            ],
+            "h": [
+                2,
+                4
+            ]
+        }
+    },
+    {
+        "id": "math_tri_area",
+        "subject": "math",
+        "grade": 5,
+        "subtopic": "geometry",
+        "type": "triangle_area",
+        "difficulty": 2,
+        "template": "Find the area of a triangle with base {b} cm and height {h} cm.",
+        "answer_expr": "(b * h) // 2",
+        "distractor_exprs": [
+            "b + h",
+            "b * h",
+            "(b + h) // 2"
+        ],
+        "constraints": {
+            "b": [
+                4,
+                12
+            ],
+            "h": [
+                4,
+                10
+            ]
+        }
+    },
+    {
+        "id": "math_mean5",
+        "subject": "math",
+        "grade": 5,
+        "subtopic": "statistics",
+        "type": "mean_four",
+        "difficulty": 3,
+        "template": "Find the mean of {a}, {b}, {c}, and {d}.",
+        "answer_expr": "(a + b + c + d) // 4",
+        "distractor_exprs": [
+            "(a + b + c + d) // 4 + 1",
+            "(a + b) // 2",
+            "a + b + c + d"
+        ],
+        "constraints": {
+            "a": [
+                4,
+                10
+            ],
+            "b": [
+                8,
+                16
+            ],
+            "c": [
+                12,
+                20
+            ],
+            "d": [
+                16,
+                24
+            ]
+        }
+    },
+    {
+        "id": "math_calc_diff",
+        "subject": "math",
+        "grade": 5,
+        "subtopic": "calculus",
+        "type": "rate_of_change",
+        "difficulty": 3,
+        "template": "A car travels {d} km in {t} hours. What is its average speed in km/h?",
+        "answer_expr": "d // t",
+        "distractor_exprs": [
+            "d // t + 5",
+            "d + t",
+            "d // t - 5"
+        ],
+        "constraints": {
+            "t": [
+                2,
+                5
+            ],
+            "d": [
+                60,
+                200
+            ]
+        },
+        "computed": {
+            "d": "t * k * 10"
+        }
+    },
+    {
+        "id": "sci_bio_q1",
+        "subject": "science",
+        "grade": 1,
+        "subtopic": "basic_biology",
+        "type": "definition",
+        "difficulty": 1,
+        "template": "What do plants need to make food through photosynthesis?",
+        "answer": "Sunlight, water, and carbon dioxide",
+        "distractors": [
+            "Only water",
+            "Only sunlight",
+            "Oxygen and sugar"
+        ]
+    },
+    {
+        "id": "sci_bio_q2",
+        "subject": "science",
+        "grade": 1,
+        "subtopic": "basic_biology",
+        "type": "classification",
+        "difficulty": 1,
+        "template": "Which of the following is a mammal?",
+        "answer": "Dog",
+        "distractors": [
+            "Eagle",
+            "Salmon",
+            "Frog"
+        ]
+    },
+    {
+        "id": "sci_bio_q3",
+        "subject": "science",
+        "grade": 1,
+        "subtopic": "basic_biology",
+        "type": "animal_type",
+        "difficulty": 1,
+        "template": "Which animal lays eggs?",
+        "answer": "Hen",
+        "distractors": [
+            "Cat",
+            "Cow",
+            "Dog"
+        ]
+    },
+    {
+        "id": "sci_cell_q1",
+        "subject": "science",
+        "grade": 2,
+        "subtopic": "cell_structure",
+        "type": "definition",
+        "difficulty": 1,
+        "template": "What is the control centre of a cell?",
+        "answer": "Nucleus",
+        "distractors": [
+            "Mitochondria",
+            "Cell wall",
+            "Ribosome"
+        ]
+    },
+    {
+        "id": "sci_cell_q2",
+        "subject": "science",
+        "grade": 2,
+        "subtopic": "cell_structure",
+        "type": "function",
+        "difficulty": 2,
+        "template": "Which organelle is known as the powerhouse of the cell?",
+        "answer": "Mitochondria",
+        "distractors": [
+            "Nucleus",
+            "Ribosome",
+            "Vacuole"
+        ]
+    },
+    {
+        "id": "sci_cell_q3",
+        "subject": "science",
+        "grade": 2,
+        "subtopic": "cell_structure",
+        "type": "comparison",
+        "difficulty": 2,
+        "template": "Which structure is found in plant cells but NOT in animal cells?",
+        "answer": "Cell wall",
+        "distractors": [
+            "Nucleus",
+            "Mitochondria",
+            "Ribosome"
+        ]
+    },
+    {
+        "id": "sci_photo_q1",
+        "subject": "science",
+        "grade": 2,
+        "subtopic": "photosynthesis",
+        "type": "equation",
+        "difficulty": 2,
+        "template": "What is the main product of photosynthesis that provides energy?",
+        "answer": "Glucose",
+        "distractors": [
+            "Oxygen",
+            "Carbon dioxide",
+            "Water"
+        ]
+    },
+    {
+        "id": "sci_photo_q2",
+        "subject": "science",
+        "grade": 2,
+        "subtopic": "photosynthesis",
+        "type": "process",
+        "difficulty": 2,
+        "template": "Which gas do plants absorb during photosynthesis?",
+        "answer": "Carbon dioxide",
+        "distractors": [
+            "Oxygen",
+            "Nitrogen",
+            "Hydrogen"
+        ]
+    },
+    {
+        "id": "sci_state_q1",
+        "subject": "science",
+        "grade": 2,
+        "subtopic": "states_of_matter",
+        "type": "definition",
+        "difficulty": 1,
+        "template": "Which state of matter has no fixed shape but a fixed volume?",
+        "answer": "Liquid",
+        "distractors": [
+            "Solid",
+            "Gas",
+            "Plasma"
+        ]
+    },
+    {
+        "id": "sci_state_q2",
+        "subject": "science",
+        "grade": 2,
+        "subtopic": "states_of_matter",
+        "type": "change",
+        "difficulty": 2,
+        "template": "What is it called when a liquid turns into a gas?",
+        "answer": "Evaporation",
+        "distractors": [
+            "Condensation",
+            "Freezing",
+            "Sublimation"
+        ]
+    },
+    {
+        "id": "sci_gen_q1",
+        "subject": "science",
+        "grade": 3,
+        "subtopic": "genetics",
+        "type": "definition",
+        "difficulty": 2,
+        "template": "What molecule carries genetic information in living organisms?",
+        "answer": "DNA",
+        "distractors": [
+            "RNA",
+            "Protein",
+            "ATP"
+        ]
+    },
+    {
+        "id": "sci_gen_q2",
+        "subject": "science",
+        "grade": 3,
+        "subtopic": "genetics",
+        "type": "classification",
+        "difficulty": 3,
+        "template": "What term describes characteristics passed from parents to offspring?",
+        "answer": "Inherited traits",
+        "distractors": [
+            "Acquired traits",
+            "Environmental adaptations",
+            "Mutations"
+        ]
+    },
+    {
+        "id": "sci_chem_q1",
+        "subject": "science",
+        "grade": 3,
+        "subtopic": "chemical_reactions",
+        "type": "definition",
+        "difficulty": 2,
+        "template": "What type of reaction releases energy in the form of heat or light?",
+        "answer": "Exothermic reaction",
+        "distractors": [
+            "Endothermic reaction",
+            "Neutralization",
+            "Oxidation"
+        ]
+    },
+    {
+        "id": "sci_elec_q1",
+        "subject": "science",
+        "grade": 4,
+        "subtopic": "electricity",
+        "type": "definition",
+        "difficulty": 2,
+        "template": "What is the unit of electrical resistance?",
+        "answer": "Ohm",
+        "distractors": [
+            "Ampere",
+            "Volt",
+            "Watt"
+        ]
+    },
+    {
+        "id": "sci_elec_q2",
+        "subject": "science",
+        "grade": 4,
+        "subtopic": "electricity",
+        "type": "law",
+        "difficulty": 3,
+        "template": "According to Ohm's law, if voltage doubles and resistance stays the same, what happens to current?",
+        "answer": "Current doubles",
+        "distractors": [
+            "Current halves",
+            "Current stays the same",
+            "Current quadruples"
+        ]
+    },
+    {
+        "id": "eng_pos_q1",
+        "subject": "english",
+        "grade": 1,
+        "subtopic": "parts_of_speech",
+        "type": "identification",
+        "difficulty": 1,
+        "template": "Which word is a noun in the sentence: 'The dog runs fast.'?",
+        "answer": "Dog",
+        "distractors": [
+            "Runs",
+            "Fast",
+            "The"
+        ]
+    },
+    {
+        "id": "eng_pos_q2",
+        "subject": "english",
+        "grade": 1,
+        "subtopic": "parts_of_speech",
+        "type": "verb_id",
+        "difficulty": 1,
+        "template": "Which word is a verb: 'She sings beautifully every morning.'?",
+        "answer": "Sings",
+        "distractors": [
+            "She",
+            "Beautifully",
+            "Morning"
+        ]
+    },
+    {
+        "id": "eng_pos_q3",
+        "subject": "english",
+        "grade": 1,
+        "subtopic": "parts_of_speech",
+        "type": "adjective_id",
+        "difficulty": 1,
+        "template": "Which word is an adjective: 'The tall tree fell down.'?",
+        "answer": "Tall",
+        "distractors": [
+            "Tree",
+            "Fell",
+            "Down"
+        ]
+    },
+    {
+        "id": "eng_fig_q1",
+        "subject": "english",
+        "grade": 2,
+        "subtopic": "figures_of_speech",
+        "type": "simile",
+        "difficulty": 1,
+        "template": "Which sentence contains a simile?",
+        "answer": "She runs like the wind",
+        "distractors": [
+            "The sun smiled at us",
+            "He is a lion",
+            "The wind whispered"
+        ]
+    },
+    {
+        "id": "eng_fig_q2",
+        "subject": "english",
+        "grade": 2,
+        "subtopic": "figures_of_speech",
+        "type": "metaphor",
+        "difficulty": 2,
+        "template": "Which sentence contains a metaphor?",
+        "answer": "Life is a roller coaster",
+        "distractors": [
+            "He eats like a horse",
+            "The flowers danced",
+            "She is as cold as ice"
+        ]
+    },
+    {
+        "id": "eng_fig_q3",
+        "subject": "english",
+        "grade": 2,
+        "subtopic": "figures_of_speech",
+        "type": "personification",
+        "difficulty": 2,
+        "template": "Which sentence uses personification?",
+        "answer": "The trees whispered secrets to each other",
+        "distractors": [
+            "She is as brave as a lion",
+            "He runs as fast as a cheetah",
+            "The cake was as sweet as honey"
+        ]
+    },
+    {
+        "id": "eng_lit_q1",
+        "subject": "english",
+        "grade": 3,
+        "subtopic": "literary_devices",
+        "type": "alliteration",
+        "difficulty": 2,
+        "template": "Which phrase is an example of alliteration?",
+        "answer": "Peter Piper picked peppers",
+        "distractors": [
+            "The early bird catches the worm",
+            "All that glitters is not gold",
+            "To be or not to be"
+        ]
+    },
+    {
+        "id": "eng_lit_q2",
+        "subject": "english",
+        "grade": 3,
+        "subtopic": "literary_devices",
+        "type": "irony",
+        "difficulty": 3,
+        "template": "A fire station burns down. This is an example of:",
+        "answer": "Situational irony",
+        "distractors": [
+            "Verbal irony",
+            "Dramatic irony",
+            "Metaphor"
+        ]
+    },
+    {
+        "id": "eng_gram_q1",
+        "subject": "english",
+        "grade": 3,
+        "subtopic": "grammar",
+        "type": "tense",
+        "difficulty": 2,
+        "template": "Which sentence is in the past perfect tense?",
+        "answer": "She had finished her homework before dinner",
+        "distractors": [
+            "She finishes homework daily",
+            "She is finishing homework",
+            "She will finish homework"
+        ]
+    },
+    {
+        "id": "eng_ling_q1",
+        "subject": "english",
+        "grade": 5,
+        "subtopic": "linguistics",
+        "type": "morphology",
+        "difficulty": 3,
+        "template": "The prefix 'un-' in 'unhappy' changes the word's meaning to:",
+        "answer": "The opposite of happy",
+        "distractors": [
+            "More than happy",
+            "Related to happy",
+            "Less than happy"
+        ]
+    }
+]
