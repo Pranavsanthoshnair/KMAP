@@ -1,7 +1,45 @@
+"""
+init_db.py — Initialize local SQLite modules.db with Grade 1 & 2 topics.
+
+Taxonomy (Grade 1 + 2 only):
+  Science: 8 topics × 3 levels = 24 rows
+  Math:    8 topics × 3 levels = 24 rows
+  Total:   48 rows
+"""
+
 import sqlite3
 import os
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'modules.db')
+
+# ── Grade 1 + 2 topic taxonomy ───────────────────────────────────────────────
+TAXONOMY = {
+    "science": {
+        1: ["basic_biology", "animals", "plants", "weather"],
+        2: ["cell_structure", "photosynthesis", "states_of_matter", "human_body"],
+    },
+    "math": {
+        1: ["arithmetic", "counting", "shapes", "comparison"],
+        2: ["money", "division", "measurement", "time"],
+    },
+}
+
+TOPIC_TITLES = {
+    "basic_biology": "Basic Biology", "animals": "Animals", "plants": "Plants",
+    "weather": "Weather", "cell_structure": "Cell Structure",
+    "photosynthesis": "Photosynthesis", "states_of_matter": "States of Matter",
+    "human_body": "Human Body",
+    "arithmetic": "Arithmetic", "counting": "Counting", "shapes": "Shapes",
+    "comparison": "Comparison", "money": "Money", "division": "Division",
+    "measurement": "Measurement", "time": "Time",
+}
+
+LEVEL_LABELS = {
+    1: "Fundamentals",
+    2: "Building Understanding",
+    3: "Mastery",
+}
+
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -16,29 +54,36 @@ def init_db():
         grade_band  INTEGER NOT NULL,
         title       TEXT NOT NULL,
         content_url TEXT,
-        size_bytes  INTEGER,
+        size_bytes  INTEGER DEFAULT 0,
         description TEXT
     );
     ''')
 
-    # Insert some mock data
-    mock_data = [
-        ("math_fractions_GB1_L1", "fractions", "mathematics", 1, 1, "What is half?", "url_1", 1024, "Intro to fractions"),
-        ("math_fractions_GB2_L1", "fractions", "mathematics", 1, 2, "Fractions on a number line", "url_2", 2048, "Middle school fractions"),
-        ("math_fractions_GB3_L1", "fractions", "mathematics", 1, 3, "Rational numbers intro", "url_3", 4096, "High school fractions"),
-        ("sci_cells_GB2_L2", "cell_structure", "science", 2, 2, "Cell organelles", "url_4", 3072, "Middle school cells"),
-        ("sci_cells_GB4_L3", "cell_structure", "science", 3, 4, "Advanced cell biology", "url_5", 5120, "Senior secondary cells")
-    ]
-
     cursor.execute("DELETE FROM modules")
+
+    rows = []
+    for subject, grades in TAXONOMY.items():
+        prefix = "sci" if subject == "science" else "mat"
+        for grade, topics in grades.items():
+            for topic in topics:
+                for level in range(1, 4):
+                    rid = f"{prefix}_{topic}_G{grade}_L{level}"
+                    topic_label = TOPIC_TITLES.get(topic, topic.replace("_", " ").title())
+                    level_label = LEVEL_LABELS.get(level, f"Level {level}")
+                    title = f"{topic_label} — {level_label}"
+                    desc = f"Grade {grade} {subject} resource for {topic_label}, {level_label}."
+                    rows.append((rid, topic, subject, level, grade, title, None, 0, desc))
+
     cursor.executemany('''
-        INSERT INTO modules (id, topic, subject, level, grade_band, title, content_url, size_bytes, description)
+        INSERT OR REPLACE INTO modules
+            (id, topic, subject, level, grade_band, title, content_url, size_bytes, description)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', mock_data)
+    ''', rows)
 
     conn.commit()
     conn.close()
-    print("Database initialized and mock data inserted.")
+    print(f"Database initialized: {len(rows)} module rows inserted into {DB_PATH}")
+
 
 if __name__ == "__main__":
     init_db()
