@@ -4,12 +4,24 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
-import QuizSession from '@/components/QuizSession';
-import { getLocalProfile, getSeenResourceIds } from '@/lib/indexeddb';
+import dynamic from 'next/dynamic';
+import { getLocalProfile } from '@/lib/indexeddb';
 import { ArrowLeft, RefreshCw, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
+
+// Code-split: only load QuizSession when the capsules page renders
+const QuizSession = dynamic(() => import('@/components/QuizSession'), {
+    ssr: false,
+    loading: () => (
+        <div className="mt-4 space-y-4">
+            {[1, 2, 3].map(i => (
+                <div key={i} className="h-36 animate-pulse rounded-lg border border-border bg-secondary/30" />
+            ))}
+        </div>
+    ),
+});
 
 interface Topic {
     topic: string;

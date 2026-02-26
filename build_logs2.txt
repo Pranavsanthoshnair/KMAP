@@ -1,0 +1,57 @@
+﻿
+> kmap@0.0.0 build
+> next build
+
+   Γû▓ Next.js 15.5.12
+   - Environments: .env
+   - Experiments (use with caution):
+     ┬╖ optimizePackageImports
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 5.0s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/15) ...
+   Generating static pages (3/15) 
+   Generating static pages (7/15) 
+node.exe : Error 
+occurred prerendering 
+page 
+"/test-resources". 
+Read more: https://nex
+tjs.org/docs/messages/
+prerender-error
+At C:\Program Files\no
+dejs\npm.ps1:29 char:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Error occu   
+ rred ...prerender    
+-error:String) []    
+, RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+ReferenceError: 
+localStorage is not 
+defined
+    at f (C:\Users\ana
+nt\Desktop\KMAP\.next\
+server\app\test-resour
+ces\page.js:2:9390) {
+  digest: '2978672833'
+}
+Export encountered an 
+error on 
+/test-resources/page: 
+/test-resources, 
+exiting the build.
+ Γ¿» Next.js build 
+worker exited with 
+code: 1 and signal: 
+null
