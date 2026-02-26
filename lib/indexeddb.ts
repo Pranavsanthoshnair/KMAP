@@ -241,5 +241,23 @@ export async function restoreFromRecovery(data: {
     }
 }
 
+// ── Global reset (logout) ───────────────────────────────────────────────────────
+export async function clearAllLocalData() {
+    const db = await getDB();
+    const stores = [
+        'profile',
+        'capsuleCache',
+        'skillProfile',
+        'masteryMap',
+        'seenResources',
+        'errorPatterns',
+    ] as const;
+    const tx = db.transaction(stores as unknown as string[], 'readwrite');
+    for (const name of stores) {
+        tx.objectStore(name as keyof KMAPSchema).clear();
+    }
+    await tx.done;
+}
+
 export type CapsuleData = KMAPSchema['capsuleCache']['value'];
 export type SkillData = KMAPSchema['skillProfile']['value'];
