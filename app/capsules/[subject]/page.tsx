@@ -59,7 +59,7 @@ export default function CapsuleView() {
     }, [user, loading, router, subject]);
 
     // ── 2. Load questions whenever topic or grade changes ─────────────────────
-    const loadQuestions = useCallback(async (topic: string, gb: number) => {
+    const loadQuestions = useCallback(async (topic: string, gb: number, reset = false) => {
         if (!topic) return;
         setFetching(true);
         setQuestions([]);
@@ -69,7 +69,7 @@ export default function CapsuleView() {
         try {
             const level = gradeBandToLevel(gb);
             const res = await fetch(
-                `/api/questions?topic=${topic}&grade_band=${gb}&level=${level}&count=6`
+                `/api/questions?topic=${topic}&grade_band=${gb}&level=${level}&count=6${reset ? '&reset=true' : ''}`
             );
             if (!res.ok) throw new Error(`API error: ${res.status}`);
             const data = await res.json();
@@ -126,7 +126,7 @@ export default function CapsuleView() {
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => loadQuestions(selectedTopic, gradeBand)}
+                            onClick={() => loadQuestions(selectedTopic, gradeBand, true)}
                             disabled={fetching}
                             className="font-brand"
                         >
@@ -186,7 +186,7 @@ export default function CapsuleView() {
                     {!fetching && questions.length > 0 && (
                         <div className="mt-4 space-y-4">
                             {questions.map((q, i) => (
-                                <QuestionCard key={`${q.id}-${q.form}`} question={q} index={i} />
+                                <QuestionCard key={`${q.id}-${q.form}`} question={q} index={i} topic={selectedTopic} />
                             ))}
                         </div>
                     )}
@@ -206,7 +206,7 @@ export default function CapsuleView() {
                     {/* Exhaustion notice */}
                     {exhausted && questions.length > 0 && (
                         <p className="mt-4 text-center text-xs text-muted-foreground">
-                            All question forms for this topic have been used. Reset <code className="rounded bg-secondary px-1">seen.json</code> to start fresh.
+                            You've seen all forms for this topic. Click <strong>New Set</strong> to start again.
                         </p>
                     )}
 

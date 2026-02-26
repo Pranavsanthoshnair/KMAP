@@ -25,10 +25,12 @@ DEFAULTS = dict(topic="cell_structure", grade_band=2, level=2, count=5, seed=Non
 def main():
     parser = argparse.ArgumentParser(description="KMAP Question Engine")
     parser.add_argument("--topic",      default=DEFAULTS["topic"])
-    parser.add_argument("--grade_band", type=int, default=DEFAULTS["grade_band"])
-    parser.add_argument("--level",      type=int, default=DEFAULTS["level"])
-    parser.add_argument("--count",      type=int, default=DEFAULTS["count"])
-    parser.add_argument("--seed",       type=int, default=DEFAULTS["seed"])
+    parser.add_argument("--grade_band", type=int,  default=DEFAULTS["grade_band"])
+    parser.add_argument("--level",      type=int,  default=DEFAULTS["level"])
+    parser.add_argument("--count",      type=int,  default=DEFAULTS["count"])
+    parser.add_argument("--seed",       type=int,  default=DEFAULTS["seed"])
+    parser.add_argument("--reset",      action="store_true",
+                        help="Clear seen-state for this topic before generating (for New Set)")
     args = parser.parse_args()
 
     result = generate_questions(
@@ -37,9 +39,9 @@ def main():
         level=args.level,
         count=args.count,
         seed=args.seed,
+        reset_seen=args.reset,
     )
 
-    # Output ONLY JSON to stdout — logs already go to stderr via Python logging
     print(json.dumps(result.to_dict(), ensure_ascii=False))
 
 
