@@ -73,7 +73,7 @@ let dbPromise: Promise<IDBPDatabase<KMAPSchema>> | null = null;
 function getDB() {
     if (!dbPromise) {
         dbPromise = openDB<KMAPSchema>('kmap-db', 2, {
-            upgrade(db, oldVersion) {
+            upgrade(db, _oldVersion) {
                 // ── Version 1 stores ─────────────────────────────────────────
                 if (!db.objectStoreNames.contains('profile')) {
                     db.createObjectStore('profile', { keyPath: 'id' });
@@ -215,7 +215,7 @@ export function generateRecoveryKey(): string {
 }
 
 export async function getRecoveryData() {
-    const db = await getDB();
+    await getDB();
     const profile = await getLocalProfile();
     const skills = await getSkillProfile();
     const errors = await getErrorPatterns();
@@ -241,7 +241,7 @@ export async function restoreFromRecovery(data: {
     }
 }
 
-// ── Global reset (logout) ───────────────────────────────────────────────────────
+// ── Global reset ────────────────────────────────────────────────────────────
 export async function clearAllLocalData() {
     const db = await getDB();
     const stores = [
@@ -252,11 +252,9 @@ export async function clearAllLocalData() {
         'seenResources',
         'errorPatterns',
     ] as const;
-    const tx = db.transaction(stores as unknown as string[], 'readwrite');
     for (const name of stores) {
-        tx.objectStore(name as keyof KMAPSchema).clear();
+        await db.clear(name);
     }
-    await tx.done;
 }
 
 export type CapsuleData = KMAPSchema['capsuleCache']['value'];
