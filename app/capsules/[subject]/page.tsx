@@ -66,7 +66,7 @@ export default function CapsuleView() {
         try {
             const level = gradeBandToLevel(gb);
             const res = await fetch(
-                `/api/questions?topic=${topic}&grade_band=${gb}&level=${level}&count=6${reset ? '&reset=true' : ''}`
+                `/api/questions?topic=${topic}&subject=${subject}&grade_band=${gb}&level=${level}&count=6${reset ? '&reset=true' : ''}`
             );
             if (!res.ok) throw new Error(`API error: ${res.status}`);
             const data = await res.json();

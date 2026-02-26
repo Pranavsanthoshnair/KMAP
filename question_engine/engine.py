@@ -1,150 +1,419 @@
 """
-engine.py — Core Question Generation Engine (v2)
+engine.py — Strict Hierarchical Question Engine v3
 
-Two-track generation:
-  • Pattern-based  : math → numeric templates with randomised params (pattern_generator.py)
-  • Facts-based    : science / english → 6 question forms from facts.json (generator.py)
+Architecture:
+  • Single source of truth: question_bank.json
+  • Strict validation: subject → grade → subtopic (no silent fallback)
+  • Mode A: Subtopic-specific quiz (bank[subject][grade][subtopic] only)
+  • Mode B: Subject mixed quiz (even distribution across all subtopics)
+  • No cross-subject, cross-grade, or cross-subtopic mixing
 
-Both tracks enforce:
-  • No repetition within session (session_sigs / seen.json)
-  • Variety per quiz set (no repeated pattern types)
-  • Auto-reset when all pairs are exhausted (New Set always works)
-  • Multi-subtopic support (subtopics: list[str])
+Required functions (in order):
+  load_bank()               — load question_bank.json (cached)
+  validate_request()        — raise ValueError on bad subject/grade/subtopic
+  generate_from_pattern()   — single question from one pattern dict
+  enforce_variety()         — remove duplicate pattern types from a list
+  generate_subtopic_quiz()  — Mode A: only one subtopic
+  generate_subject_quiz()   — Mode B: even across all subtopics
 """
 
+import json
 import logging
 import random
+from pathlib import Path
 from typing import Dict, List, Optional, Set
-
-from models import EngineResult, Fact, Question
-from generator import generate_form
-from pattern_generator import generate_quiz_set as pattern_quiz_set, generate_from_pattern, get_patterns
-from utils import load_facts, load_seen, save_seen, unseen_forms, validate_facts
 
 log = logging.getLogger(__name__)
 
-# Subjects that use pattern-based generation
-PATTERN_SUBJECTS = {"math"}
+# ── Constants ─────────────────────────────────────────────────────────────────
+BANK_FILE = Path(__file__).parent / "question_bank.json"
+_BANK: Optional[Dict] = None
+
+_SAFE = {"abs": abs, "round": round, "max": max, "min": min, "__builtins__": {}}
+
+LEVEL_TO_DIFF = {1: "beginner", 2: "intermediate", 3: "advanced"}
+
+# Within-subtopic only fallback order
+DIFF_FALLBACKS = {
+    "beginner":     ["beginner", "intermediate"],
+    "intermediate": ["intermediate", "beginner", "advanced"],
+    "advanced":     ["advanced", "intermediate"],
+}
 
 
-# ── Facts-based helpers ────────────────────────────────────────────────────────
+# ── 1. load_bank() ─────────────────────────────────────────────────────────────
 
-def _filter_facts(facts: List[Fact], topic: str, grade_band: int, level: int) -> List[Fact]:
-    return [
-        f for f in facts
-        if f.topic == topic
-        and f.grade_band == grade_band
-        and f.level <= level
-    ]
-
-
-def _reset_seen_for_topic(seen: Dict, facts: List[Fact]) -> None:
-    for fact in facts:
-        seen.pop(fact.id, None)
-    log.info("Seen state cleared for %d fact(s).", len(facts))
+def load_bank() -> Dict:
+    """Load question_bank.json and cache it in memory."""
+    global _BANK
+    if _BANK is None:
+        with open(BANK_FILE, encoding="utf-8") as f:
+            _BANK = json.load(f)
+        log.info("Loaded question bank: %d subjects", len(_BANK))
+    return _BANK
 
 
-def _build_pool(facts: List[Fact], seen: Dict, level: int):
-    pool = []
-    for fact in facts:
-        for form in unseen_forms(fact.id, seen, level):
-            pool.append((fact, form))
-    random.shuffle(pool)
-    return pool
+# ── 2. validate_request() ──────────────────────────────────────────────────────
 
-
-# ── Pattern-based generation ────────────────────────────────────────────────────
-
-def _generate_pattern_questions(
+def validate_request(
+    bank: Dict,
     subject: str,
-    grade: int,
-    subtopics: List[str],
-    level: int,
+    grade: str,
+    subtopic: Optional[str] = None,
+) -> None:
+    """
+    Strict hierarchical validation. Raises ValueError on any mismatch.
+
+    Parameters
+    ----------
+    bank    : Loaded question bank dict.
+    subject : "math" | "science" | "english"
+    grade   : "grade1" .. "grade5"
+    subtopic: Optional subtopic slug.
+
+    Raises
+    ------
+    ValueError if subject, grade, or subtopic is invalid.
+    """
+    if subject not in bank:
+        raise ValueError(
+            f"Invalid subject '{subject}'. Available: {sorted(bank.keys())}"
+        )
+
+    grade_data = bank[subject]
+    if grade not in grade_data:
+        raise ValueError(
+            f"No data for grade '{grade}' in subject '{subject}'. "
+            f"Available: {sorted(grade_data.keys())}"
+        )
+
+    if subtopic is not None:
+        subtopic_data = grade_data[grade]
+        if subtopic not in subtopic_data:
+            raise ValueError(
+                f"Subtopic '{subtopic}' not found in {subject}/{grade}. "
+                f"Available: {sorted(subtopic_data.keys())}"
+            )
+
+
+# ── 3. generate_from_pattern() ─────────────────────────────────────────────────
+
+def _eval_safe(expr: str, params: Dict) -> str:
+    """Safely evaluate a math expression; returns empty string on failure."""
+    try:
+        result = eval(str(expr), _SAFE, dict(params))
+        if isinstance(result, float):
+            return (
+                str(int(result)) if result == int(result)
+                else f"{result:.4f}".rstrip("0").rstrip(".")
+            )
+        return str(result)
+    except Exception:
+        return ""
+
+
+def generate_from_pattern(
+    pattern: Dict,
+    session_sigs: Optional[Set[str]] = None,
+    retries: int = 12,
+) -> Optional[Dict]:
+    """
+    Generate one question from a pattern dict.
+
+    Static patterns  : have 'answer' + 'distractors' → returned as-is.
+    Parametric patterns: have 'constraints' + 'answer_expr' → randomised values.
+
+    Returns None if a fresh, valid question cannot be generated.
+    """
+    # ── Static pattern (no randomised params) ────────────────────────────────
+    if "constraints" not in pattern:
+        answer = str(pattern.get("answer", ""))
+        wrong  = [str(d) for d in pattern.get("distractors", [])]
+        choices = ([answer] + wrong[:3])
+        while len(choices) < 4:
+            choices.append("None of the above")
+        random.shuffle(choices)
+        return {
+            "id":       pattern["id"],
+            "type":     pattern["type"],
+            "question": pattern["template"],
+            "choices":  choices[:4],
+            "answer":   answer,
+        }
+
+    # ── Parametric pattern ────────────────────────────────────────────────────
+    constraints   = pattern["constraints"]
+    computed_defs = pattern.get("computed", {})
+
+    for _ in range(retries):
+        # Generate random params
+        params: Dict = {
+            k: random.randint(int(v[0]), int(v[1]))
+            for k, v in constraints.items()
+        }
+        # Apply computed values
+        for k, expr in computed_defs.items():
+            try:
+                val = eval(str(expr), _SAFE, dict(params))
+                params[k] = int(val) if float(val) == int(float(val)) else val
+            except Exception:
+                pass
+
+        sig = str(sorted(params.items()))
+        if session_sigs is not None and sig in session_sigs:
+            continue  # duplicate numeric values within session
+
+        # Format question text
+        try:
+            question = pattern["template"].format(**params)
+        except (KeyError, ValueError):
+            continue
+
+        # Compute correct answer
+        answer = _eval_safe(pattern.get("answer_expr", ""), params)
+        if not answer:
+            continue
+
+        # Compute distractors
+        distractors: List[str] = []
+        for expr in pattern.get("distractor_exprs", []):
+            d = _eval_safe(expr, params)
+            if d and d != answer and d not in distractors:
+                distractors.append(d)
+
+        # Fill missing distractors with nearby integers
+        try:
+            a_num  = float(answer)
+            tries_ = 0
+            while len(distractors) < 3 and tries_ < 20:
+                tries_ += 1
+                d_num = a_num + random.choice([-3, -2, -1, 1, 2, 3])
+                if d_num > 0:
+                    d_str = (
+                        str(int(d_num)) if d_num == int(d_num)
+                        else f"{d_num:.4f}".rstrip("0").rstrip(".")
+                    )
+                    if d_str != answer and d_str not in distractors:
+                        distractors.append(d_str)
+        except ValueError:
+            pass
+
+        if len(distractors) < 3:
+            continue  # can't build enough choices
+
+        choices = [answer] + distractors[:3]
+        random.shuffle(choices)
+
+        if session_sigs is not None:
+            session_sigs.add(sig)
+
+        return {
+            "id":       f"{pattern['id']}_{abs(hash(question)) % 100000}",
+            "type":     pattern["type"],
+            "question": question,
+            "choices":  choices[:4],
+            "answer":   answer,
+        }
+
+    return None  # exhausted retries
+
+
+# ── 4. enforce_variety() ───────────────────────────────────────────────────────
+
+def enforce_variety(questions: List[Dict]) -> List[Dict]:
+    """
+    Remove duplicate pattern types within a quiz set.
+    Keeps the first occurrence of each type (highest-scored candidate).
+    """
+    seen: Set[str] = set()
+    unique: List[Dict] = []
+    for q in questions:
+        t = q.get("type", "unknown")
+        if t not in seen:
+            unique.append(q)
+            seen.add(t)
+    return unique
+
+
+# ── Internal helpers ───────────────────────────────────────────────────────────
+
+def _patterns_for_subtopic(
+    bank: Dict,
+    subject: str,
+    grade: str,
+    subtopic: str,
+    skill_level: int,
+) -> List[Dict]:
+    """
+    Return patterns for (subject, grade, subtopic) filtered by difficulty.
+    Fallback order stays WITHIN THE SAME SUBTOPIC ONLY.
+    """
+    target_diff = LEVEL_TO_DIFF.get(skill_level, "beginner")
+    all_pats    = bank[subject][grade][subtopic]["patterns"]
+
+    for diff in DIFF_FALLBACKS[target_diff]:
+        filtered = [p for p in all_pats if p["difficulty"] == diff]
+        if filtered:
+            if diff != target_diff:
+                log.info(
+                    "Difficulty fallback within %s/%s/%s: %s → %s",
+                    subject, grade, subtopic, target_diff, diff,
+                )
+            return filtered
+
+    return all_pats   # all difficulties as absolute last resort (same subtopic)
+
+
+def _generate_n_from_pool(
+    pool: List[Dict],
     count: int,
     session_sigs: Set[str],
-) -> EngineResult:
-    """Generate questions using pattern templates (no seen.json needed)."""
-    from pattern_generator import enforce_variety as _enforce_variety
+) -> List[Dict]:
+    """Generate up to 2×count candidates, then enforce variety and trim to count."""
+    random.shuffle(pool)
+    target     = count * 2
+    expanded   = pool * (max(2, target // max(len(pool), 1)) + 2)
+    random.shuffle(expanded)
 
-    raw_qs = pattern_quiz_set(
-        subject=subject,
-        grade=grade,
-        subtopics=subtopics,
-        skill_level=level,
-        count=count,
-        session_sigs=session_sigs,
-    )
+    candidates: List[Dict] = []
+    for pattern in expanded:
+        if len(candidates) >= target:
+            break
+        q = generate_from_pattern(pattern, session_sigs)
+        if q:
+            candidates.append(q)
 
-    # enforce_variety already ran inside generate_quiz_set, but raw_qs still
-    # has "form" as the type STRING — use it now before converting to Question.
-    # Map type string → stable int for the Question.form field.
-    _type_map: Dict[str, int] = {}
-    questions: List[Question] = []
-    for q in raw_qs:
-        type_str = q.get("form", "unknown")
-        if type_str not in _type_map:
-            _type_map[type_str] = len(_type_map) + 10  # offset from facts forms (1-6)
-        questions.append(Question(
-            id=q["id"],
-            form=_type_map[type_str],
-            question=q["question"],
-            choices=q["choices"],
-            answer=q["answer"],
-        ))
-
-    exhausted = len(questions) < count
-    return EngineResult(questions=questions, exhausted=exhausted)
+    return enforce_variety(candidates)[:count]
 
 
-# ── Facts-based generation ─────────────────────────────────────────────────────
+# ── 5. generate_subtopic_quiz() — MODE A ──────────────────────────────────────
 
-def _generate_facts_questions(
-    topic: str,
-    grade_band: int,
-    level: int,
+def generate_subtopic_quiz(
+    bank: Dict,
+    subject: str,
+    grade: str,
+    subtopic: str,
+    skill_level: int,
     count: int,
-    reset_seen: bool,
-) -> EngineResult:
-    """Generate questions from facts.json using 6 question forms."""
-    all_facts = load_facts()
-    validate_facts(all_facts)
-    seen = load_seen()
+    session_sigs: Optional[Set[str]] = None,
+) -> List[Dict]:
+    """
+    MODE A — Subtopic-Specific Quiz.
 
-    eligible = _filter_facts(all_facts, topic, grade_band, level)
-    if not eligible:
-        log.warning("No facts for topic='%s' grade=%d level<=%d", topic, grade_band, level)
-        return EngineResult(questions=[], exhausted=True)
+    Generates questions EXCLUSIVELY from bank[subject][grade][subtopic].
+    No other subtopics, no other grades, no other subjects.
 
-    if reset_seen:
-        _reset_seen_for_topic(seen, eligible)
+    Raises ValueError for any invalid parameter combination.
+    """
+    validate_request(bank, subject, grade, subtopic)
 
-    pool = _build_pool(eligible, seen, level)
+    # Defensive subject assertion — no fallback allowed
+    assert subject in bank, f"BUG: subject '{subject}' not in bank after validation"
 
-    # Auto-reset if pool empty (guarantees New Set always works)
-    if not pool:
-        log.info("Pool exhausted — auto-resetting seen state for topic '%s'.", topic)
-        _reset_seen_for_topic(seen, eligible)
-        pool = _build_pool(eligible, seen, level)
+    if session_sigs is None:
+        session_sigs = set()
 
-    exhausted = len(pool) < count
-    selected  = pool[:count]
-    questions: List[Question] = []
+    pool = _patterns_for_subtopic(bank, subject, grade, subtopic, skill_level)
+    result = _generate_n_from_pool(pool, count, session_sigs)
 
-    for fact, form_number in selected:
-        try:
-            q = generate_form(fact, form_number)
-            questions.append(q)
-            seen.setdefault(fact.id, [])
-            if form_number not in seen[fact.id]:
-                seen[fact.id].append(form_number)
-        except Exception as exc:
-            log.error("Form %d / fact '%s' failed: %s", form_number, fact.id, exc)
-
-    save_seen(seen)
-    return EngineResult(questions=questions, exhausted=exhausted)
+    log.info(
+        "[Mode A] %s/%s/%s skill=%d → requested=%d generated=%d",
+        subject, grade, subtopic, skill_level, count, len(result),
+    )
+    return result
 
 
-# ── Main entry point ───────────────────────────────────────────────────────────
+# ── 6. generate_subject_quiz() — MODE B ───────────────────────────────────────
+
+def generate_subject_quiz(
+    bank: Dict,
+    subject: str,
+    grade: str,
+    skill_level: int,
+    count: int,
+    session_sigs: Optional[Set[str]] = None,
+) -> List[Dict]:
+    """
+    MODE B — Subject Mixed Quiz.
+
+    Divides 'count' evenly across ALL subtopics in subject/grade.
+    Each subtopic contributes independently via generate_subtopic_quiz().
+    No subtopic dominance. No cross-subject or cross-grade mixing.
+
+    Example: 4 subtopics, 8 questions → 2 per subtopic.
+
+    Raises ValueError for any invalid parameter combination.
+    """
+    validate_request(bank, subject, grade)
+
+    # Defensive assertion
+    assert subject in bank, f"BUG: subject '{subject}' not in bank after validation"
+
+    if session_sigs is None:
+        session_sigs = set()
+
+    subtopics  = list(bank[subject][grade].keys())
+    n_subs     = len(subtopics)
+    per_sub    = max(1, count // n_subs)
+    remainder  = count - (per_sub * n_subs)  # distribute extras to first N subtopics
+
+    all_qs: List[Dict] = []
+    for i, subtopic in enumerate(subtopics):
+        n = per_sub + (1 if i < remainder else 0)
+        qs = generate_subtopic_quiz(
+            bank, subject, grade, subtopic, skill_level, n, session_sigs
+        )
+        all_qs.extend(qs)
+
+    random.shuffle(all_qs)
+
+    log.info(
+        "[Mode B] %s/%s skill=%d → %d subtopics, %d per sub, generated=%d",
+        subject, grade, skill_level, n_subs, per_sub, len(all_qs),
+    )
+    return all_qs[:count]
+
+
+# ── Legacy compatibility shim ─────────────────────────────────────────────────
+# Keeps existing run.py interface working while using the new engine.
+
+def _grade_key(grade_band: int) -> str:
+    """Convert numeric grade_band (1–5) to grade key string ("grade1" etc.)."""
+    return f"grade{grade_band}"
+
+
+def _infer_subject(topic: str, subject_hint: Optional[str]) -> str:
+    """Infer subject from a topic slug when not explicitly provided."""
+    if subject_hint:
+        return subject_hint.lower().strip()
+
+    _MATH = {
+        "arithmetic", "fractions", "geometry", "algebra", "decimals",
+        "statistics", "calculus", "trigonometry", "multiplication",
+        "counting", "probability", "number_theory", "linear_equations",
+    }
+    _SCI = {
+        "basic_biology", "cell_structure", "photosynthesis", "genetics",
+        "chemical_reactions", "electricity", "forces", "ecology",
+        "human_body", "states_of_matter", "microbiology", "astronomy",
+        "evolution", "periodic_table", "acids_bases", "wave_optics",
+    }
+    _ENG = {
+        "parts_of_speech", "figures_of_speech", "literary_devices",
+        "grammar", "punctuation", "sentence_structure", "linguistics",
+        "advanced_writing", "reading_comprehension", "vocabulary",
+        "poetry", "prose", "narrative", "rhetoric", "advanced_grammar",
+    }
+
+    t = (topic or "").lower()
+    if t in _MATH or t.startswith("math"):
+        return "math"
+    if t in _SCI or t.startswith("sci"):
+        return "science"
+    if t in _ENG or t.startswith("eng"):
+        return "english"
+    return "science"  # only used as hard last-resort
+
 
 def generate_questions(
     topic: str,
@@ -152,81 +421,63 @@ def generate_questions(
     level: int,
     count: int,
     seed: Optional[int] = None,
-    reset_seen: bool = False,
+    reset_seen: bool = False,       # kept for API compat; bank-mode is stateless
     subject: Optional[str] = None,
     subtopics: Optional[List[str]] = None,
+    mode: str = "subtopic",         # "subtopic" | "subject"
     session_sigs: Optional[Set[str]] = None,
-) -> EngineResult:
+) -> Dict:
     """
-    Unified question generation entry point.
+    Unified entry point — called by run.py.
 
-    Routes to pattern-based generation for math;
-    falls back to facts-based generation for science/english.
+    Routes to:
+      MODE A (mode="subtopic"): generate_subtopic_quiz for topic/subtopics[0]
+      MODE B (mode="subject"):  generate_subject_quiz across entire grade
 
-    Parameters
-    ----------
-    topic      : Primary subtopic slug.
-    grade_band : User's grade band (1–5).
-    level      : Max difficulty level (1–3).
-    count      : Number of questions requested.
-    seed       : Optional random seed for determinism.
-    reset_seen : Clear seen state for this topic before generating.
-    subject    : Subject name (auto-inferred from topic if omitted).
-    subtopics  : For multi-subtopic quiz; if given, topic is ignored.
-    session_sigs: Mutable set of used parameter signatures for in-session dedup.
+    Returns a plain dict: {"questions": [...], "exhausted": bool}
     """
     if seed is not None:
         random.seed(seed)
 
-    # Infer subject from topic prefix if not provided
-    if not subject:
-        if topic.startswith("math") or topic in {
-            "arithmetic", "fractions", "geometry", "algebra",
-            "decimals", "statistics", "calculus", "trigonometry",
-            "multiplication", "counting",
-        }:
-            subject = "math"
-        elif topic.startswith("sci") or topic in {
-            "basic_biology", "cell_structure", "photosynthesis", "genetics",
-            "chemical_reactions", "electricity", "forces", "ecology",
-            "human_body", "states_of_matter", "microbiology",
-        }:
-            subject = "science"
+    bank  = load_bank()
+    grade = _grade_key(grade_band)
+    subj  = _infer_subject(topic, subject)
+
+    # Resolve the primary subtopic
+    primary = (subtopics[0] if subtopics else None) or topic
+
+    # Validate before any generation
+    try:
+        if mode == "subject":
+            validate_request(bank, subj, grade)
         else:
-            subject = "english"
+            validate_request(bank, subj, grade, primary)
+    except ValueError as e:
+        log.error("Validation failed: %s", e)
+        return {"questions": [], "exhausted": True, "error": str(e)}
 
     if session_sigs is None:
         session_sigs = set()
 
-    # Resolve subtopics list
-    topics_list = subtopics if subtopics else [topic]
+    try:
+        if mode == "subject":
+            raw_qs = generate_subject_quiz(bank, subj, grade, level, count, session_sigs)
+        else:
+            raw_qs = generate_subtopic_quiz(bank, subj, grade, primary, level, count, session_sigs)
+    except ValueError as e:
+        log.error("Generation error: %s", e)
+        return {"questions": [], "exhausted": True, "error": str(e)}
 
-    # ── Route to pattern-based for math ───────────────────────────────────────
-    if subject in PATTERN_SUBJECTS:
-        result = _generate_pattern_questions(
-            subject=subject,
-            grade=grade_band,
-            subtopics=topics_list,
-            level=level,
-            count=count,
-            session_sigs=session_sigs,
-        )
-        # If no patterns available (new topic not yet in patterns.json),
-        # fall back to facts-based
-        if not result.questions:
-            log.info("No patterns for '%s' — falling back to facts-based.", topic)
-            return _generate_facts_questions(topic, grade_band, level, count, reset_seen)
-        return result
+    # Convert to wire format
+    questions = [
+        {
+            "id":       q["id"],
+            "form":     q["type"],
+            "question": q["question"],
+            "choices":  q["choices"],
+            "answer":   q["answer"],
+        }
+        for q in raw_qs
+    ]
 
-    # ── Facts-based for science / english ─────────────────────────────────────
-    # Multi-subtopic: merge results from each subtopic
-    if len(topics_list) > 1:
-        per_topic = max(1, count // len(topics_list))
-        all_qs: List[Question] = []
-        for t in topics_list:
-            r = _generate_facts_questions(t, grade_band, level, per_topic, reset_seen)
-            all_qs.extend(r.questions)
-        random.shuffle(all_qs)
-        return EngineResult(questions=all_qs[:count], exhausted=len(all_qs) < count)
-
-    return _generate_facts_questions(topic, grade_band, level, count, reset_seen)
+    return {"questions": questions, "exhausted": len(questions) < count}
