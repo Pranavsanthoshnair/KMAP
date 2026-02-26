@@ -397,9 +397,16 @@ export default function CapsuleView() {
                                         </p>
                                     ) : (
                                         resources.map(r => (
-                                            <div
+                                            <button
                                                 key={r.id}
-                                                className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-secondary/30 transition-colors"
+                                                onClick={async () => {
+                                                    try {
+                                                        const res = await fetch(`/api/resources/download?id=${r.id}`);
+                                                        const data = await res.json();
+                                                        if (data.url) window.open(data.url, '_blank');
+                                                    } catch { /* ignore */ }
+                                                }}
+                                                className="flex w-full items-start gap-3 rounded-lg border border-border p-3 hover:bg-secondary/30 transition-colors text-left"
                                             >
                                                 <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                                                 <div className="flex-1 min-w-0">
@@ -407,14 +414,14 @@ export default function CapsuleView() {
                                                         {r.title}
                                                     </p>
                                                     <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
-                                                        {r.preview_text || `${r.type} · ${r.difficulty}`}
+                                                        {r.preview_text || `${r.type} · ${r.size_kb} KB`}
                                                     </p>
                                                     <div className="mt-1 flex items-center gap-2">
                                                         <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-brand uppercase text-muted-foreground">
                                                             {r.type}
                                                         </span>
-                                                        <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-brand uppercase text-muted-foreground">
-                                                            {r.difficulty}
+                                                        <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-brand text-muted-foreground">
+                                                            {r.size_kb} KB
                                                         </span>
                                                         {r.subtopic && (
                                                             <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-brand text-primary">
@@ -424,7 +431,7 @@ export default function CapsuleView() {
                                                     </div>
                                                 </div>
                                                 <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                                            </div>
+                                            </button>
                                         ))
                                     )}
                                 </div>

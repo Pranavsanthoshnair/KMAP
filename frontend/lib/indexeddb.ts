@@ -72,7 +72,7 @@ let dbPromise: Promise<IDBPDatabase<KMAPSchema>> | null = null;
 
 function getDB() {
     if (!dbPromise) {
-        dbPromise = openDB<KMAPSchema>('kmap-db', 2, {
+        dbPromise = openDB<KMAPSchema>('kmap-db', 3, {
             upgrade(db, _oldVersion) {
                 // ── Version 1 stores ─────────────────────────────────────────
                 if (!db.objectStoreNames.contains('profile')) {

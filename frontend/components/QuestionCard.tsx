@@ -15,7 +15,7 @@ export interface EngineQuestion {
     answer: string;
 }
 
-const FORM_LABELS: Record<number, string> = {
+const FORM_LABELS: Record<string, string> = {
     1: 'Direct',
     2: 'Reverse',
     3: 'True / False',

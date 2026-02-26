@@ -38,7 +38,7 @@ type Phase = 'quiz' | 'computing' | 'results';
 
 const CHOICE_LETTERS = ['A', 'B', 'C', 'D'];
 
-const FORM_LABELS: Record<number, string> = {
+const FORM_LABELS: Record<string, string> = {
     1: 'Direct', 2: 'Reverse', 3: 'True / False',
     4: 'Fill Blank', 5: 'Category', 6: 'Negative',
 };
