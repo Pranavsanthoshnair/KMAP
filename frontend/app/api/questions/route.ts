@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const subtopics = searchParams.get('subtopics') || '';
     const reset = searchParams.get('reset') === 'true';
 
-    const engineDir = path.join(process.cwd(), 'question_engine');
+    const engineDir = path.join(process.cwd(), '..', 'backend', 'question_engine');
 
     const args = [
         'python run.py',

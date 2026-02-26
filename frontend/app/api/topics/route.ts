@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const subject = (searchParams.get('subject') || '').toLowerCase();
     const grade_band = parseInt(searchParams.get('grade_band') || '2');
 
-    const bankPath = path.join(process.cwd(), 'question_engine', 'question_bank.json');
+    const bankPath = path.join(process.cwd(), '..', 'backend', 'question_engine', 'question_bank.json');
 
     try {
         const raw = fs.readFileSync(bankPath, 'utf-8');
