@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 export interface EngineQuestion {
     id: string;
-    form: number;
+    form: string | number;
     question: string;
     choices: string[];
     answer: string;

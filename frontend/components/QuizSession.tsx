@@ -6,15 +6,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, XCircle, ChevronRight, RotateCcw, Brain } from 'lucide-react';
-import { updateSkill } from '@/lib/indexeddb';
-import { saveMastery } from '@/lib/indexeddb';
+import { getSeenResourceIds, saveMastery, updateSkill } from '@/lib/indexeddb';
 import { trackQuestionsFetch } from '@/lib/data-tracker';
 import { cn } from '@/lib/utils';
+import { buildBloomFilter } from '@/lib/bloom';
 import ResourceCard, { ResourceMeta } from './ResourceCard';
 
 export interface EngineQuestion {
     id: string;
-    form: number;
+    form: string | number;
     question: string;
     choices: string[];
     answer: string;
@@ -42,6 +42,28 @@ const FORM_LABELS: Record<number, string> = {
     1: 'Direct', 2: 'Reverse', 3: 'True / False',
     4: 'Fill Blank', 5: 'Category', 6: 'Negative',
 };
+
+function computeMastery(results: QuizResult[]): Record<string, number> {
+    const stats: Record<string, { c: number; t: number }> = {};
+    for (const r of results) {
+        if (!stats[r.subtopic]) stats[r.subtopic] = { c: 0, t: 0 };
+        stats[r.subtopic].t++;
+        if (r.correct) stats[r.subtopic].c++;
+    }
+    const mastery: Record<string, number> = {};
+    for (const [st, s] of Object.entries(stats)) {
+        mastery[st] = Math.round((s.c / s.t) * 1000) / 1000;
+    }
+    return mastery;
+}
+
+function classifySubtopics(mastery: Record<string, number>): Record<string, string> {
+    const out: Record<string, string> = {};
+    for (const [st, score] of Object.entries(mastery)) {
+        out[st] = score < 0.3 ? 'weak' : score <= 0.6 ? 'medium' : 'strong';
+    }
+    return out;
+}
 
 
 export default function QuizSession({
@@ -98,30 +120,45 @@ export default function QuizSession({
         setComputing(true);
 
         try {
-            const res = await fetch('/api/quiz/submit', {
+            // Compute mastery locally (privacy-first): only send Bloom filter to server.
+            const m = computeMastery(results);
+            const c = classifySubtopics(m);
+            setMastery(m);
+            setClassified(c);
+
+            // Save mastery locally for the user's profile/progress.
+            for (const [st, score] of Object.entries(m)) {
+                await saveMastery(st, score);
+            }
+
+            const weakSubtopics = Object.entries(c)
+                .filter(([, cls]) => cls === 'weak')
+                .map(([st]) => st);
+
+            const filter = buildBloomFilter(weakSubtopics);
+
+            let recent_resource_ids: string[] = [];
+            try {
+                recent_resource_ids = await getSeenResourceIds();
+            } catch {
+                recent_resource_ids = [];
+            }
+
+            const res = await fetch('/api/quiz/allocate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     subject,
-                    grade: gradeBand,
-                    skill_level: Math.min(3, Math.ceil(gradeBand / 2)),
-                    subtopic_results: results,
+                    grade_band: gradeBand,
+                    level: Math.min(3, Math.ceil(gradeBand / 2)),
+                    filter,
+                    recent_resource_ids,
                     low_data_mode: lowDataMode,
                 }),
             });
 
             const data = await res.json();
-            const m: Record<string, number> = data.mastery ?? {};
-            const c: Record<string, string> = data.classified ?? {};
             const ids: string[] = data.resource_ids ?? [];
-
-            // Save mastery to IndexedDB (float 0–1, privacy-first)
-            for (const [st, score] of Object.entries(m)) {
-                await saveMastery(st, score);
-            }
-
-            setMastery(m);
-            setClassified(c);
             setResourceIds(ids);
 
             // Fetch metadata for allocated resources (lazy loading phase 1)

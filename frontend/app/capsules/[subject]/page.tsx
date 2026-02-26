@@ -11,6 +11,44 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
 
+const SEEN_KEY = 'kmap_seen_questions';
+
+function getSeen(): Record<string, string[]> {
+    if (typeof window === 'undefined') return {};
+    try {
+        const raw = localStorage.getItem(SEEN_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw) as Record<string, string[]>;
+        if (!parsed || typeof parsed !== 'object') return {};
+        return parsed;
+    } catch {
+        return {};
+    }
+}
+
+function setSeen(seen: Record<string, string[]>) {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(SEEN_KEY, JSON.stringify(seen));
+    } catch {
+        // ignore
+    }
+}
+
+function isSeen(seen: Record<string, string[]>, q: EngineQuestion): boolean {
+    const id = q.id;
+    const form = String(q.form ?? '');
+    return Boolean(id && form && Array.isArray(seen[id]) && seen[id].includes(form));
+}
+
+function markSeen(seen: Record<string, string[]>, q: EngineQuestion) {
+    const id = q.id;
+    const form = String(q.form ?? '');
+    if (!id || !form) return;
+    const existing = seen[id] ?? [];
+    if (!existing.includes(form)) seen[id] = [...existing, form];
+}
+
 interface QuizItem {
     topic: string;
     label: string;
@@ -75,14 +113,26 @@ export default function CapsuleView() {
 
             // Fetch 1 question per topic in parallel
             const level = gradeBandToLevel(gb);
+            const seen = getSeen();
             const fetched = await Promise.all(
                 topics.map(t =>
-                    fetch(`/api/questions?topic=${t.topic}&subject=${subject}&grade_band=${gb}&level=${level}&count=1`)
+                    fetch(`/api/questions?topic=${t.topic}&subject=${subject}&grade_band=${gb}&level=${level}&count=4`)
                         .then(r => r.json())
-                        .then(d => (d.questions?.[0] ?? null) as EngineQuestion | null)
+                        .then(d => {
+                            const qs = (d.questions ?? []) as EngineQuestion[];
+                            if (!Array.isArray(qs) || qs.length === 0) return null;
+                            const pick = qs.find(q => !isSeen(seen, q)) ?? qs[0];
+                            return (pick ?? null) as EngineQuestion | null;
+                        })
                         .catch(() => null)
                 )
             );
+
+            // Persist seen-set after we decide picks (single write avoids races)
+            for (const q of fetched) {
+                if (q) markSeen(seen, q);
+            }
+            setSeen(seen);
 
             setItems(topics.map((t, i) => ({
                 topic: t.topic,

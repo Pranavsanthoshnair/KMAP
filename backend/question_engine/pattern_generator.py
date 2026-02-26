@@ -12,6 +12,7 @@ Key features:
 """
 
 import json
+import hashlib
 import logging
 import random
 from pathlib import Path
@@ -22,7 +23,26 @@ log = logging.getLogger(__name__)
 _cache: Optional[List[Dict]] = None
 PATTERNS_FILE = Path(__file__).parent / "patterns.json"
 
-_SAFE_GLOBALS = {"abs": abs, "round": round, "max": max, "min": min, "__builtins__": {}}
+def gcd(a, b) -> int:
+    a = abs(int(a))
+    b = abs(int(b))
+    while b:
+        a, b = b, a % b
+    return a
+
+_SAFE_GLOBALS = {
+    "abs": abs,
+    "round": round,
+    "max": max,
+    "min": min,
+    "int": int,
+    "str": str,
+    "gcd": gcd,
+    "__builtins__": {},
+}
+
+def _stable_id_suffix(text: str) -> str:
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:8]
 
 
 def _load() -> List[Dict]:
@@ -146,7 +166,7 @@ def generate_from_pattern(
             session_sigs.add(sig)
 
         return {
-            "id":       f"{pattern['id']}_{abs(hash(question)) % 100000}",
+            "id":       f"{pattern['id']}_{_stable_id_suffix(question)}",
             "form":     pattern["type"],
             "question": question,
             "choices":  choices[:4],
