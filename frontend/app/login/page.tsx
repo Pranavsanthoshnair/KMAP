@@ -29,8 +29,10 @@ export default function LoginPage() {
         return () => { cancelled = true; };
     }, []);
 
-    const handleContinue = () => {
-        router.replace('/dashboard');
+    const handleContinue = async () => {
+        const profile = await getLocalProfile();
+        const hasSubjects = profile?.subjects && profile.subjects.length > 0;
+        router.replace(hasSubjects ? '/dashboard' : '/subjects');
     };
 
     const handleCreate = async () => {
@@ -43,7 +45,7 @@ export default function LoginPage() {
             recoveryKey: generateRecoveryKey(),
         };
         await saveLocalProfile(profile);
-        router.replace('/dashboard');
+        router.replace('/subjects');
     };
 
     if (loading) {

@@ -85,6 +85,14 @@ export default function Profile() {
                             <p className="mt-1 text-sm text-muted-foreground">Your local learning data</p>
                         </div>
                         <div className="flex items-center gap-1">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-xs font-brand"
+                                onClick={() => router.push('/subjects')}
+                            >
+                                Subjects
+                            </Button>
                             <Link href="/settings">
                                 <Button variant="ghost" size="sm">
                                     <Settings className="h-4 w-4" />

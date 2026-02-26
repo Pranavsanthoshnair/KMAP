@@ -17,7 +17,7 @@ export default function Navbar() {
                     {ready && (
                         <>
                             <Button variant="ghost" size="sm" asChild>
-                                <Link href="/dashboard">Subjects</Link>
+                                <Link href="/subjects">Subjects</Link>
                             </Button>
                             <Button variant="ghost" size="sm" asChild>
                                 <Link href="/profile">Profile</Link>

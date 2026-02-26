@@ -264,7 +264,7 @@ def generate_single_subtopic_question(
         return {
             "id":       f"fallback_{subject}_{grade}_{subtopic}",
             "type":     "auto_generated",
-            "question": f"[{disp} — {gdisp}] What is {a} + {b}?",
+            "question": f"What is {a} + {b}?",
             "choices":  choices[:4],
             "answer":   answer,
         }
