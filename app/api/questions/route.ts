@@ -48,8 +48,9 @@ export async function GET(request: NextRequest) {
         const { stdout } = await execAsync(args, { cwd: engineDir, timeout: 15000 });
         const data = JSON.parse(stdout.trim());
         return NextResponse.json(data);
-    } catch (err: any) {
-        console.error('[API/questions] Engine error:', err?.stderr || err?.message);
+    } catch (err: unknown) {
+        const e = err as { stderr?: string; message?: string };
+        console.error('[API/questions] Engine error:', e?.stderr || e?.message);
         return NextResponse.json(
             { questions: [], exhausted: true, error: 'Question engine failed.' },
             { status: 500 }

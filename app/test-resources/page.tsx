@@ -2,11 +2,22 @@
 
 import { useState, useEffect } from 'react';
 
+interface ResourceModule {
+    id: string;
+    subject: string;
+    topic: string;
+    title: string;
+    description: string;
+    level: number;
+    grade_band: number;
+    size_bytes: number;
+}
+
 export default function ResourceTest() {
     const [filter, setFilter] = useState('0100000000000000'); // 'cell_structure' is index 0
     const [level, setLevel] = useState(2);
     const [gradeBand, setGradeBand] = useState<number | null>(null);
-    const [resources, setResources] = useState<any[]>([]);
+    const [resources, setResources] = useState<ResourceModule[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -47,9 +58,10 @@ export default function ResourceTest() {
             } else {
                 setResources(data.modules || []);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Fetch error:', err);
-            setError(err.message);
+            const e = err as { message?: string };
+            setError(e?.message ?? 'Unknown error');
         } finally {
             setLoading(false);
         }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -68,8 +68,9 @@ export default function QuizSession({
     const selectedChoice = answered.get(currentIndex) ?? null;
     const isSubmitted = selectedChoice !== null;
 
-    // Track questions load
-    trackQuestionsFetch(questions.length);
+    useEffect(() => {
+        trackQuestionsFetch(questions.length);
+    }, [questions]);
 
     const handleAnswer = useCallback(async (choice: string) => {
         if (answered.has(currentIndex)) return; // No reattempt

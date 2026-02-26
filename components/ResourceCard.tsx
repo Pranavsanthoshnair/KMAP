@@ -5,13 +5,13 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FileText, Video, AlignLeft, Download, ExternalLink, ChevronDown } from 'lucide-react';
-import { trackMetadataFetch, trackResourceOpen } from '@/lib/data-tracker';
+import { trackResourceOpen } from '@/lib/data-tracker';
 import { cn } from '@/lib/utils';
 
 export interface ResourceMeta {
     id: string;
     title: string;
-    type: 'pdf' | 'video' | 'text';
+    type: string;
     size_kb: number;
     preview_text?: string;
     thumbnail_url?: string | null;
@@ -45,11 +45,9 @@ export default function ResourceCard({ resource, lowDataMode = false }: Resource
     const [loadingUrl, setLoadingUrl] = useState(false);
     const [urlError, setUrlError] = useState('');
 
-    // Track that metadata was shown
-    trackMetadataFetch(1);
-
-    const Icon = TYPE_ICONS[resource.type] ?? FileText;
-    const iconColor = TYPE_COLORS[resource.type] ?? 'text-muted-foreground';
+    const typeKey = (resource.type in TYPE_ICONS ? (resource.type as keyof typeof TYPE_ICONS) : 'pdf');
+    const Icon = TYPE_ICONS[typeKey] ?? FileText;
+    const iconColor = TYPE_COLORS[typeKey] ?? 'text-muted-foreground';
 
     /** Phase 2: fetch signed URL on user click */
     const fetchContent = async () => {

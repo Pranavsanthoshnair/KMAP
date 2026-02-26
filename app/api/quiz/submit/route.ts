@@ -122,6 +122,7 @@ function allocateResources(
  *
  * Receives quiz answers → computes mastery → runs allocation → returns resource IDs.
  * Pure TypeScript — no Python subprocesses.
+ * No user data is persisted server-side.
  */
 export async function POST(request: NextRequest) {
     let body: SubmitPayload;
