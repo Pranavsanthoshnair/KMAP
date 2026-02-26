@@ -4,18 +4,18 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
-import QuestionCard, { type EngineQuestion } from '@/components/QuestionCard';
-import { getLocalProfile } from '@/lib/indexeddb';
+import QuizSession from '@/components/QuizSession';
+import { getLocalProfile, getSeenResourceIds } from '@/lib/indexeddb';
 import { ArrowLeft, RefreshCw, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import type { EngineQuestion } from '@/components/QuizSession';
 
 interface Topic {
     topic: string;
     label: string;
 }
 
-/** Map a user's grade_band to a question difficulty level (1–3) */
 function gradeBandToLevel(gb: number): number {
     if (gb <= 1) return 1;
     if (gb <= 3) return 2;
@@ -33,11 +33,10 @@ export default function CapsuleView() {
     const [selectedTopic, setSelectedTopic] = useState('');
     const [questions, setQuestions] = useState<EngineQuestion[]>([]);
     const [fetching, setFetching] = useState(false);
-    const [exhausted, setExhausted] = useState(false);
     const [initialized, setInitialized] = useState(false);
     const [error, setError] = useState('');
+    const [sessionKey, setSessionKey] = useState(0); // bump to remount QuizSession
 
-    // ── 1. Redirect if unauthenticated, then load grade + topics ──────────────
     useEffect(() => {
         if (!loading && !user) { router.push('/login'); return; }
         if (!user) return;
@@ -58,13 +57,11 @@ export default function CapsuleView() {
         });
     }, [user, loading, router, subject]);
 
-    // ── 2. Load questions whenever topic or grade changes ─────────────────────
     const loadQuestions = useCallback(async (topic: string, gb: number, reset = false) => {
         if (!topic) return;
         setFetching(true);
         setQuestions([]);
         setError('');
-        setExhausted(false);
 
         try {
             const level = gradeBandToLevel(gb);
@@ -74,9 +71,10 @@ export default function CapsuleView() {
             if (!res.ok) throw new Error(`API error: ${res.status}`);
             const data = await res.json();
             setQuestions(data.questions ?? []);
-            setExhausted(data.exhausted ?? false);
+            // Bump session key so QuizSession fully remounts with fresh state
+            setSessionKey(k => k + 1);
         } catch {
-            setError('Failed to generate questions. Make sure Python is available.');
+            setError('Failed to generate questions. Make sure Python is installed.');
         } finally {
             setFetching(false);
         }
@@ -86,13 +84,13 @@ export default function CapsuleView() {
         if (selectedTopic) loadQuestions(selectedTopic, gradeBand);
     }, [selectedTopic, gradeBand, loadQuestions]);
 
-    // ── Loading skeleton ───────────────────────────────────────────────────────
+    // ── Loading ────────────────────────────────────────────────────────────────
     if (loading || !initialized) {
         return (
             <div className="flex min-h-screen flex-col bg-background">
                 <Navbar />
                 <main className="flex flex-1 items-center justify-center">
-                    <p className="text-sm text-muted-foreground">Loading...</p>
+                    <p className="text-sm text-muted-foreground">Loading…</p>
                 </main>
             </div>
         );
@@ -103,26 +101,22 @@ export default function CapsuleView() {
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <Navbar />
-
             <main className="container mx-auto max-w-2xl px-4 py-10">
                 <div className="animate-fade-in">
 
-                    {/* Back button */}
+                    {/* Back */}
                     <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard')} className="mb-6">
                         <ArrowLeft className="mr-1 h-4 w-4" /> Back
                     </Button>
 
-                    {/* Page header */}
+                    {/* Header */}
                     <div className="flex items-start justify-between">
                         <div>
-                            <h1 className="font-brand text-xl font-bold capitalize text-foreground">
-                                {subject}
-                            </h1>
+                            <h1 className="font-brand text-xl font-bold capitalize text-foreground">{subject}</h1>
                             <p className="mt-1 text-sm text-muted-foreground">
                                 Grade Band {gradeBand} · Level {gradeBandToLevel(gradeBand)} questions
                             </p>
                         </div>
-                        {/* Refresh button */}
                         <Button
                             variant="outline"
                             size="sm"
@@ -155,7 +149,7 @@ export default function CapsuleView() {
                         </div>
                     )}
 
-                    {/* Divider + topic label */}
+                    {/* Topic label divider */}
                     {selectedTopic && (
                         <div className="mt-6 flex items-center gap-3">
                             <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -173,7 +167,7 @@ export default function CapsuleView() {
                         </div>
                     )}
 
-                    {/* Loading placeholder cards */}
+                    {/* Loading skeletons */}
                     {fetching && (
                         <div className="mt-4 space-y-4">
                             {[1, 2, 3].map(i => (
@@ -182,32 +176,28 @@ export default function CapsuleView() {
                         </div>
                     )}
 
-                    {/* Question cards */}
+                    {/* Quiz Session — remounts on sessionKey change */}
                     {!fetching && questions.length > 0 && (
-                        <div className="mt-4 space-y-4">
-                            {questions.map((q, i) => (
-                                <QuestionCard key={`${q.id}-${q.form}`} question={q} index={i} topic={selectedTopic} />
-                            ))}
+                        <div className="mt-4">
+                            <QuizSession
+                                key={sessionKey}
+                                questions={questions}
+                                topic={selectedTopic}
+                                subject={subject}
+                                gradeBand={gradeBand}
+                                onNewSet={() => loadQuestions(selectedTopic, gradeBand, true)}
+                            />
                         </div>
                     )}
 
                     {/* Empty state */}
                     {!fetching && questions.length === 0 && !error && (
                         <div className="mt-8 text-center">
-                            <p className="text-sm text-muted-foreground">
-                                No questions available for this topic yet.
-                            </p>
+                            <p className="text-sm text-muted-foreground">No questions available for this topic yet.</p>
                             <p className="mt-1 text-xs text-muted-foreground">
-                                Add facts to <code className="rounded bg-secondary px-1">question_engine/facts.json</code> to generate more.
+                                Add facts to <code className="rounded bg-secondary px-1">question_engine/facts.json</code>.
                             </p>
                         </div>
-                    )}
-
-                    {/* Exhaustion notice */}
-                    {exhausted && questions.length > 0 && (
-                        <p className="mt-4 text-center text-xs text-muted-foreground">
-                            You've seen all forms for this topic. Click <strong>New Set</strong> to start again.
-                        </p>
                     )}
 
                 </div>

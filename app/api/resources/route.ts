@@ -1,55 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import path from 'path';
-
-const execAsync = promisify(exec);
+import { createServerSupabase } from '@/lib/supabase/server';
 
 /**
- * POST /api/resources
- * Body: { "filter": "010011...", "level": 1, "grade_band": 2 }
+ * GET /api/resources?ids=r001,r002,r003&low_data=false
  *
- * Calls the local resource_engine and returns matched modules.
+ * Phase 1 lazy load — returns METADATA ONLY.
+ * No heavy content, no auto-download.
  */
-export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        const { filter, level, grade_band } = body;
+export async function GET(request: NextRequest) {
+    const { searchParams } = new URL(request.url);
+    const idsParam = searchParams.get('ids') ?? '';
+    const lowData = searchParams.get('low_data') === 'true';
 
-        if (!filter || level === undefined || grade_band === undefined) {
-            return NextResponse.json(
-                { error: 'Missing required parameters: filter, level, grade_band' },
-                { status: 400 }
-            );
-        }
+    const ids = idsParam
+        .split(',')
+        .map(id => id.trim())
+        .filter(Boolean)
+        .slice(0, 20); // hard cap to prevent abuse
 
-        const engineDir = path.join(process.cwd(), 'resource_engine');
-
-        // Build the command
-        const cmd = `python run.py --filter="${filter}" --level=${level} --grade_band=${grade_band}`;
-
-        const { stdout } = await execAsync(cmd, {
-            cwd: engineDir,
-            timeout: 10000, // 10 second safety timeout
-        });
-
-        const result = JSON.parse(stdout.trim());
-
-        if (result.error) {
-            console.error('[API/resources] Engine returned error:', result.error);
-            return NextResponse.json(
-                { error: result.error },
-                { status: 500 }
-            );
-        }
-
-        return NextResponse.json(result);
-
-    } catch (err: any) {
-        console.error('[API/resources] Error:', err?.message || err);
-        return NextResponse.json(
-            { error: 'Failed to fetch resources.' },
-            { status: 500 }
-        );
+    if (ids.length === 0) {
+        return NextResponse.json([]);
     }
+
+    const supabase = createServerSupabase();
+
+    // Select only metadata — NOT storage_path (we never expose that directly)
+    const { data, error } = await supabase
+        .from('resources')
+        .select('id, title, type, size_kb, preview_text, thumbnail_url, subtopic, subject, grade, difficulty')
+        .in('id', ids);
+
+    if (error) {
+        console.error('[GET /api/resources] Supabase error:', error.message);
+        return NextResponse.json({ error: 'Failed to fetch resource metadata' }, { status: 500 });
+    }
+
+    // Apply Low Data Mode: strip thumbnails to save bandwidth
+    const payload = (data ?? []).map(r => ({
+        ...r,
+        thumbnail_url: lowData ? null : r.thumbnail_url,
+    }));
+
+    // Preserve the requested ID order
+    const ordered = ids
+        .map(id => payload.find(r => r.id === id))
+        .filter(Boolean);
+
+    return NextResponse.json(ordered);
 }
