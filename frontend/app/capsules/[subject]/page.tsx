@@ -9,6 +9,7 @@ import { ArrowLeft, CheckCircle2, XCircle, BarChart3, RefreshCw, BookOpen } from
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
+import { formatSubjectId } from '@/lib/subjects';
 
 const SEEN_KEY = 'kmap_seen_questions';
 
@@ -194,11 +195,13 @@ export default function CapsuleView() {
     }
 
     const currentItem = items[currentIdx];
-    const answeredItems = items.filter(i => i.result !== null);
-    const correctCount = answeredItems.filter(i => i.result === 'correct').length;
-    const overallPct = answeredItems.length > 0
-        ? Math.round((correctCount / answeredItems.length) * 100)
+    const totalItems = items.length;
+    const correctCount = items.filter(i => i.result === 'correct').length;
+    const overallPct = totalItems > 0
+        ? Math.round((correctCount / totalItems) * 100)
         : 0;
+
+    const prettySubject = formatSubjectId(subject);
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
@@ -213,7 +216,7 @@ export default function CapsuleView() {
 
                     {/* Subject title + progress counter */}
                     <div className="flex items-center justify-between mb-4">
-                        <h1 className="font-brand text-xl font-bold capitalize text-foreground">{subject}</h1>
+                        <h1 className="font-brand text-xl font-bold text-foreground">{prettySubject}</h1>
                         {phase === 'quiz' && (
                             <span className="rounded-full bg-secondary px-3 py-1 text-xs font-brand text-muted-foreground">
                                 {currentIdx + 1} / {items.length}
@@ -298,7 +301,7 @@ export default function CapsuleView() {
                                 <BarChart3 className="mx-auto mb-3 h-8 w-8 text-primary" />
                                 <p className="font-brand text-4xl font-bold text-foreground">{overallPct}%</p>
                                 <p className="mt-1 text-sm text-muted-foreground font-brand">
-                                    {correctCount} of {answeredItems.length} correct
+                                    {correctCount} of {totalItems} correct
                                 </p>
                             </div>
 

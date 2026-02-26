@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
+import { exec, ExecOptions } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
 
@@ -45,16 +45,16 @@ export async function GET(request: NextRequest) {
     ].join(' ');
 
     try {
-        const { stdout } = await execAsync(args, {
+        const options: ExecOptions = {
             cwd: engineDir,
             timeout: 15000,
             maxBuffer: 2 * 1024 * 1024,
-            encoding: 'utf8',
             env: {
                 ...process.env,
                 PYTHONIOENCODING: 'utf-8',
             },
-        } as any);
+        };
+        const { stdout } = await execAsync(args, options);
         const data = JSON.parse(stdout.trim());
         return NextResponse.json(data);
     } catch (err: unknown) {

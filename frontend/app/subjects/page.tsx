@@ -6,76 +6,59 @@ import Navbar from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getLocalProfile, saveLocalProfile } from '@/lib/indexeddb';
-import { Sigma, FlaskConical, Languages, Clock, Laptop } from 'lucide-react';
+import { Sigma, FlaskConical, Languages } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { fetchSubjects, type SubjectOption } from '@/lib/subjects';
 
-type SubjectId = 'math' | 'science' | 'english';
-
-interface SubjectOption {
-    id: SubjectId;
-    label: string;
-    description: string;
-    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-}
-
-const SUBJECT_OPTIONS: SubjectOption[] = [
-    {
-        id: 'math',
-        label: 'Math',
-        description: 'Arithmetic · Algebra · Geometry · Calculus',
-        icon: Sigma,
-    },
-    {
-        id: 'science',
-        label: 'Science',
-        description: 'Biology · Chemistry · Physics · Microbiology',
-        icon: FlaskConical,
-    },
-    {
-        id: 'english',
-        label: 'English',
-        description: 'Grammar · Literature · Writing · Linguistics',
-        icon: Languages,
-    },
-];
+const SUBJECT_DESCRIPTIONS: Record<string, string> = {
+    math: 'Arithmetic · Algebra · Geometry · Calculus',
+    science: 'Biology · Chemistry · Physics · Microbiology',
+    english: 'Grammar · Literature · Writing · Linguistics',
+};
+const SUBJECT_ICONS: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
+    math: Sigma,
+    science: FlaskConical,
+    english: Languages,
+};
 
 export default function SubjectSelectionPage() {
     const router = useRouter();
-    const [selected, setSelected] = useState<SubjectId[]>([]);
+    const [selected, setSelected] = useState<string[]>([]);
+    const [subjectOptions, setSubjectOptions] = useState<SubjectOption[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         let cancelled = false;
-        getLocalProfile()
-            .then((p) => {
-                if (cancelled || !p) return;
-                if (p.subjects && p.subjects.length > 0) {
-                    const valid = p.subjects.filter((s): s is SubjectId =>
-                        ['math', 'science', 'english'].includes(s),
-                    );
-                    setSelected(valid);
-                }
-            })
-            .finally(() => {
+        (async () => {
+            const list = await fetchSubjects();
+            if (cancelled) return;
+            setSubjectOptions(list);
+            const profile = await getLocalProfile();
+            if (cancelled || !profile) {
                 if (!cancelled) setLoading(false);
-            });
-
-        return () => {
-            cancelled = true;
-        };
+                return;
+            }
+            if (profile.subjects?.length) {
+                const validIds = list.map(s => s.id);
+                const valid = profile.subjects.filter(s => validIds.includes(s));
+                setSelected(valid);
+            }
+            if (!cancelled) setLoading(false);
+        })();
+        return () => { cancelled = true; };
     }, []);
 
-    const toggleSubject = (id: SubjectId) => {
+    const toggleSubject = (id: string) => {
         setSelected((prev) =>
             prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id],
         );
     };
 
     const handleSelectAll = () => {
-        if (selected.length === SUBJECT_OPTIONS.length) {
+        if (selected.length === subjectOptions.length) {
             setSelected([]);
         } else {
-            setSelected(SUBJECT_OPTIONS.map((s) => s.id));
+            setSelected(subjectOptions.map((s) => s.id));
         }
     };
 
@@ -115,7 +98,7 @@ export default function SubjectSelectionPage() {
                             onClick={handleSelectAll}
                             className="text-primary hover:underline"
                         >
-                            {selected.length === SUBJECT_OPTIONS.length ? 'Clear All' : 'Select All'}
+                            {selected.length === subjectOptions.length ? 'Clear All' : 'Select All'}
                         </button>
                     </div>
 
@@ -130,8 +113,10 @@ export default function SubjectSelectionPage() {
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2">
-                        {SUBJECT_OPTIONS.map(({ id, label, description, icon: Icon }) => {
+                        {subjectOptions.map(({ id, label }) => {
                             const active = selected.includes(id);
+                            const Icon = SUBJECT_ICONS[id] ?? Sigma;
+                            const description = SUBJECT_DESCRIPTIONS[id] ?? '';
                             return (
                                 <button
                                     key={id}
@@ -154,9 +139,11 @@ export default function SubjectSelectionPage() {
                                                 <p className="font-brand text-sm font-semibold text-foreground">
                                                     {label}
                                                 </p>
-                                                <p className="text-xs text-muted-foreground">
-                                                    {description}
-                                                </p>
+                                                {description && (
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {description}
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     </Card>

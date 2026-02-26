@@ -6,10 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, XCircle, ChevronRight, RotateCcw, Brain } from 'lucide-react';
-import { getSeenResourceIds, saveMastery, updateSkill } from '@/lib/indexeddb';
+import { saveMastery, updateSkill } from '@/lib/indexeddb';
 import { trackQuestionsFetch } from '@/lib/data-tracker';
 import { cn } from '@/lib/utils';
-import { buildBloomFilter } from '@/lib/bloom';
+import { useSkillContext } from '@/contexts/SkillContext';
 import ResourceCard, { ResourceMeta } from './ResourceCard';
 
 export interface EngineQuestion {
@@ -42,6 +42,12 @@ const FORM_LABELS: Record<number, string> = {
     1: 'Direct', 2: 'Reverse', 3: 'True / False',
     4: 'Fill Blank', 5: 'Category', 6: 'Negative',
 };
+
+function determineLevelFromPercentage(percentage: number): 1 | 2 | 3 {
+    if (percentage < 60) return 1;
+    if (percentage < 90) return 2;
+    return 3;
+}
 
 function computeMastery(results: QuizResult[]): Record<string, number> {
     const stats: Record<string, { c: number; t: number }> = {};
@@ -81,9 +87,11 @@ export default function QuizSession({
     const [resourceIds, setResourceIds] = useState<string[]>([]);
     const [resources, setResources] = useState<ResourceMeta[]>([]);
     const [computing, setComputing] = useState(false);
+    const [overallScore, setOverallScore] = useState<number | null>(null);
     const [lowDataMode] = useState(
         () => typeof window !== 'undefined' && localStorage.getItem('kmap_low_data') === 'true'
     );
+    const skillCtx = useSkillContext();
 
     const current = questions[currentIndex];
     const isLastQuestion = currentIndex === questions.length - 1;
@@ -120,6 +128,11 @@ export default function QuizSession({
         setComputing(true);
 
         try {
+            const total = results.length;
+            const correctCount = results.filter(r => r.correct).length;
+            const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            setOverallScore(percentage);
+
             // Compute mastery locally (privacy-first): only send Bloom filter to server.
             const m = computeMastery(results);
             const c = classifySubtopics(m);
@@ -131,44 +144,39 @@ export default function QuizSession({
                 await saveMastery(st, score);
             }
 
+            // Update per-subject skill level based on overall percentage.
+            const levelFromScore = determineLevelFromPercentage(percentage);
+            skillCtx.updateSkill(subject, levelFromScore, percentage);
+
             const weakSubtopics = Object.entries(c)
                 .filter(([, cls]) => cls === 'weak')
                 .map(([st]) => st);
+            const skillLevel = skillCtx.getSkill(subject);
 
-            const filter = buildBloomFilter(weakSubtopics);
+            const requests = weakSubtopics.length > 0
+                ? weakSubtopics.slice(0, 5).map(subtopic_id => ({
+                    subject_id: subject,
+                    subtopic_id,
+                    skill_level: skillLevel,
+                }))
+                : [{ subject_id: subject, subtopic_id: topic, skill_level: skillLevel }];
 
-            let recent_resource_ids: string[] = [];
-            try {
-                recent_resource_ids = await getSeenResourceIds();
-            } catch {
-                recent_resource_ids = [];
-            }
-
-            const res = await fetch('/api/quiz/allocate', {
+            const res = await fetch('/api/resources/allocate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    subject,
-                    grade_band: gradeBand,
-                    level: Math.min(3, Math.ceil(gradeBand / 2)),
-                    filter,
-                    recent_resource_ids,
-                    low_data_mode: lowDataMode,
-                }),
+                body: JSON.stringify({ requests, low_data_mode: lowDataMode }),
             });
 
-            const data = await res.json();
-            const ids: string[] = data.resource_ids ?? [];
-            setResourceIds(ids);
-
-            // Fetch metadata for allocated resources (lazy loading phase 1)
-            if (ids.length > 0) {
-                const metaRes = await fetch(
-                    `/api/resources?ids=${ids.join(',')}&low_data=${lowDataMode}`
-                );
-                const metaData: ResourceMeta[] = (await metaRes.json()) as ResourceMeta[];
-                setResources(metaData);
-            }
+            const data = (await res.json()) as { resources?: Array<{ id: string; title: string; thumbnail_url?: string | null }> };
+            const list = data.resources ?? [];
+            setResourceIds(list.map(r => r.id));
+            setResources(list.map(r => ({
+                id: r.id,
+                title: r.title,
+                thumbnail_url: r.thumbnail_url ?? null,
+                type: 'text',
+                size_kb: 0,
+            })));
 
             setPhase('results');
         } catch {
@@ -197,9 +205,11 @@ export default function QuizSession({
     // ── Results phase ─────────────────────────────────────────────────────────
     if (phase === 'results') {
         const masteryEntries = Object.entries(mastery);
-        const score = masteryEntries.length > 0
-            ? Math.round((masteryEntries.reduce((s, [, v]) => s + v, 0) / masteryEntries.length) * 100)
-            : 0;
+        const score = overallScore != null
+            ? overallScore
+            : masteryEntries.length > 0
+                ? Math.round((masteryEntries.reduce((s, [, v]) => s + v, 0) / masteryEntries.length) * 100)
+                : 0;
 
         return (
             <div className="space-y-6">
@@ -293,7 +303,9 @@ export default function QuizSession({
                 <div className="flex items-center gap-2 border-b border-border bg-secondary/50 px-5 py-3">
                     <span className="font-brand text-xs text-muted-foreground">Q{currentIndex + 1}</span>
                     <Badge variant="outline" className="font-brand text-xs">
-                        {FORM_LABELS[current.form] ?? `Form ${current.form}`}
+                        {typeof current.form === 'number'
+                            ? (FORM_LABELS[current.form] ?? `Form ${current.form}`)
+                            : current.form}
                     </Badge>
                 </div>
 

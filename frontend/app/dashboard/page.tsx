@@ -7,43 +7,15 @@ import Navbar from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getLocalProfile, getAllCachedCapsules } from '@/lib/indexeddb';
+import { getGradeLabel } from '@/lib/grades';
 import { BookOpen, FlaskConical, Languages, ChevronRight, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { fetchSubjects, FALLBACK_SUBJECTS, type SubjectId } from '@/lib/subjects';
 
-type SubjectId = 'math' | 'science' | 'english';
-
-const SUBJECTS: {
-    id: SubjectId;
-    label: string;
-    tag: string;
-    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-}[] = [
-    {
-        id: 'math',
-        label: 'Mathematics',
-        tag: 'STEM',
-        icon: BookOpen,
-    },
-    {
-        id: 'science',
-        label: 'Science',
-        tag: 'SCIENCE',
-        icon: FlaskConical,
-    },
-    {
-        id: 'english',
-        label: 'English',
-        tag: 'LANGUAGE',
-        icon: Languages,
-    },
-];
-
-const GRADE_BAND_LABELS: Record<number, string> = {
-    1: 'Classes 1–4',
-    2: 'Classes 5–8',
-    3: 'Classes 9–10',
-    4: 'Classes 11–12',
-    5: 'College',
+const SUBJECT_ICONS: Record<string, { tag: string; icon: React.ComponentType<React.SVGProps<SVGSVGElement>> }> = {
+    math: { tag: 'STEM', icon: BookOpen },
+    science: { tag: 'SCIENCE', icon: FlaskConical },
+    english: { tag: 'LANGUAGE', icon: Languages },
 };
 
 export default function Dashboard() {
@@ -52,23 +24,23 @@ export default function Dashboard() {
     const [name, setName] = useState('');
     const [gradeBand, setGradeBand] = useState(2);
     const [initialized, setInitialized] = useState(false);
-    const [subjects, setSubjects] = useState<SubjectId[]>([]);
+    const [subjects, setSubjects] = useState<string[]>([]);
+    const [subjectOptions, setSubjectOptions] = useState<{ id: string; label: string }[]>([]);
     const [cacheCounts, setCacheCounts] = useState<Record<string, number>>({});
 
     useEffect(() => {
         if (!ready) return;
         (async () => {
+            const list = await fetchSubjects();
+            setSubjectOptions(list);
+
             const profile = await getLocalProfile();
-            if (profile) {
-                setName(profile.name);
-                setGradeBand(profile.gradeBand ?? 2);
-                const validSubjects =
-                    profile.subjects?.filter((s): s is SubjectId =>
-                        ['math', 'science', 'english'].includes(s),
-                    ) || [];
-                setSubjects(validSubjects.length ? validSubjects : SUBJECTS.map((s) => s.id));
+            const validIds = list.map(s => s.id);
+            if (profile?.subjects?.length) {
+                const valid = profile.subjects.filter((s): s is string => validIds.includes(s));
+                setSubjects(valid.length ? valid : validIds);
             } else {
-                setSubjects(SUBJECTS.map((s) => s.id));
+                setSubjects(validIds);
             }
 
             const capsules = await getAllCachedCapsules();
@@ -107,12 +79,12 @@ export default function Dashboard() {
                                 {name || 'Learner'}
                             </h1>
                             <p className="mt-1 text-sm text-muted-foreground">
-                                {GRADE_BAND_LABELS[gradeBand]} · Tap a subject to open your capsule session.
+                                {getGradeLabel(gradeBand)} · Tap a subject to open your capsule session.
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
                             <Badge variant="outline" className="font-brand text-xs">
-                                Grade Band {gradeBand}
+                                {getGradeLabel(gradeBand)}
                             </Badge>
                             <span className="text-xs text-muted-foreground">
                                 Progress adapts automatically as you answer.
@@ -126,8 +98,10 @@ export default function Dashboard() {
                             Your Subjects
                         </h2>
                         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                            {SUBJECTS.filter((s) => subjects.includes(s.id)).map(
-                                ({ id, label, tag, icon: Icon }) => {
+                            {subjectOptions.filter((s) => subjects.includes(s.id)).map(({ id, label }) => {
+                                    const meta = SUBJECT_ICONS[id] ?? { tag: id.toUpperCase(), icon: BookOpen };
+                                    const Icon = meta.icon;
+                                    const tag = meta.tag;
                                     const cacheCount = cacheCounts[id] ?? 0;
                                     const approxKb = cacheCount * 4; // rough estimate
                                     return (
@@ -153,7 +127,7 @@ export default function Dashboard() {
                                                     </div>
                                                     <Badge className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-brand text-primary">
                                                         <Trophy className="h-3 w-3" />
-                                                        Level {gradeBand}
+                                                        {getGradeLabel(gradeBand)}
                                                     </Badge>
                                                 </div>
 
@@ -178,8 +152,7 @@ export default function Dashboard() {
                                             </div>
                                         </Card>
                                     );
-                                },
-                            )}
+                                })}
                         </div>
                     </section>
                 </div>

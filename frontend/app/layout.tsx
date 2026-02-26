@@ -22,6 +22,9 @@ export const metadata: Metadata = {
     title: 'KMAP – Knowledge Mapping Adaptive Platform',
     description:
         'Privacy-first adaptive learning through Knowledge Capsules. Minimal bandwidth. Offline capable.',
+    icons: {
+        icon: '/favicon.svg',
+    },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

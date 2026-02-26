@@ -66,13 +66,22 @@ interface KMAPSchema extends DBSchema {
             timestamp: number;
         };
     };
+    /** Subject-level skill (1–3) and optional last score — privacy-first, local only */
+    subjectSkills: {
+        key: string; // subjectId (lowercase)
+        value: {
+            subjectId: string;
+            level: 1 | 2 | 3;
+            lastScore?: number;
+        };
+    };
 }
 
 let dbPromise: Promise<IDBPDatabase<KMAPSchema>> | null = null;
 
 function getDB() {
     if (!dbPromise) {
-        dbPromise = openDB<KMAPSchema>('kmap-db', 2, {
+        dbPromise = openDB<KMAPSchema>('kmap-db', 3, {
             upgrade(db, _oldVersion) {
                 // ── Version 1 stores ─────────────────────────────────────────
                 if (!db.objectStoreNames.contains('profile')) {
@@ -95,6 +104,10 @@ function getDB() {
                 }
                 if (!db.objectStoreNames.contains('seenResources')) {
                     db.createObjectStore('seenResources', { keyPath: 'id' });
+                }
+                // ── Version 3: subject-level skills (privacy-first, no server sync) ──
+                if (!db.objectStoreNames.contains('subjectSkills')) {
+                    db.createObjectStore('subjectSkills', { keyPath: 'subjectId' });
                 }
             },
         });
@@ -161,6 +174,42 @@ export async function updateSkill(concept: string, correct: boolean) {
 export async function getSkillProfile() {
     const db = await getDB();
     return db.getAll('skillProfile');
+}
+
+// ── Subject skills (level 1–3, optional lastScore) — IndexedDB source of truth ──
+export async function getSubjectSkill(subjectId: string): Promise<{ level: 1 | 2 | 3; lastScore?: number } | undefined> {
+    const db = await getDB();
+    const row = await db.get('subjectSkills', subjectId.toLowerCase());
+    if (!row) return undefined;
+    return { level: row.level, lastScore: row.lastScore };
+}
+
+export async function getAllSubjectSkills(): Promise<{ skills: Record<string, 1 | 2 | 3>; lastScores: Record<string, number> }> {
+    const db = await getDB();
+    const all = await db.getAll('subjectSkills');
+    const skills: Record<string, 1 | 2 | 3> = {};
+    const lastScores: Record<string, number> = {};
+    for (const row of all) {
+        skills[row.subjectId] = row.level;
+        if (typeof row.lastScore === 'number' && !Number.isNaN(row.lastScore)) {
+            lastScores[row.subjectId] = row.lastScore;
+        }
+    }
+    return { skills, lastScores };
+}
+
+export async function setSubjectSkill(
+    subjectId: string,
+    level: 1 | 2 | 3,
+    lastScore?: number
+): Promise<void> {
+    const db = await getDB();
+    const key = subjectId.toLowerCase();
+    const value: KMAPSchema['subjectSkills']['value'] = { subjectId: key, level };
+    if (typeof lastScore === 'number' && !Number.isNaN(lastScore)) {
+        value.lastScore = lastScore;
+    }
+    await db.put('subjectSkills', value);
 }
 
 // ── Mastery Map (float 0–1, privacy-first) ────────────────────────────────────
@@ -251,6 +300,7 @@ export async function clearAllLocalData() {
         'masteryMap',
         'seenResources',
         'errorPatterns',
+        'subjectSkills',
     ] as const;
     for (const name of stores) {
         await db.clear(name);
