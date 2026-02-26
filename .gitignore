@@ -12,6 +12,17 @@ dist
 dist-ssr
 *.local
 
+# Next.js build output (never commit)
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# Python cache (never commit)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
