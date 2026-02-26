@@ -40,7 +40,7 @@ function formatKB(kb: number) {
 }
 
 export default function Profile() {
-    const { user, loading } = useAuth();
+    const { ready, userId } = useAuth();
     const router = useRouter();
 
     const [profileName, setProfileName] = useState('');
@@ -50,7 +50,7 @@ export default function Profile() {
     const [dataUsedKB, setDataUsedKB] = useState(0);
 
     useEffect(() => {
-        if (!loading && !user) { router.push('/login'); return; }
+        if (!ready) return;
 
         getLocalProfile().then(p => {
             if (p) { setProfileName(p.name); setGradeBand(p.gradeBand); }
@@ -65,7 +65,7 @@ export default function Profile() {
         // Data usage — client-only
         const usage = getDailyUsage();
         setDataUsedKB(usage.data_used_kb);
-    }, [user, loading, router]);
+    }, [ready]);
 
     const totalCorrect = skills.reduce((s, k) => s + k.correct, 0);
     const totalAttempts = skills.reduce((s, k) => s + k.correct + k.incorrect, 0);
@@ -99,9 +99,9 @@ export default function Profile() {
                             </div>
                             <div>
                                 <p className="font-brand font-semibold text-foreground">
-                                    {profileName || user?.email}
+                                    {profileName || 'Learner'}
                                 </p>
-                                <p className="text-xs text-muted-foreground">{user?.email}</p>
+                                <p className="text-xs text-muted-foreground">ID: {userId.slice(0, 8)}…</p>
                             </div>
                             <Badge variant="outline" className="ml-auto font-brand text-xs">
                                 {GRADE_BAND_LABELS[gradeBand] ?? `Band ${gradeBand}`}

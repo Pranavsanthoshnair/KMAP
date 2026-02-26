@@ -46,14 +46,14 @@ const GRADE_BAND_LABELS: Record<number, string> = {
 };
 
 export default function Dashboard() {
-    const { user, loading } = useAuth();
+    const { ready } = useAuth();
     const router = useRouter();
     const [name, setName] = useState('');
     const [gradeBand, setGradeBand] = useState(2);
     const [initialized, setInitialized] = useState(false);
 
     useEffect(() => {
-        if (!loading && !user) { router.push('/login'); return; }
+        if (!ready) return;
         getLocalProfile().then((p) => {
             if (p) {
                 setName(p.name);
@@ -61,9 +61,9 @@ export default function Dashboard() {
             }
             setInitialized(true);
         });
-    }, [user, loading, router]);
+    }, [ready]);
 
-    if (loading || !initialized) {
+    if (!ready || !initialized) {
         return (
             <div className="flex min-h-screen flex-col bg-background">
                 <Navbar />

@@ -1,1753 +1,2951 @@
 {
-    "math": {
-        "grade1": {
-            "arithmetic": {
-                "patterns": [
-                    {
-                        "id": "m1_add1",
-                        "type": "direct_addition",
-                        "difficulty": "beginner",
-                        "template": "What is {a} + {b}?",
-                        "answer_expr": "a + b",
-                        "distractor_exprs": [
-                            "a+b+1",
-                            "a+b-1",
-                            "a*b"
-                        ],
-                        "constraints": {
-                            "a": [
-                                1,
-                                9
-                            ],
-                            "b": [
-                                1,
-                                9
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m1_add2",
-                        "type": "word_addition",
-                        "difficulty": "beginner",
-                        "template": "Sara has {a} apples and gets {b} more. How many does she have now?",
-                        "answer_expr": "a + b",
-                        "distractor_exprs": [
-                            "a+b+2",
-                            "a+b-1",
-                            "a-b"
-                        ],
-                        "constraints": {
-                            "a": [
-                                3,
-                                10
-                            ],
-                            "b": [
-                                2,
-                                8
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m1_sub1",
-                        "type": "direct_subtraction",
-                        "difficulty": "beginner",
-                        "template": "What is {a} - {b}?",
-                        "answer_expr": "a - b",
-                        "distractor_exprs": [
-                            "a-b+1",
-                            "a-b-1",
-                            "a+b"
-                        ],
-                        "constraints": {
-                            "a": [
-                                6,
-                                15
-                            ],
-                            "b": [
-                                1,
-                                5
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m1_sub2",
-                        "type": "word_subtraction",
-                        "difficulty": "beginner",
-                        "template": "There are {a} birds. {b} fly away. How many remain?",
-                        "answer_expr": "a - b",
-                        "distractor_exprs": [
-                            "a+b",
-                            "a-b+1",
-                            "a-b-1"
-                        ],
-                        "constraints": {
-                            "a": [
-                                8,
-                                20
-                            ],
-                            "b": [
-                                2,
-                                6
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m1_miss",
-                        "type": "missing_addend",
-                        "difficulty": "intermediate",
-                        "template": "{b} + ___ = {c}",
-                        "computed": {
-                            "c": "a + b"
-                        },
-                        "answer_expr": "a",
-                        "distractor_exprs": [
-                            "a+1",
-                            "a-1",
-                            "a+2"
-                        ],
-                        "constraints": {
-                            "a": [
-                                2,
-                                8
-                            ],
-                            "b": [
-                                3,
-                                9
-                            ]
-                        }
-                    }
-                ]
+  "math": {
+    "grade1": {
+      "arithmetic": {
+        "patterns": [
+          {
+            "id": "m1_add1",
+            "type": "direct_addition",
+            "difficulty": "beginner",
+            "template": "What is {a} + {b}?",
+            "answer_expr": "a + b",
+            "distractor_exprs": [
+              "a+b+1",
+              "a+b-1",
+              "a*b"
+            ],
+            "constraints": {
+              "a": [
+                1,
+                9
+              ],
+              "b": [
+                1,
+                9
+              ]
             }
-        },
-        "grade2": {
-            "arithmetic": {
-                "patterns": [
-                    {
-                        "id": "m2_add1",
-                        "type": "double_digit_addition",
-                        "difficulty": "beginner",
-                        "template": "What is {a} + {b}?",
-                        "answer_expr": "a + b",
-                        "distractor_exprs": [
-                            "a+b+10",
-                            "a+b-10",
-                            "a+b+1"
-                        ],
-                        "constraints": {
-                            "a": [
-                                15,
-                                45
-                            ],
-                            "b": [
-                                12,
-                                40
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m2_mul1",
-                        "type": "multiplication_table",
-                        "difficulty": "beginner",
-                        "template": "{a} × {b} = ?",
-                        "answer_expr": "a * b",
-                        "distractor_exprs": [
-                            "a*b+b",
-                            "a*b-a",
-                            "a+b"
-                        ],
-                        "constraints": {
-                            "a": [
-                                2,
-                                5
-                            ],
-                            "b": [
-                                2,
-                                10
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m2_mul2",
-                        "type": "word_multiplication",
-                        "difficulty": "intermediate",
-                        "template": "A classroom has {a} rows with {b} desks each. Total desks?",
-                        "answer_expr": "a * b",
-                        "distractor_exprs": [
-                            "a*b+b",
-                            "a+b",
-                            "a*b-a"
-                        ],
-                        "constraints": {
-                            "a": [
-                                3,
-                                6
-                            ],
-                            "b": [
-                                5,
-                                10
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m2_sub1",
-                        "type": "word_subtraction",
-                        "difficulty": "intermediate",
-                        "template": "A shop had {a} items. {b} were sold. How many remain?",
-                        "answer_expr": "a - b",
-                        "distractor_exprs": [
-                            "a+b",
-                            "a-b+b",
-                            "a-b-1"
-                        ],
-                        "constraints": {
-                            "a": [
-                                30,
-                                80
-                            ],
-                            "b": [
-                                8,
-                                25
-                            ]
-                        }
-                    }
-                ]
-            },
-            "fractions": {
-                "patterns": [
-                    {
-                        "id": "m2_f1",
-                        "type": "half_of",
-                        "difficulty": "beginner",
-                        "template": "What is half of {c}?",
-                        "computed": {
-                            "c": "k * 2"
-                        },
-                        "answer_expr": "k",
-                        "distractor_exprs": [
-                            "k+1",
-                            "k-1",
-                            "k*2"
-                        ],
-                        "constraints": {
-                            "k": [
-                                3,
-                                12
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m2_f2",
-                        "type": "unit_fraction",
-                        "difficulty": "beginner",
-                        "template": "What is 1/{d} of {c}?",
-                        "computed": {
-                            "c": "d * k"
-                        },
-                        "answer_expr": "k",
-                        "distractor_exprs": [
-                            "k+1",
-                            "k-1",
-                            "k*2"
-                        ],
-                        "constraints": {
-                            "d": [
-                                2,
-                                5
-                            ],
-                            "k": [
-                                2,
-                                8
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m2_f3",
-                        "type": "pizza_slices",
-                        "difficulty": "intermediate",
-                        "template": "A pizza is cut into {d} equal slices. You eat {a}. How many remain?",
-                        "answer_expr": "d - a",
-                        "distractor_exprs": [
-                            "d+a",
-                            "a",
-                            "d-a+1"
-                        ],
-                        "constraints": {
-                            "d": [
-                                6,
-                                12
-                            ],
-                            "a": [
-                                2,
-                                4
-                            ]
-                        }
-                    }
-                ]
+          },
+          {
+            "id": "m1_add2",
+            "type": "word_addition",
+            "difficulty": "beginner",
+            "template": "Sara has {a} apples and gets {b} more. How many does she have now?",
+            "answer_expr": "a + b",
+            "distractor_exprs": [
+              "a+b+2",
+              "a+b-1",
+              "a-b"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                10
+              ],
+              "b": [
+                2,
+                8
+              ]
             }
-        },
-        "grade3": {
-            "fractions": {
-                "patterns": [
-                    {
-                        "id": "m3_f1",
-                        "type": "fraction_sum_word",
-                        "difficulty": "intermediate",
-                        "template": "John ate {n1}/{d} of a pizza and Priya ate {n2}/{d}. How many {d}ths did they eat together?",
-                        "answer_expr": "n1 + n2",
-                        "distractor_exprs": [
-                            "n1+n2+1",
-                            "n1",
-                            "n2"
-                        ],
-                        "constraints": {
-                            "d": [
-                                6,
-                                10
-                            ],
-                            "n1": [
-                                1,
-                                3
-                            ],
-                            "n2": [
-                                1,
-                                3
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m3_f2",
-                        "type": "equal_share",
-                        "difficulty": "intermediate",
-                        "template": "{d} friends share {c} chocolates equally. How many does each friend get?",
-                        "computed": {
-                            "c": "d * k"
-                        },
-                        "answer_expr": "k",
-                        "distractor_exprs": [
-                            "k+1",
-                            "k-1",
-                            "d"
-                        ],
-                        "constraints": {
-                            "d": [
-                                3,
-                                6
-                            ],
-                            "k": [
-                                3,
-                                8
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m3_f3",
-                        "type": "fraction_of_large",
-                        "difficulty": "advanced",
-                        "template": "What is 1/{d} of {c}?",
-                        "computed": {
-                            "c": "d * k"
-                        },
-                        "answer_expr": "k",
-                        "distractor_exprs": [
-                            "k+2",
-                            "k-1",
-                            "k*d"
-                        ],
-                        "constraints": {
-                            "d": [
-                                3,
-                                8
-                            ],
-                            "k": [
-                                5,
-                                15
-                            ]
-                        }
-                    }
-                ]
-            },
-            "multiplication": {
-                "patterns": [
-                    {
-                        "id": "m3_mul1",
-                        "type": "large_multiplication",
-                        "difficulty": "beginner",
-                        "template": "{a} × {b} = ?",
-                        "answer_expr": "a * b",
-                        "distractor_exprs": [
-                            "a*b+b",
-                            "a*b-a",
-                            "a*b+a"
-                        ],
-                        "constraints": {
-                            "a": [
-                                4,
-                                12
-                            ],
-                            "b": [
-                                4,
-                                12
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m3_mul2",
-                        "type": "word_multiplication",
-                        "difficulty": "intermediate",
-                        "template": "A garden has {a} rows of {b} flowers each. Total flowers?",
-                        "answer_expr": "a * b",
-                        "distractor_exprs": [
-                            "a*b+a",
-                            "a+b",
-                            "a*b-b"
-                        ],
-                        "constraints": {
-                            "a": [
-                                4,
-                                9
-                            ],
-                            "b": [
-                                5,
-                                12
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m3_div1",
-                        "type": "reverse_division",
-                        "difficulty": "advanced",
-                        "template": "{c} ÷ {b} = ?",
-                        "computed": {
-                            "c": "a * b"
-                        },
-                        "answer_expr": "a",
-                        "distractor_exprs": [
-                            "a+1",
-                            "a-1",
-                            "b"
-                        ],
-                        "constraints": {
-                            "a": [
-                                3,
-                                9
-                            ],
-                            "b": [
-                                3,
-                                9
-                            ]
-                        }
-                    }
-                ]
-            },
-            "geometry": {
-                "patterns": [
-                    {
-                        "id": "m3_g1",
-                        "type": "rectangle_area",
-                        "difficulty": "beginner",
-                        "template": "Area of a rectangle: length {l} cm, width {w} cm?",
-                        "answer_expr": "l * w",
-                        "distractor_exprs": [
-                            "l+w",
-                            "2*(l+w)",
-                            "l*w+w"
-                        ],
-                        "constraints": {
-                            "l": [
-                                4,
-                                12
-                            ],
-                            "w": [
-                                2,
-                                8
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m3_g2",
-                        "type": "rectangle_perimeter",
-                        "difficulty": "intermediate",
-                        "template": "Perimeter of a rectangle: length {l} cm, width {w} cm?",
-                        "answer_expr": "2 * (l + w)",
-                        "distractor_exprs": [
-                            "l+w",
-                            "l*w",
-                            "2*l+w"
-                        ],
-                        "constraints": {
-                            "l": [
-                                4,
-                                10
-                            ],
-                            "w": [
-                                3,
-                                7
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m3_g3",
-                        "type": "square_area",
-                        "difficulty": "advanced",
-                        "template": "Area of a square with side {s} cm?",
-                        "answer_expr": "s * s",
-                        "distractor_exprs": [
-                            "s*4",
-                            "s+s",
-                            "s*s+s"
-                        ],
-                        "constraints": {
-                            "s": [
-                                3,
-                                10
-                            ]
-                        }
-                    }
-                ]
+          },
+          {
+            "id": "m1_sub1",
+            "type": "direct_subtraction",
+            "difficulty": "beginner",
+            "template": "What is {a} - {b}?",
+            "answer_expr": "a - b",
+            "distractor_exprs": [
+              "a-b+1",
+              "a-b-1",
+              "a+b"
+            ],
+            "constraints": {
+              "a": [
+                6,
+                15
+              ],
+              "b": [
+                1,
+                5
+              ]
             }
-        },
-        "grade4": {
-            "algebra": {
-                "patterns": [
-                    {
-                        "id": "m4_al1",
-                        "type": "linear_addition",
-                        "difficulty": "beginner",
-                        "template": "If x + {a} = {c}, what is x?",
-                        "computed": {
-                            "c": "a + b"
-                        },
-                        "answer_expr": "b",
-                        "distractor_exprs": [
-                            "b+1",
-                            "b-1",
-                            "c"
-                        ],
-                        "constraints": {
-                            "a": [
-                                3,
-                                15
-                            ],
-                            "b": [
-                                2,
-                                12
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m4_al2",
-                        "type": "linear_multiply",
-                        "difficulty": "intermediate",
-                        "template": "Solve: {b}x = {c}. What is x?",
-                        "computed": {
-                            "c": "a * b"
-                        },
-                        "answer_expr": "a",
-                        "distractor_exprs": [
-                            "a+1",
-                            "a-1",
-                            "c"
-                        ],
-                        "constraints": {
-                            "a": [
-                                2,
-                                9
-                            ],
-                            "b": [
-                                2,
-                                6
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m4_al3",
-                        "type": "linear_subtraction",
-                        "difficulty": "intermediate",
-                        "template": "Solve: x - {a} = {b}. What is x?",
-                        "answer_expr": "a + b",
-                        "distractor_exprs": [
-                            "a-b",
-                            "b",
-                            "a"
-                        ],
-                        "constraints": {
-                            "a": [
-                                5,
-                                20
-                            ],
-                            "b": [
-                                3,
-                                15
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m4_al4",
-                        "type": "algebra_word",
-                        "difficulty": "advanced",
-                        "template": "A number added to {a} gives {c}. What is the number?",
-                        "computed": {
-                            "c": "a + b"
-                        },
-                        "answer_expr": "b",
-                        "distractor_exprs": [
-                            "b+2",
-                            "b-1",
-                            "c"
-                        ],
-                        "constraints": {
-                            "a": [
-                                4,
-                                20
-                            ],
-                            "b": [
-                                3,
-                                15
-                            ]
-                        }
-                    }
-                ]
-            },
-            "decimals": {
-                "patterns": [
-                    {
-                        "id": "m4_dec1",
-                        "type": "decimal_addition",
-                        "difficulty": "intermediate",
-                        "template": "What is 0.{a} + 0.{b}?",
-                        "answer_expr": "(a + b) / 10",
-                        "distractor_exprs": [
-                            "(a+b+1)/10",
-                            "(a+b-1)/10",
-                            "(a*b)/10"
-                        ],
-                        "constraints": {
-                            "a": [
-                                1,
-                                4
-                            ],
-                            "b": [
-                                1,
-                                5
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m4_dec2",
-                        "type": "decimal_word",
-                        "difficulty": "advanced",
-                        "template": "A bottle holds {a}.{b} litres. Another holds {c}.0 litres. Total?",
-                        "answer_expr": "a + c + b/10",
-                        "distractor_exprs": [
-                            "a+c",
-                            "a+c+1",
-                            "(a+c+b/10)+0.5"
-                        ],
-                        "constraints": {
-                            "a": [
-                                1,
-                                4
-                            ],
-                            "b": [
-                                1,
-                                9
-                            ],
-                            "c": [
-                                1,
-                                3
-                            ]
-                        }
-                    }
-                ]
-            },
-            "statistics": {
-                "patterns": [
-                    {
-                        "id": "m4_st1",
-                        "type": "mean_three",
-                        "difficulty": "intermediate",
-                        "template": "Find the mean of {a}, {b}, and {c}.",
-                        "answer_expr": "(a + b + c) // 3",
-                        "distractor_exprs": [
-                            "(a+b+c)//3+1",
-                            "(a+b)//2",
-                            "a+b+c"
-                        ],
-                        "constraints": {
-                            "a": [
-                                3,
-                                9
-                            ],
-                            "b": [
-                                6,
-                                15
-                            ],
-                            "c": [
-                                9,
-                                18
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m4_st2",
-                        "type": "mean_word",
-                        "difficulty": "advanced",
-                        "template": "A student scored {a}, {b}, and {c} in three tests. What is the average?",
-                        "answer_expr": "(a + b + c) // 3",
-                        "distractor_exprs": [
-                            "(a+b+c)//3+2",
-                            "a+b",
-                            "(a+b)//2"
-                        ],
-                        "constraints": {
-                            "a": [
-                                60,
-                                80
-                            ],
-                            "b": [
-                                70,
-                                90
-                            ],
-                            "c": [
-                                75,
-                                95
-                            ]
-                        }
-                    }
-                ]
+          },
+          {
+            "id": "m1_sub2",
+            "type": "word_subtraction",
+            "difficulty": "beginner",
+            "template": "There are {a} birds. {b} fly away. How many remain?",
+            "answer_expr": "a - b",
+            "distractor_exprs": [
+              "a+b",
+              "a-b+1",
+              "a-b-1"
+            ],
+            "constraints": {
+              "a": [
+                8,
+                20
+              ],
+              "b": [
+                2,
+                6
+              ]
             }
-        },
-        "grade5": {
-            "algebra": {
-                "patterns": [
-                    {
-                        "id": "m5_al1",
-                        "type": "two_step_equation",
-                        "difficulty": "intermediate",
-                        "template": "2x + {b} = {c}. Find x.",
-                        "computed": {
-                            "c": "2 * k + b"
-                        },
-                        "answer_expr": "k",
-                        "distractor_exprs": [
-                            "k+1",
-                            "k-1",
-                            "k*2"
-                        ],
-                        "constraints": {
-                            "k": [
-                                3,
-                                10
-                            ],
-                            "b": [
-                                3,
-                                12
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m5_al2",
-                        "type": "multi_step_word",
-                        "difficulty": "advanced",
-                        "template": "A number tripled and reduced by {b} equals {c}. Find the number.",
-                        "computed": {
-                            "c": "3 * k - b"
-                        },
-                        "answer_expr": "k",
-                        "distractor_exprs": [
-                            "k+1",
-                            "k-1",
-                            "c"
-                        ],
-                        "constraints": {
-                            "k": [
-                                3,
-                                10
-                            ],
-                            "b": [
-                                2,
-                                9
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m5_al3",
-                        "type": "coefficient_equation",
-                        "difficulty": "advanced",
-                        "template": "{a}x - {b} = {c}. Solve for x.",
-                        "computed": {
-                            "c": "a * k - b"
-                        },
-                        "answer_expr": "k",
-                        "distractor_exprs": [
-                            "k+1",
-                            "k-1",
-                            "k+2"
-                        ],
-                        "constraints": {
-                            "a": [
-                                3,
-                                5
-                            ],
-                            "b": [
-                                4,
-                                12
-                            ],
-                            "k": [
-                                2,
-                                8
-                            ]
-                        }
-                    }
-                ]
+          },
+          {
+            "id": "m1_miss",
+            "type": "missing_addend",
+            "difficulty": "intermediate",
+            "template": "{b} + ___ = {c}",
+            "computed": {
+              "c": "a + b"
             },
-            "geometry": {
-                "patterns": [
-                    {
-                        "id": "m5_g1",
-                        "type": "box_volume",
-                        "difficulty": "intermediate",
-                        "template": "Volume of a box: length {l}, width {w}, height {h}?",
-                        "answer_expr": "l * w * h",
-                        "distractor_exprs": [
-                            "l*w*h+h",
-                            "2*(l*w+w*h+h*l)",
-                            "l+w+h"
-                        ],
-                        "constraints": {
-                            "l": [
-                                2,
-                                6
-                            ],
-                            "w": [
-                                2,
-                                5
-                            ],
-                            "h": [
-                                2,
-                                4
-                            ]
-                        }
-                    },
-                    {
-                        "id": "m5_g2",
-                        "type": "triangle_area",
-                        "difficulty": "advanced",
-                        "template": "Area of a triangle: base {b} cm, height {h} cm?",
-                        "answer_expr": "(b * h) // 2",
-                        "distractor_exprs": [
-                            "b+h",
-                            "b*h",
-                            "(b+h)//2"
-                        ],
-                        "constraints": {
-                            "b": [
-                                4,
-                                12
-                            ],
-                            "h": [
-                                4,
-                                10
-                            ]
-                        }
-                    }
-                ]
-            },
-            "statistics": {
-                "patterns": [
-                    {
-                        "id": "m5_st1",
-                        "type": "mean_four",
-                        "difficulty": "advanced",
-                        "template": "Find the mean of {a}, {b}, {c}, and {d}.",
-                        "answer_expr": "(a + b + c + d) // 4",
-                        "distractor_exprs": [
-                            "(a+b+c+d)//4+1",
-                            "(a+b)//2",
-                            "a+b+c+d"
-                        ],
-                        "constraints": {
-                            "a": [
-                                4,
-                                10
-                            ],
-                            "b": [
-                                8,
-                                16
-                            ],
-                            "c": [
-                                12,
-                                20
-                            ],
-                            "d": [
-                                16,
-                                24
-                            ]
-                        }
-                    }
-                ]
-            },
-            "calculus": {
-                "patterns": [
-                    {
-                        "id": "m5_cal1",
-                        "type": "rate_of_change",
-                        "difficulty": "advanced",
-                        "template": "A car travels {c} km in {t} hours. What is its average speed in km/h?",
-                        "computed": {
-                            "c": "t * k * 10"
-                        },
-                        "answer_expr": "k * 10",
-                        "distractor_exprs": [
-                            "k*10+5",
-                            "k*10-5",
-                            "k*10+10"
-                        ],
-                        "constraints": {
-                            "t": [
-                                2,
-                                5
-                            ],
-                            "k": [
-                                6,
-                                15
-                            ]
-                        }
-                    }
-                ]
+            "answer_expr": "a",
+            "distractor_exprs": [
+              "a+1",
+              "a-1",
+              "a+2"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                8
+              ],
+              "b": [
+                3,
+                9
+              ]
             }
-        }
+          }
+        ]
+      },
+      "counting": {
+        "patterns": [
+          {
+            "id": "m1_cnt1",
+            "type": "count_objects",
+            "difficulty": "beginner",
+            "template": "Count: How many objects are there if you have {a} groups of {b}?",
+            "answer_expr": "a * b",
+            "distractor_exprs": [
+              "a*b+1",
+              "a+b",
+              "a*b-1"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                4
+              ],
+              "b": [
+                2,
+                5
+              ]
+            }
+          },
+          {
+            "id": "m1_cnt2",
+            "type": "number_order",
+            "difficulty": "beginner",
+            "template": "Which number comes after {a}?",
+            "answer_expr": "a + 1",
+            "distractor_exprs": [
+              "a-1",
+              "a+2",
+              "a"
+            ],
+            "constraints": {
+              "a": [
+                10,
+                50
+              ]
+            }
+          }
+        ]
+      },
+      "shapes": {
+        "patterns": [
+          {
+            "id": "m1_sh1",
+            "type": "shape_sides",
+            "difficulty": "beginner",
+            "template": "How many sides does a triangle have?",
+            "answer": "3",
+            "distractors": [
+              "4",
+              "5",
+              "2"
+            ]
+          },
+          {
+            "id": "m1_sh2",
+            "type": "shape_name",
+            "difficulty": "beginner",
+            "template": "A shape with 4 equal sides is called a:",
+            "answer": "Square",
+            "distractors": [
+              "Triangle",
+              "Circle",
+              "Rectangle"
+            ]
+          }
+        ]
+      },
+      "comparison": {
+        "patterns": [
+          {
+            "id": "m1_cmp1",
+            "type": "greater_than",
+            "difficulty": "beginner",
+            "template": "Which is greater: {a} or {b}?",
+            "answer_expr": "max(a, b)",
+            "distractor_exprs": [
+              "min(a, b)",
+              "a+b",
+              "abs(a-b)"
+            ],
+            "constraints": {
+              "a": [
+                5,
+                20
+              ],
+              "b": [
+                5,
+                20
+              ]
+            }
+          }
+        ]
+      },
+      "patterns_sequences": {
+        "patterns": [
+          {
+            "id": "m1_ps1",
+            "type": "next_number",
+            "difficulty": "beginner",
+            "template": "What comes next: {a}, {b}, {c}, ___?",
+            "computed": {
+              "b": "a+d",
+              "c": "a+2*d"
+            },
+            "answer_expr": "a + 3*d",
+            "distractor_exprs": [
+              "a+3*d+1",
+              "a+3*d-1",
+              "a+2*d"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                5
+              ],
+              "d": [
+                2,
+                3
+              ]
+            }
+          }
+        ]
+      }
     },
-    "science": {
-        "grade1": {
-            "basic_biology": {
-                "patterns": [
-                    {
-                        "id": "s1_b1",
-                        "type": "definition",
-                        "difficulty": "beginner",
-                        "template": "What do plants need to make food through photosynthesis?",
-                        "answer": "Sunlight, water, and carbon dioxide",
-                        "distractors": [
-                            "Only water",
-                            "Only sunlight",
-                            "Oxygen and sugar"
-                        ]
-                    },
-                    {
-                        "id": "s1_b2",
-                        "type": "classification",
-                        "difficulty": "beginner",
-                        "template": "Which of the following is a mammal?",
-                        "answer": "Dog",
-                        "distractors": [
-                            "Eagle",
-                            "Salmon",
-                            "Frog"
-                        ]
-                    },
-                    {
-                        "id": "s1_b3",
-                        "type": "animal_type",
-                        "difficulty": "beginner",
-                        "template": "Which animal lays eggs and has feathers?",
-                        "answer": "Hen",
-                        "distractors": [
-                            "Cat",
-                            "Cow",
-                            "Dog"
-                        ]
-                    },
-                    {
-                        "id": "s1_b4",
-                        "type": "plant_part",
-                        "difficulty": "intermediate",
-                        "template": "Which part of a plant makes food using sunlight?",
-                        "answer": "Leaf",
-                        "distractors": [
-                            "Root",
-                            "Stem",
-                            "Flower"
-                        ]
-                    },
-                    {
-                        "id": "s1_b5",
-                        "type": "life_need",
-                        "difficulty": "intermediate",
-                        "template": "Which of the following do ALL living things need?",
-                        "answer": "Food and water",
-                        "distractors": [
-                            "Sunlight only",
-                            "Cold temperature",
-                            "Sand"
-                        ]
-                    }
-                ]
+    "grade2": {
+      "arithmetic": {
+        "patterns": [
+          {
+            "id": "m2_add1",
+            "type": "double_digit_addition",
+            "difficulty": "beginner",
+            "template": "What is {a} + {b}?",
+            "answer_expr": "a + b",
+            "distractor_exprs": [
+              "a+b+10",
+              "a+b-10",
+              "a+b+1"
+            ],
+            "constraints": {
+              "a": [
+                15,
+                45
+              ],
+              "b": [
+                12,
+                40
+              ]
             }
-        },
-        "grade2": {
-            "cell_structure": {
-                "patterns": [
-                    {
-                        "id": "s2_c1",
-                        "type": "definition",
-                        "difficulty": "beginner",
-                        "template": "What is the control centre of a cell?",
-                        "answer": "Nucleus",
-                        "distractors": [
-                            "Mitochondria",
-                            "Cell wall",
-                            "Ribosome"
-                        ]
-                    },
-                    {
-                        "id": "s2_c2",
-                        "type": "function",
-                        "difficulty": "intermediate",
-                        "template": "Which organelle is known as the powerhouse of the cell?",
-                        "answer": "Mitochondria",
-                        "distractors": [
-                            "Nucleus",
-                            "Ribosome",
-                            "Vacuole"
-                        ]
-                    },
-                    {
-                        "id": "s2_c3",
-                        "type": "comparison",
-                        "difficulty": "intermediate",
-                        "template": "Which structure is found in plant cells but NOT in animal cells?",
-                        "answer": "Cell wall",
-                        "distractors": [
-                            "Nucleus",
-                            "Mitochondria",
-                            "Ribosome"
-                        ]
-                    },
-                    {
-                        "id": "s2_c4",
-                        "type": "identification",
-                        "difficulty": "advanced",
-                        "template": "Which organelle is responsible for protein synthesis?",
-                        "answer": "Ribosome",
-                        "distractors": [
-                            "Nucleus",
-                            "Vacuole",
-                            "Lysosome"
-                        ]
-                    }
-                ]
-            },
-            "photosynthesis": {
-                "patterns": [
-                    {
-                        "id": "s2_p1",
-                        "type": "product",
-                        "difficulty": "beginner",
-                        "template": "What is the main energy-providing product of photosynthesis?",
-                        "answer": "Glucose",
-                        "distractors": [
-                            "Oxygen",
-                            "Carbon dioxide",
-                            "Water"
-                        ]
-                    },
-                    {
-                        "id": "s2_p2",
-                        "type": "gas_absorbed",
-                        "difficulty": "intermediate",
-                        "template": "Which gas do plants absorb during photosynthesis?",
-                        "answer": "Carbon dioxide",
-                        "distractors": [
-                            "Oxygen",
-                            "Nitrogen",
-                            "Hydrogen"
-                        ]
-                    },
-                    {
-                        "id": "s2_p3",
-                        "type": "byproduct",
-                        "difficulty": "advanced",
-                        "template": "What gas is released as a byproduct of photosynthesis?",
-                        "answer": "Oxygen",
-                        "distractors": [
-                            "Carbon dioxide",
-                            "Nitrogen",
-                            "Hydrogen"
-                        ]
-                    }
-                ]
-            },
-            "states_of_matter": {
-                "patterns": [
-                    {
-                        "id": "s2_s1",
-                        "type": "definition",
-                        "difficulty": "beginner",
-                        "template": "Which state of matter has no fixed shape but has a fixed volume?",
-                        "answer": "Liquid",
-                        "distractors": [
-                            "Solid",
-                            "Gas",
-                            "Plasma"
-                        ]
-                    },
-                    {
-                        "id": "s2_s2",
-                        "type": "change",
-                        "difficulty": "intermediate",
-                        "template": "What is it called when a liquid turns into a gas by heating?",
-                        "answer": "Evaporation",
-                        "distractors": [
-                            "Condensation",
-                            "Freezing",
-                            "Sublimation"
-                        ]
-                    },
-                    {
-                        "id": "s2_s3",
-                        "type": "property",
-                        "difficulty": "intermediate",
-                        "template": "Which property describes a solid?",
-                        "answer": "Fixed shape and volume",
-                        "distractors": [
-                            "No fixed shape",
-                            "No fixed volume",
-                            "Flows freely"
-                        ]
-                    }
-                ]
-            },
-            "human_body": {
-                "patterns": [
-                    {
-                        "id": "s2_h1",
-                        "type": "organ_function",
-                        "difficulty": "beginner",
-                        "template": "Which organ pumps blood throughout the body?",
-                        "answer": "Heart",
-                        "distractors": [
-                            "Lungs",
-                            "Brain",
-                            "Stomach"
-                        ]
-                    },
-                    {
-                        "id": "s2_h2",
-                        "type": "system",
-                        "difficulty": "intermediate",
-                        "template": "Which system is responsible for breathing?",
-                        "answer": "Respiratory system",
-                        "distractors": [
-                            "Digestive system",
-                            "Nervous system",
-                            "Circulatory system"
-                        ]
-                    },
-                    {
-                        "id": "s2_h3",
-                        "type": "organ_id",
-                        "difficulty": "advanced",
-                        "template": "Which organ filters blood and removes wastes?",
-                        "answer": "Kidney",
-                        "distractors": [
-                            "Liver",
-                            "Lungs",
-                            "Spleen"
-                        ]
-                    }
-                ]
+          },
+          {
+            "id": "m2_mul1",
+            "type": "multiplication_table",
+            "difficulty": "beginner",
+            "template": "{a} × {b} = ?",
+            "answer_expr": "a * b",
+            "distractor_exprs": [
+              "a*b+b",
+              "a*b-a",
+              "a+b"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                5
+              ],
+              "b": [
+                2,
+                10
+              ]
             }
-        },
-        "grade3": {
-            "genetics": {
-                "patterns": [
-                    {
-                        "id": "s3_g1",
-                        "type": "definition",
-                        "difficulty": "intermediate",
-                        "template": "What molecule carries genetic information in living organisms?",
-                        "answer": "DNA",
-                        "distractors": [
-                            "RNA",
-                            "Protein",
-                            "ATP"
-                        ]
-                    },
-                    {
-                        "id": "s3_g2",
-                        "type": "classification",
-                        "difficulty": "advanced",
-                        "template": "What term describes characteristics passed from parents to offspring?",
-                        "answer": "Inherited traits",
-                        "distractors": [
-                            "Acquired traits",
-                            "Environmental adaptations",
-                            "Mutations"
-                        ]
-                    }
-                ]
-            },
-            "chemical_reactions": {
-                "patterns": [
-                    {
-                        "id": "s3_cr1",
-                        "type": "definition",
-                        "difficulty": "intermediate",
-                        "template": "Which type of reaction releases energy as heat or light?",
-                        "answer": "Exothermic reaction",
-                        "distractors": [
-                            "Endothermic reaction",
-                            "Neutralization",
-                            "Decomposition"
-                        ]
-                    },
-                    {
-                        "id": "s3_cr2",
-                        "type": "product",
-                        "difficulty": "advanced",
-                        "template": "What is formed when an acid reacts with a base?",
-                        "answer": "Salt and water",
-                        "distractors": [
-                            "More acid",
-                            "A gas",
-                            "Only water"
-                        ]
-                    }
-                ]
-            },
-            "forces": {
-                "patterns": [
-                    {
-                        "id": "s3_f1",
-                        "type": "definition",
-                        "difficulty": "beginner",
-                        "template": "What force pulls all objects towards the Earth?",
-                        "answer": "Gravity",
-                        "distractors": [
-                            "Friction",
-                            "Magnetism",
-                            "Tension"
-                        ]
-                    },
-                    {
-                        "id": "s3_f2",
-                        "type": "application",
-                        "difficulty": "intermediate",
-                        "template": "Which force slows down a moving object on a rough surface?",
-                        "answer": "Friction",
-                        "distractors": [
-                            "Gravity",
-                            "Normal force",
-                            "Air resistance"
-                        ]
-                    },
-                    {
-                        "id": "s3_f3",
-                        "type": "calculation_concept",
-                        "difficulty": "advanced",
-                        "template": "According to Newton's second law, if force is doubled and mass stays the same, acceleration:",
-                        "answer": "Doubles",
-                        "distractors": [
-                            "Halves",
-                            "Stays the same",
-                            "Triples"
-                        ]
-                    }
-                ]
+          },
+          {
+            "id": "m2_mul2",
+            "type": "word_multiplication",
+            "difficulty": "intermediate",
+            "template": "A classroom has {a} rows with {b} desks each. Total desks?",
+            "answer_expr": "a * b",
+            "distractor_exprs": [
+              "a*b+b",
+              "a+b",
+              "a*b-a"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                6
+              ],
+              "b": [
+                5,
+                10
+              ]
             }
-        },
-        "grade4": {
-            "electricity": {
-                "patterns": [
-                    {
-                        "id": "s4_e1",
-                        "type": "definition",
-                        "difficulty": "intermediate",
-                        "template": "What is the unit of electrical resistance?",
-                        "answer": "Ohm",
-                        "distractors": [
-                            "Ampere",
-                            "Volt",
-                            "Watt"
-                        ]
-                    },
-                    {
-                        "id": "s4_e2",
-                        "type": "law",
-                        "difficulty": "advanced",
-                        "template": "According to Ohm's law, if voltage doubles and resistance is constant, what happens to current?",
-                        "answer": "Current doubles",
-                        "distractors": [
-                            "Current halves",
-                            "Current stays the same",
-                            "Current quadruples"
-                        ]
-                    },
-                    {
-                        "id": "s4_e3",
-                        "type": "component",
-                        "difficulty": "intermediate",
-                        "template": "Which component in a circuit converts electrical energy to light?",
-                        "answer": "Light bulb",
-                        "distractors": [
-                            "Battery",
-                            "Resistor",
-                            "Switch"
-                        ]
-                    }
-                ]
-            },
-            "ecology": {
-                "patterns": [
-                    {
-                        "id": "s4_ec1",
-                        "type": "definition",
-                        "difficulty": "intermediate",
-                        "template": "What is a food chain?",
-                        "answer": "The transfer of energy from one organism to another",
-                        "distractors": [
-                            "A chain made of food",
-                            "A list of animals",
-                            "Animals eating plants only"
-                        ]
-                    },
-                    {
-                        "id": "s4_ec2",
-                        "type": "classification",
-                        "difficulty": "advanced",
-                        "template": "An organism that makes its own food using sunlight is called a:",
-                        "answer": "Producer",
-                        "distractors": [
-                            "Consumer",
-                            "Decomposer",
-                            "Predator"
-                        ]
-                    }
-                ]
+          },
+          {
+            "id": "m2_sub1",
+            "type": "word_subtraction",
+            "difficulty": "intermediate",
+            "template": "A shop had {a} items. {b} were sold. How many remain?",
+            "answer_expr": "a - b",
+            "distractor_exprs": [
+              "a+b",
+              "a-b+b",
+              "a-b-1"
+            ],
+            "constraints": {
+              "a": [
+                30,
+                80
+              ],
+              "b": [
+                8,
+                25
+              ]
             }
-        },
-        "grade5": {
-            "genetics": {
-                "patterns": [
-                    {
-                        "id": "s5_g1",
-                        "type": "advanced_concept",
-                        "difficulty": "advanced",
-                        "template": "What is the term for a change in the DNA sequence of an organism?",
-                        "answer": "Mutation",
-                        "distractors": [
-                            "Mitosis",
-                            "Osmosis",
-                            "Diffusion"
-                        ]
-                    },
-                    {
-                        "id": "s5_g2",
-                        "type": "principle",
-                        "difficulty": "advanced",
-                        "template": "According to Mendel, a trait that is hidden in the F1 generation is called:",
-                        "answer": "Recessive",
-                        "distractors": [
-                            "Dominant",
-                            "Codominant",
-                            "Homozygous"
-                        ]
-                    }
-                ]
+          }
+        ]
+      },
+      "fractions": {
+        "patterns": [
+          {
+            "id": "m2_f1",
+            "type": "half_of",
+            "difficulty": "beginner",
+            "template": "What is half of {c}?",
+            "computed": {
+              "c": "k * 2"
             },
-            "ecology": {
-                "patterns": [
-                    {
-                        "id": "s5_ec1",
-                        "type": "concept",
-                        "difficulty": "advanced",
-                        "template": "What happens to energy as it moves up each trophic level in a food chain?",
-                        "answer": "It decreases",
-                        "distractors": [
-                            "It increases",
-                            "It stays the same",
-                            "It doubles"
-                        ]
-                    }
-                ]
+            "answer_expr": "k",
+            "distractor_exprs": [
+              "k+1",
+              "k-1",
+              "k*2"
+            ],
+            "constraints": {
+              "k": [
+                3,
+                12
+              ]
             }
-        }
+          },
+          {
+            "id": "m2_f2",
+            "type": "unit_fraction",
+            "difficulty": "beginner",
+            "template": "What is 1/{d} of {c}?",
+            "computed": {
+              "c": "d * k"
+            },
+            "answer_expr": "k",
+            "distractor_exprs": [
+              "k+1",
+              "k-1",
+              "k*2"
+            ],
+            "constraints": {
+              "d": [
+                2,
+                5
+              ],
+              "k": [
+                2,
+                8
+              ]
+            }
+          },
+          {
+            "id": "m2_f3",
+            "type": "pizza_slices",
+            "difficulty": "intermediate",
+            "template": "A pizza is cut into {d} equal slices. You eat {a}. How many remain?",
+            "answer_expr": "d - a",
+            "distractor_exprs": [
+              "d+a",
+              "a",
+              "d-a+1"
+            ],
+            "constraints": {
+              "d": [
+                6,
+                12
+              ],
+              "a": [
+                2,
+                4
+              ]
+            }
+          }
+        ]
+      },
+      "measurement": {
+        "patterns": [
+          {
+            "id": "m2_ms1",
+            "type": "length_compare",
+            "difficulty": "beginner",
+            "template": "Which is longer: {a} cm or {b} cm?",
+            "answer_expr": "max(a, b)",
+            "distractor_exprs": [
+              "min(a, b)",
+              "a+b",
+              "abs(a-b)"
+            ],
+            "constraints": {
+              "a": [
+                5,
+                30
+              ],
+              "b": [
+                5,
+                30
+              ]
+            }
+          },
+          {
+            "id": "m2_ms2",
+            "type": "weight_word",
+            "difficulty": "intermediate",
+            "template": "A bag weighs {a} kg. Another weighs {b} kg. Total weight?",
+            "answer_expr": "a + b",
+            "distractor_exprs": [
+              "a+b+1",
+              "a-b",
+              "a*b"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                10
+              ],
+              "b": [
+                2,
+                8
+              ]
+            }
+          }
+        ]
+      },
+      "time": {
+        "patterns": [
+          {
+            "id": "m2_tm1",
+            "type": "hours",
+            "difficulty": "beginner",
+            "template": "How many hours are there in a day?",
+            "answer": "24",
+            "distractors": [
+              "12",
+              "48",
+              "36"
+            ]
+          },
+          {
+            "id": "m2_tm2",
+            "type": "minutes",
+            "difficulty": "intermediate",
+            "template": "How many minutes are in {a} hours?",
+            "answer_expr": "a * 60",
+            "distractor_exprs": [
+              "a*60+30",
+              "a*30",
+              "a*60-10"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                5
+              ]
+            }
+          }
+        ]
+      },
+      "money": {
+        "patterns": [
+          {
+            "id": "m2_mn1",
+            "type": "coin_add",
+            "difficulty": "beginner",
+            "template": "You have {a} rupees and get {b} more. How much do you have?",
+            "answer_expr": "a + b",
+            "distractor_exprs": [
+              "a+b+5",
+              "a-b",
+              "a*b"
+            ],
+            "constraints": {
+              "a": [
+                10,
+                50
+              ],
+              "b": [
+                5,
+                25
+              ]
+            }
+          }
+        ]
+      },
+      "division": {
+        "patterns": [
+          {
+            "id": "m2_dv1",
+            "type": "equal_sharing",
+            "difficulty": "intermediate",
+            "template": "{c} chocolates shared equally among {b} children. How many each?",
+            "computed": {
+              "c": "a*b"
+            },
+            "answer_expr": "a",
+            "distractor_exprs": [
+              "a+1",
+              "a-1",
+              "b"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                6
+              ],
+              "b": [
+                2,
+                5
+              ]
+            }
+          }
+        ]
+      }
     },
-    "english": {
-        "grade1": {
-            "parts_of_speech": {
-                "patterns": [
-                    {
-                        "id": "e1_p1",
-                        "type": "noun_identification",
-                        "difficulty": "beginner",
-                        "template": "Which word is a noun in: 'The dog runs fast.'",
-                        "answer": "Dog",
-                        "distractors": [
-                            "Runs",
-                            "Fast",
-                            "The"
-                        ]
-                    },
-                    {
-                        "id": "e1_p2",
-                        "type": "verb_identification",
-                        "difficulty": "beginner",
-                        "template": "Which word is a verb in: 'She sings beautifully every morning.'",
-                        "answer": "Sings",
-                        "distractors": [
-                            "She",
-                            "Beautifully",
-                            "Morning"
-                        ]
-                    },
-                    {
-                        "id": "e1_p3",
-                        "type": "adjective_id",
-                        "difficulty": "intermediate",
-                        "template": "Which word is an adjective in: 'The tall tree fell down.'",
-                        "answer": "Tall",
-                        "distractors": [
-                            "Tree",
-                            "Fell",
-                            "Down"
-                        ]
-                    },
-                    {
-                        "id": "e1_p4",
-                        "type": "pronoun_id",
-                        "difficulty": "intermediate",
-                        "template": "Which word is a pronoun in: 'He gave it to her.'",
-                        "answer": "He",
-                        "distractors": [
-                            "Gave",
-                            "It",
-                            "To"
-                        ]
-                    }
-                ]
+    "grade3": {
+      "fractions": {
+        "patterns": [
+          {
+            "id": "m3_f1",
+            "type": "fraction_sum_word",
+            "difficulty": "intermediate",
+            "template": "John ate {n1}/{d} of a pizza and Priya ate {n2}/{d}. How many {d}ths did they eat together?",
+            "answer_expr": "n1 + n2",
+            "distractor_exprs": [
+              "n1+n2+1",
+              "n1",
+              "n2"
+            ],
+            "constraints": {
+              "d": [
+                6,
+                10
+              ],
+              "n1": [
+                1,
+                3
+              ],
+              "n2": [
+                1,
+                3
+              ]
             }
-        },
-        "grade2": {
-            "figures_of_speech": {
-                "patterns": [
-                    {
-                        "id": "e2_fig1",
-                        "type": "simile",
-                        "difficulty": "beginner",
-                        "template": "Which sentence contains a simile?",
-                        "answer": "She runs like the wind",
-                        "distractors": [
-                            "The sun smiled at us",
-                            "He is a lion",
-                            "The wind whispered"
-                        ]
-                    },
-                    {
-                        "id": "e2_fig2",
-                        "type": "metaphor",
-                        "difficulty": "intermediate",
-                        "template": "Which sentence contains a metaphor?",
-                        "answer": "Life is a roller coaster",
-                        "distractors": [
-                            "He eats like a horse",
-                            "The flowers danced",
-                            "She is as cold as ice"
-                        ]
-                    },
-                    {
-                        "id": "e2_fig3",
-                        "type": "personification",
-                        "difficulty": "intermediate",
-                        "template": "Which sentence uses personification?",
-                        "answer": "The trees whispered secrets to each other",
-                        "distractors": [
-                            "She is as brave as a lion",
-                            "He runs as fast as a cheetah",
-                            "The cake was sweet"
-                        ]
-                    }
-                ]
+          },
+          {
+            "id": "m3_f2",
+            "type": "equal_share",
+            "difficulty": "intermediate",
+            "template": "{d} friends share {c} chocolates equally. How many does each friend get?",
+            "computed": {
+              "c": "d * k"
             },
-            "punctuation": {
-                "patterns": [
-                    {
-                        "id": "e2_pun1",
-                        "type": "end_mark",
-                        "difficulty": "beginner",
-                        "template": "Which punctuation mark ends a question?",
-                        "answer": "Question mark (?)",
-                        "distractors": [
-                            "Full stop (.)",
-                            "Exclamation mark (!)",
-                            "Comma (,)"
-                        ]
-                    },
-                    {
-                        "id": "e2_pun2",
-                        "type": "comma_use",
-                        "difficulty": "intermediate",
-                        "template": "In which sentence is the comma used correctly?",
-                        "answer": "I bought apples, oranges, and bananas.",
-                        "distractors": [
-                            "I bought, apples oranges and bananas.",
-                            "I, bought apples oranges and bananas.",
-                            "I bought apples oranges, and bananas"
-                        ]
-                    },
-                    {
-                        "id": "e2_pun3",
-                        "type": "apostrophe",
-                        "difficulty": "advanced",
-                        "template": "What does the apostrophe show in 'Riya's book'?",
-                        "answer": "Possession",
-                        "distractors": [
-                            "Contraction",
-                            "Plural",
-                            "Quotation"
-                        ]
-                    }
-                ]
+            "answer_expr": "k",
+            "distractor_exprs": [
+              "k+1",
+              "k-1",
+              "d"
+            ],
+            "constraints": {
+              "d": [
+                3,
+                6
+              ],
+              "k": [
+                3,
+                8
+              ]
             }
-        },
-        "grade3": {
-            "literary_devices": {
-                "patterns": [
-                    {
-                        "id": "e3_lit1",
-                        "type": "alliteration",
-                        "difficulty": "beginner",
-                        "template": "Which phrase is an example of alliteration?",
-                        "answer": "Peter Piper picked peppers",
-                        "distractors": [
-                            "The early bird catches the worm",
-                            "All that glitters is not gold",
-                            "To be or not to be"
-                        ]
-                    },
-                    {
-                        "id": "e3_lit2",
-                        "type": "irony",
-                        "difficulty": "advanced",
-                        "template": "A fire station burns down. This is an example of:",
-                        "answer": "Situational irony",
-                        "distractors": [
-                            "Verbal irony",
-                            "Dramatic irony",
-                            "Metaphor"
-                        ]
-                    }
-                ]
+          },
+          {
+            "id": "m3_f3",
+            "type": "fraction_of_large",
+            "difficulty": "advanced",
+            "template": "What is 1/{d} of {c}?",
+            "computed": {
+              "c": "d * k"
             },
-            "grammar": {
-                "patterns": [
-                    {
-                        "id": "e3_gr1",
-                        "type": "tense",
-                        "difficulty": "intermediate",
-                        "template": "Which sentence is in the past perfect tense?",
-                        "answer": "She had finished her homework before dinner",
-                        "distractors": [
-                            "She finishes homework daily",
-                            "She is finishing homework",
-                            "She will finish homework"
-                        ]
-                    },
-                    {
-                        "id": "e3_gr2",
-                        "type": "subject_verb",
-                        "difficulty": "beginner",
-                        "template": "Which sentence has correct subject-verb agreement?",
-                        "answer": "The dogs run fast.",
-                        "distractors": [
-                            "The dogs runs fast.",
-                            "The dog run fast.",
-                            "The dogs is fast."
-                        ]
-                    },
-                    {
-                        "id": "e3_gr3",
-                        "type": "article",
-                        "difficulty": "intermediate",
-                        "template": "Which article is correct: '___ university'?",
-                        "answer": "A",
-                        "distractors": [
-                            "An",
-                            "The",
-                            "No article"
-                        ]
-                    },
-                    {
-                        "id": "e3_gr4",
-                        "type": "active_passive",
-                        "difficulty": "advanced",
-                        "template": "Convert to passive: 'The chef cooked the meal.'",
-                        "answer": "The meal was cooked by the chef",
-                        "distractors": [
-                            "The meal cooked by the chef",
-                            "The chef was cooking the meal",
-                            "The meal is cooked"
-                        ]
-                    }
-                ]
-            },
-            "sentence_structure": {
-                "patterns": [
-                    {
-                        "id": "e3_ss1",
-                        "type": "clause",
-                        "difficulty": "intermediate",
-                        "template": "Which is an independent clause?",
-                        "answer": "She went to the market",
-                        "distractors": [
-                            "Because she was hungry",
-                            "When it rains",
-                            "Although he tried"
-                        ]
-                    },
-                    {
-                        "id": "e3_ss2",
-                        "type": "sentence_type",
-                        "difficulty": "advanced",
-                        "template": "'Although he was tired, he completed the race.' — What type of sentence is this?",
-                        "answer": "Complex sentence",
-                        "distractors": [
-                            "Simple sentence",
-                            "Compound sentence",
-                            "Fragment"
-                        ]
-                    }
-                ]
+            "answer_expr": "k",
+            "distractor_exprs": [
+              "k+2",
+              "k-1",
+              "k*d"
+            ],
+            "constraints": {
+              "d": [
+                3,
+                8
+              ],
+              "k": [
+                5,
+                15
+              ]
             }
-        },
-        "grade4": {
-            "advanced_grammar": {
-                "patterns": [
-                    {
-                        "id": "e4_ag1",
-                        "type": "modal_verb",
-                        "difficulty": "intermediate",
-                        "template": "Which sentence uses a modal verb correctly?",
-                        "answer": "You should eat vegetables for good health",
-                        "distractors": [
-                            "You eating vegetables",
-                            "You eat vegetables should",
-                            "Vegetables should you eat"
-                        ]
-                    },
-                    {
-                        "id": "e4_ag2",
-                        "type": "conditional",
-                        "difficulty": "advanced",
-                        "template": "Which is a second conditional sentence?",
-                        "answer": "If I had a million dollars, I would travel the world",
-                        "distractors": [
-                            "If it rains, I will stay home",
-                            "I travel when I have money",
-                            "Because I have money I travel"
-                        ]
-                    }
-                ]
-            },
-            "vocabulary": {
-                "patterns": [
-                    {
-                        "id": "e4_v1",
-                        "type": "synonym",
-                        "difficulty": "intermediate",
-                        "template": "What is a synonym of 'benevolent'?",
-                        "answer": "Kind",
-                        "distractors": [
-                            "Cruel",
-                            "Angry",
-                            "Timid"
-                        ]
-                    },
-                    {
-                        "id": "e4_v2",
-                        "type": "antonym",
-                        "difficulty": "intermediate",
-                        "template": "What is the antonym of 'verbose'?",
-                        "answer": "Concise",
-                        "distractors": [
-                            "Talkative",
-                            "Long-winded",
-                            "Detailed"
-                        ]
-                    },
-                    {
-                        "id": "e4_v3",
-                        "type": "word_meaning",
-                        "difficulty": "advanced",
-                        "template": "What does 'ephemeral' mean?",
-                        "answer": "Short-lived",
-                        "distractors": [
-                            "Long-lasting",
-                            "Ancient",
-                            "Invisible"
-                        ]
-                    }
-                ]
+          }
+        ]
+      },
+      "multiplication": {
+        "patterns": [
+          {
+            "id": "m3_mul1",
+            "type": "large_multiplication",
+            "difficulty": "beginner",
+            "template": "{a} × {b} = ?",
+            "answer_expr": "a * b",
+            "distractor_exprs": [
+              "a*b+b",
+              "a*b-a",
+              "a*b+a"
+            ],
+            "constraints": {
+              "a": [
+                4,
+                12
+              ],
+              "b": [
+                4,
+                12
+              ]
             }
-        },
-        "grade5": {
-            "linguistics": {
-                "patterns": [
-                    {
-                        "id": "e5_l1",
-                        "type": "morphology",
-                        "difficulty": "advanced",
-                        "template": "The prefix 'un-' in 'unhappy' changes the meaning to:",
-                        "answer": "The opposite of happy",
-                        "distractors": [
-                            "More than happy",
-                            "Related to happy",
-                            "Less than happy"
-                        ]
-                    },
-                    {
-                        "id": "e5_l2",
-                        "type": "etymology",
-                        "difficulty": "advanced",
-                        "template": "The word 'biology' comes from Greek roots meaning:",
-                        "answer": "Study of life",
-                        "distractors": [
-                            "Study of animals",
-                            "Study of plants",
-                            "Study of molecules"
-                        ]
-                    }
-                ]
-            },
-            "advanced_writing": {
-                "patterns": [
-                    {
-                        "id": "e5_w1",
-                        "type": "rhetorical_device",
-                        "difficulty": "advanced",
-                        "template": "'Ask not what your country can do for you' is an example of:",
-                        "answer": "Chiasmus",
-                        "distractors": [
-                            "Anaphora",
-                            "Alliteration",
-                            "Hyperbole"
-                        ]
-                    },
-                    {
-                        "id": "e5_w2",
-                        "type": "essay_structure",
-                        "difficulty": "advanced",
-                        "template": "What is the purpose of a thesis statement in an essay?",
-                        "answer": "To state the main argument of the essay",
-                        "distractors": [
-                            "To provide evidence",
-                            "To summarise the conclusion",
-                            "To list examples"
-                        ]
-                    }
-                ]
+          },
+          {
+            "id": "m3_mul2",
+            "type": "word_multiplication",
+            "difficulty": "intermediate",
+            "template": "A garden has {a} rows of {b} flowers each. Total flowers?",
+            "answer_expr": "a * b",
+            "distractor_exprs": [
+              "a*b+a",
+              "a+b",
+              "a*b-b"
+            ],
+            "constraints": {
+              "a": [
+                4,
+                9
+              ],
+              "b": [
+                5,
+                12
+              ]
             }
-        }
+          },
+          {
+            "id": "m3_div1",
+            "type": "reverse_division",
+            "difficulty": "advanced",
+            "template": "{c} ÷ {b} = ?",
+            "computed": {
+              "c": "a * b"
+            },
+            "answer_expr": "a",
+            "distractor_exprs": [
+              "a+1",
+              "a-1",
+              "b"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                9
+              ],
+              "b": [
+                3,
+                9
+              ]
+            }
+          }
+        ]
+      },
+      "geometry": {
+        "patterns": [
+          {
+            "id": "m3_g1",
+            "type": "rectangle_area",
+            "difficulty": "beginner",
+            "template": "Area of a rectangle: length {l} cm, width {w} cm?",
+            "answer_expr": "l * w",
+            "distractor_exprs": [
+              "l+w",
+              "2*(l+w)",
+              "l*w+w"
+            ],
+            "constraints": {
+              "l": [
+                4,
+                12
+              ],
+              "w": [
+                2,
+                8
+              ]
+            }
+          },
+          {
+            "id": "m3_g2",
+            "type": "rectangle_perimeter",
+            "difficulty": "intermediate",
+            "template": "Perimeter of a rectangle: length {l} cm, width {w} cm?",
+            "answer_expr": "2 * (l + w)",
+            "distractor_exprs": [
+              "l+w",
+              "l*w",
+              "2*l+w"
+            ],
+            "constraints": {
+              "l": [
+                4,
+                10
+              ],
+              "w": [
+                3,
+                7
+              ]
+            }
+          },
+          {
+            "id": "m3_g3",
+            "type": "square_area",
+            "difficulty": "advanced",
+            "template": "Area of a square with side {s} cm?",
+            "answer_expr": "s * s",
+            "distractor_exprs": [
+              "s*4",
+              "s+s",
+              "s*s+s"
+            ],
+            "constraints": {
+              "s": [
+                3,
+                10
+              ]
+            }
+          }
+        ]
+      },
+      "decimals": {
+        "patterns": [
+          {
+            "id": "m3_dc1",
+            "type": "decimal_read",
+            "difficulty": "beginner",
+            "template": "What is {a}.{b} + {c}.0?",
+            "answer_expr": "a + c + b/10",
+            "distractor_exprs": [
+              "a+c",
+              "a+c+1",
+              "(a+c)*10+b"
+            ],
+            "constraints": {
+              "a": [
+                1,
+                5
+              ],
+              "b": [
+                1,
+                9
+              ],
+              "c": [
+                1,
+                4
+              ]
+            }
+          }
+        ]
+      },
+      "data_handling": {
+        "patterns": [
+          {
+            "id": "m3_dh1",
+            "type": "bar_read",
+            "difficulty": "intermediate",
+            "template": "In a class, {a} like cricket and {b} like football. How many more like cricket?",
+            "answer_expr": "a - b",
+            "distractor_exprs": [
+              "a+b",
+              "a-b+1",
+              "b"
+            ],
+            "constraints": {
+              "a": [
+                15,
+                30
+              ],
+              "b": [
+                8,
+                14
+              ]
+            }
+          }
+        ]
+      },
+      "patterns_sequences": {
+        "patterns": [
+          {
+            "id": "m3_ps1",
+            "type": "pattern_rule",
+            "difficulty": "intermediate",
+            "template": "Find the next: {a}, {b}, {c}, ___",
+            "computed": {
+              "b": "a+d",
+              "c": "a+2*d"
+            },
+            "answer_expr": "a+3*d",
+            "distractor_exprs": [
+              "a+3*d+d",
+              "a+3*d-1",
+              "a+2*d"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                10
+              ],
+              "d": [
+                3,
+                7
+              ]
+            }
+          }
+        ]
+      },
+      "measurement": {
+        "patterns": [
+          {
+            "id": "m3_ms1",
+            "type": "cm_to_m",
+            "difficulty": "intermediate",
+            "template": "Convert {c} cm to metres.",
+            "computed": {
+              "c": "a*100"
+            },
+            "answer_expr": "a",
+            "distractor_exprs": [
+              "a+1",
+              "a*10",
+              "a*100"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                8
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "grade4": {
+      "algebra": {
+        "patterns": [
+          {
+            "id": "m4_al1",
+            "type": "linear_addition",
+            "difficulty": "beginner",
+            "template": "If x + {a} = {c}, what is x?",
+            "computed": {
+              "c": "a + b"
+            },
+            "answer_expr": "b",
+            "distractor_exprs": [
+              "b+1",
+              "b-1",
+              "c"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                15
+              ],
+              "b": [
+                2,
+                12
+              ]
+            }
+          },
+          {
+            "id": "m4_al2",
+            "type": "linear_multiply",
+            "difficulty": "intermediate",
+            "template": "Solve: {b}x = {c}. What is x?",
+            "computed": {
+              "c": "a * b"
+            },
+            "answer_expr": "a",
+            "distractor_exprs": [
+              "a+1",
+              "a-1",
+              "c"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                9
+              ],
+              "b": [
+                2,
+                6
+              ]
+            }
+          },
+          {
+            "id": "m4_al3",
+            "type": "linear_subtraction",
+            "difficulty": "intermediate",
+            "template": "Solve: x - {a} = {b}. What is x?",
+            "answer_expr": "a + b",
+            "distractor_exprs": [
+              "a-b",
+              "b",
+              "a"
+            ],
+            "constraints": {
+              "a": [
+                5,
+                20
+              ],
+              "b": [
+                3,
+                15
+              ]
+            }
+          },
+          {
+            "id": "m4_al4",
+            "type": "algebra_word",
+            "difficulty": "advanced",
+            "template": "A number added to {a} gives {c}. What is the number?",
+            "computed": {
+              "c": "a + b"
+            },
+            "answer_expr": "b",
+            "distractor_exprs": [
+              "b+2",
+              "b-1",
+              "c"
+            ],
+            "constraints": {
+              "a": [
+                4,
+                20
+              ],
+              "b": [
+                3,
+                15
+              ]
+            }
+          }
+        ]
+      },
+      "decimals": {
+        "patterns": [
+          {
+            "id": "m4_dec1",
+            "type": "decimal_addition",
+            "difficulty": "intermediate",
+            "template": "What is 0.{a} + 0.{b}?",
+            "answer_expr": "(a + b) / 10",
+            "distractor_exprs": [
+              "(a+b+1)/10",
+              "(a+b-1)/10",
+              "(a*b)/10"
+            ],
+            "constraints": {
+              "a": [
+                1,
+                4
+              ],
+              "b": [
+                1,
+                5
+              ]
+            }
+          },
+          {
+            "id": "m4_dec2",
+            "type": "decimal_word",
+            "difficulty": "advanced",
+            "template": "A bottle holds {a}.{b} litres. Another holds {c}.0 litres. Total?",
+            "answer_expr": "a + c + b/10",
+            "distractor_exprs": [
+              "a+c",
+              "a+c+1",
+              "(a+c+b/10)+0.5"
+            ],
+            "constraints": {
+              "a": [
+                1,
+                4
+              ],
+              "b": [
+                1,
+                9
+              ],
+              "c": [
+                1,
+                3
+              ]
+            }
+          }
+        ]
+      },
+      "statistics": {
+        "patterns": [
+          {
+            "id": "m4_st1",
+            "type": "mean_three",
+            "difficulty": "intermediate",
+            "template": "Find the mean of {a}, {b}, and {c}.",
+            "answer_expr": "(a + b + c) // 3",
+            "distractor_exprs": [
+              "(a+b+c)//3+1",
+              "(a+b)//2",
+              "a+b+c"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                9
+              ],
+              "b": [
+                6,
+                15
+              ],
+              "c": [
+                9,
+                18
+              ]
+            }
+          },
+          {
+            "id": "m4_st2",
+            "type": "mean_word",
+            "difficulty": "advanced",
+            "template": "A student scored {a}, {b}, and {c} in three tests. What is the average?",
+            "answer_expr": "(a + b + c) // 3",
+            "distractor_exprs": [
+              "(a+b+c)//3+2",
+              "a+b",
+              "(a+b)//2"
+            ],
+            "constraints": {
+              "a": [
+                60,
+                80
+              ],
+              "b": [
+                70,
+                90
+              ],
+              "c": [
+                75,
+                95
+              ]
+            }
+          }
+        ]
+      },
+      "fractions": {
+        "patterns": [
+          {
+            "id": "m4_fr1",
+            "type": "fraction_compare",
+            "difficulty": "intermediate",
+            "template": "Which is larger: 1/{a} or 1/{b}?",
+            "answer_expr": "'1/' + str(min(a,b))",
+            "distractor_exprs": [
+              "'1/' + str(max(a,b))",
+              "'1/' + str(a+b)",
+              "'0'"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                6
+              ],
+              "b": [
+                2,
+                6
+              ]
+            }
+          }
+        ]
+      },
+      "geometry": {
+        "patterns": [
+          {
+            "id": "m4_g1",
+            "type": "angle_sum",
+            "difficulty": "intermediate",
+            "template": "Two angles of a triangle are {a}° and {b}°. What is the third angle?",
+            "answer_expr": "180 - a - b",
+            "distractor_exprs": [
+              "180-a",
+              "a+b",
+              "180-a-b+10"
+            ],
+            "constraints": {
+              "a": [
+                30,
+                80
+              ],
+              "b": [
+                30,
+                70
+              ]
+            }
+          },
+          {
+            "id": "m4_g2",
+            "type": "circle_part",
+            "difficulty": "beginner",
+            "template": "What is the name of the distance around a circle?",
+            "answer": "Circumference",
+            "distractors": [
+              "Radius",
+              "Diameter",
+              "Area"
+            ]
+          }
+        ]
+      },
+      "factors": {
+        "patterns": [
+          {
+            "id": "m4_fc1",
+            "type": "lcm",
+            "difficulty": "advanced",
+            "template": "What is the LCM of {a} and {b}?",
+            "answer_expr": "(a*b) // __import__('math').gcd(a,b)",
+            "distractor_exprs": [
+              "a*b",
+              "a+b",
+              "max(a,b)"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                8
+              ],
+              "b": [
+                4,
+                9
+              ]
+            }
+          }
+        ]
+      },
+      "number_system": {
+        "patterns": [
+          {
+            "id": "m4_ns1",
+            "type": "place_value",
+            "difficulty": "beginner",
+            "template": "What is the place value of 5 in {c}?",
+            "computed": {
+              "c": "a*1000 + 500 + b"
+            },
+            "answer": "500",
+            "distractors": [
+              "50",
+              "5",
+              "5000"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                8
+              ],
+              "b": [
+                10,
+                99
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "grade5": {
+      "algebra": {
+        "patterns": [
+          {
+            "id": "m5_al1",
+            "type": "two_step_equation",
+            "difficulty": "intermediate",
+            "template": "2x + {b} = {c}. Find x.",
+            "computed": {
+              "c": "2 * k + b"
+            },
+            "answer_expr": "k",
+            "distractor_exprs": [
+              "k+1",
+              "k-1",
+              "k*2"
+            ],
+            "constraints": {
+              "k": [
+                3,
+                10
+              ],
+              "b": [
+                3,
+                12
+              ]
+            }
+          },
+          {
+            "id": "m5_al2",
+            "type": "multi_step_word",
+            "difficulty": "advanced",
+            "template": "A number tripled and reduced by {b} equals {c}. Find the number.",
+            "computed": {
+              "c": "3 * k - b"
+            },
+            "answer_expr": "k",
+            "distractor_exprs": [
+              "k+1",
+              "k-1",
+              "c"
+            ],
+            "constraints": {
+              "k": [
+                3,
+                10
+              ],
+              "b": [
+                2,
+                9
+              ]
+            }
+          },
+          {
+            "id": "m5_al3",
+            "type": "coefficient_equation",
+            "difficulty": "advanced",
+            "template": "{a}x - {b} = {c}. Solve for x.",
+            "computed": {
+              "c": "a * k - b"
+            },
+            "answer_expr": "k",
+            "distractor_exprs": [
+              "k+1",
+              "k-1",
+              "k+2"
+            ],
+            "constraints": {
+              "a": [
+                3,
+                5
+              ],
+              "b": [
+                4,
+                12
+              ],
+              "k": [
+                2,
+                8
+              ]
+            }
+          }
+        ]
+      },
+      "geometry": {
+        "patterns": [
+          {
+            "id": "m5_g1",
+            "type": "box_volume",
+            "difficulty": "intermediate",
+            "template": "Volume of a box: length {l}, width {w}, height {h}?",
+            "answer_expr": "l * w * h",
+            "distractor_exprs": [
+              "l*w*h+h",
+              "2*(l*w+w*h+h*l)",
+              "l+w+h"
+            ],
+            "constraints": {
+              "l": [
+                2,
+                6
+              ],
+              "w": [
+                2,
+                5
+              ],
+              "h": [
+                2,
+                4
+              ]
+            }
+          },
+          {
+            "id": "m5_g2",
+            "type": "triangle_area",
+            "difficulty": "advanced",
+            "template": "Area of a triangle: base {b} cm, height {h} cm?",
+            "answer_expr": "(b * h) // 2",
+            "distractor_exprs": [
+              "b+h",
+              "b*h",
+              "(b+h)//2"
+            ],
+            "constraints": {
+              "b": [
+                4,
+                12
+              ],
+              "h": [
+                4,
+                10
+              ]
+            }
+          }
+        ]
+      },
+      "statistics": {
+        "patterns": [
+          {
+            "id": "m5_st1",
+            "type": "mean_four",
+            "difficulty": "advanced",
+            "template": "Find the mean of {a}, {b}, {c}, and {d}.",
+            "answer_expr": "(a + b + c + d) // 4",
+            "distractor_exprs": [
+              "(a+b+c+d)//4+1",
+              "(a+b)//2",
+              "a+b+c+d"
+            ],
+            "constraints": {
+              "a": [
+                4,
+                10
+              ],
+              "b": [
+                8,
+                16
+              ],
+              "c": [
+                12,
+                20
+              ],
+              "d": [
+                16,
+                24
+              ]
+            }
+          }
+        ]
+      },
+      "calculus": {
+        "patterns": [
+          {
+            "id": "m5_cal1",
+            "type": "rate_of_change",
+            "difficulty": "advanced",
+            "template": "A car travels {c} km in {t} hours. What is its average speed in km/h?",
+            "computed": {
+              "c": "t * k * 10"
+            },
+            "answer_expr": "k * 10",
+            "distractor_exprs": [
+              "k*10+5",
+              "k*10-5",
+              "k*10+10"
+            ],
+            "constraints": {
+              "t": [
+                2,
+                5
+              ],
+              "k": [
+                6,
+                15
+              ]
+            }
+          }
+        ]
+      },
+      "fractions": {
+        "patterns": [
+          {
+            "id": "m5_fr1",
+            "type": "mixed_number",
+            "difficulty": "intermediate",
+            "template": "Convert {c}/{b} to a mixed number. What is the whole part?",
+            "computed": {
+              "c": "a*b+r"
+            },
+            "answer_expr": "a",
+            "distractor_exprs": [
+              "a+1",
+              "a-1",
+              "b"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                5
+              ],
+              "b": [
+                3,
+                7
+              ],
+              "r": [
+                1,
+                2
+              ]
+            }
+          }
+        ]
+      },
+      "percentage": {
+        "patterns": [
+          {
+            "id": "m5_pc1",
+            "type": "pct_of",
+            "difficulty": "intermediate",
+            "template": "What is {p}% of {c}?",
+            "computed": {
+              "c": "k*10"
+            },
+            "answer_expr": "p * k * 10 // 100",
+            "distractor_exprs": [
+              "p*k*10//100+5",
+              "p",
+              "k*10"
+            ],
+            "constraints": {
+              "p": [
+                10,
+                50
+              ],
+              "k": [
+                5,
+                20
+              ]
+            }
+          },
+          {
+            "id": "m5_pc2",
+            "type": "pct_word",
+            "difficulty": "advanced",
+            "template": "A shirt costs Rs {c}. After {p}% discount, the price is?",
+            "computed": {
+              "c": "k*100"
+            },
+            "answer_expr": "k*100 - k*100*p//100",
+            "distractor_exprs": [
+              "k*100",
+              "k*100*p//100",
+              "k*100+p"
+            ],
+            "constraints": {
+              "k": [
+                2,
+                8
+              ],
+              "p": [
+                10,
+                30
+              ]
+            }
+          }
+        ]
+      },
+      "ratio": {
+        "patterns": [
+          {
+            "id": "m5_rt1",
+            "type": "simplify",
+            "difficulty": "intermediate",
+            "template": "Simplify the ratio {c}:{d}.",
+            "computed": {
+              "c": "a*g",
+              "d": "b*g"
+            },
+            "answer_expr": "str(a)+':'+str(b)",
+            "distractor_exprs": [
+              "str(a+1)+':'+str(b)",
+              "str(c)+':'+str(d)",
+              "str(b)+':'+str(a)"
+            ],
+            "constraints": {
+              "a": [
+                2,
+                5
+              ],
+              "b": [
+                3,
+                7
+              ],
+              "g": [
+                2,
+                4
+              ]
+            }
+          }
+        ]
+      },
+      "number_system": {
+        "patterns": [
+          {
+            "id": "m5_ns1",
+            "type": "roman",
+            "difficulty": "intermediate",
+            "template": "What is the Roman numeral for {a}?",
+            "answer": "Cannot compute",
+            "distractors": [
+              "X",
+              "V",
+              "L"
+            ],
+            "constraints": {
+              "a": [
+                1,
+                20
+              ]
+            }
+          }
+        ]
+      }
     }
+  },
+  "science": {
+    "grade1": {
+      "basic_biology": {
+        "patterns": [
+          {
+            "id": "s1_b1",
+            "type": "definition",
+            "difficulty": "beginner",
+            "template": "What do plants need to make food through photosynthesis?",
+            "answer": "Sunlight, water, and carbon dioxide",
+            "distractors": [
+              "Only water",
+              "Only sunlight",
+              "Oxygen and sugar"
+            ]
+          },
+          {
+            "id": "s1_b2",
+            "type": "classification",
+            "difficulty": "beginner",
+            "template": "Which of the following is a mammal?",
+            "answer": "Dog",
+            "distractors": [
+              "Eagle",
+              "Salmon",
+              "Frog"
+            ]
+          },
+          {
+            "id": "s1_b3",
+            "type": "animal_type",
+            "difficulty": "beginner",
+            "template": "Which animal lays eggs and has feathers?",
+            "answer": "Hen",
+            "distractors": [
+              "Cat",
+              "Cow",
+              "Dog"
+            ]
+          },
+          {
+            "id": "s1_b4",
+            "type": "plant_part",
+            "difficulty": "intermediate",
+            "template": "Which part of a plant makes food using sunlight?",
+            "answer": "Leaf",
+            "distractors": [
+              "Root",
+              "Stem",
+              "Flower"
+            ]
+          },
+          {
+            "id": "s1_b5",
+            "type": "life_need",
+            "difficulty": "intermediate",
+            "template": "Which of the following do ALL living things need?",
+            "answer": "Food and water",
+            "distractors": [
+              "Sunlight only",
+              "Cold temperature",
+              "Sand"
+            ]
+          }
+        ]
+      },
+      "animals": {
+        "patterns": [
+          {
+            "id": "s1_a1",
+            "type": "habitat",
+            "difficulty": "beginner",
+            "template": "Where does a fish live?",
+            "answer": "Water",
+            "distractors": [
+              "Desert",
+              "Forest",
+              "Sky"
+            ]
+          },
+          {
+            "id": "s1_a2",
+            "type": "food",
+            "difficulty": "beginner",
+            "template": "What do herbivores eat?",
+            "answer": "Plants",
+            "distractors": [
+              "Meat",
+              "Insects",
+              "Stones"
+            ]
+          }
+        ]
+      },
+      "plants": {
+        "patterns": [
+          {
+            "id": "s1_pl1",
+            "type": "parts",
+            "difficulty": "beginner",
+            "template": "Which part of the plant absorbs water from the soil?",
+            "answer": "Root",
+            "distractors": [
+              "Leaf",
+              "Flower",
+              "Stem"
+            ]
+          }
+        ]
+      },
+      "weather": {
+        "patterns": [
+          {
+            "id": "s1_w1",
+            "type": "season",
+            "difficulty": "beginner",
+            "template": "In which season do we wear warm clothes?",
+            "answer": "Winter",
+            "distractors": [
+              "Summer",
+              "Monsoon",
+              "Spring"
+            ]
+          }
+        ]
+      },
+      "senses": {
+        "patterns": [
+          {
+            "id": "s1_sn1",
+            "type": "organ",
+            "difficulty": "beginner",
+            "template": "Which sense organ helps us see?",
+            "answer": "Eyes",
+            "distractors": [
+              "Ears",
+              "Nose",
+              "Tongue"
+            ]
+          }
+        ]
+      }
+    },
+    "grade2": {
+      "cell_structure": {
+        "patterns": [
+          {
+            "id": "s2_c1",
+            "type": "definition",
+            "difficulty": "beginner",
+            "template": "What is the control centre of a cell?",
+            "answer": "Nucleus",
+            "distractors": [
+              "Mitochondria",
+              "Cell wall",
+              "Ribosome"
+            ]
+          },
+          {
+            "id": "s2_c2",
+            "type": "function",
+            "difficulty": "intermediate",
+            "template": "Which organelle is known as the powerhouse of the cell?",
+            "answer": "Mitochondria",
+            "distractors": [
+              "Nucleus",
+              "Ribosome",
+              "Vacuole"
+            ]
+          },
+          {
+            "id": "s2_c3",
+            "type": "comparison",
+            "difficulty": "intermediate",
+            "template": "Which structure is found in plant cells but NOT in animal cells?",
+            "answer": "Cell wall",
+            "distractors": [
+              "Nucleus",
+              "Mitochondria",
+              "Ribosome"
+            ]
+          },
+          {
+            "id": "s2_c4",
+            "type": "identification",
+            "difficulty": "advanced",
+            "template": "Which organelle is responsible for protein synthesis?",
+            "answer": "Ribosome",
+            "distractors": [
+              "Nucleus",
+              "Vacuole",
+              "Lysosome"
+            ]
+          }
+        ]
+      },
+      "photosynthesis": {
+        "patterns": [
+          {
+            "id": "s2_p1",
+            "type": "product",
+            "difficulty": "beginner",
+            "template": "What is the main energy-providing product of photosynthesis?",
+            "answer": "Glucose",
+            "distractors": [
+              "Oxygen",
+              "Carbon dioxide",
+              "Water"
+            ]
+          },
+          {
+            "id": "s2_p2",
+            "type": "gas_absorbed",
+            "difficulty": "intermediate",
+            "template": "Which gas do plants absorb during photosynthesis?",
+            "answer": "Carbon dioxide",
+            "distractors": [
+              "Oxygen",
+              "Nitrogen",
+              "Hydrogen"
+            ]
+          },
+          {
+            "id": "s2_p3",
+            "type": "byproduct",
+            "difficulty": "advanced",
+            "template": "What gas is released as a byproduct of photosynthesis?",
+            "answer": "Oxygen",
+            "distractors": [
+              "Carbon dioxide",
+              "Nitrogen",
+              "Hydrogen"
+            ]
+          }
+        ]
+      },
+      "states_of_matter": {
+        "patterns": [
+          {
+            "id": "s2_s1",
+            "type": "definition",
+            "difficulty": "beginner",
+            "template": "Which state of matter has no fixed shape but has a fixed volume?",
+            "answer": "Liquid",
+            "distractors": [
+              "Solid",
+              "Gas",
+              "Plasma"
+            ]
+          },
+          {
+            "id": "s2_s2",
+            "type": "change",
+            "difficulty": "intermediate",
+            "template": "What is it called when a liquid turns into a gas by heating?",
+            "answer": "Evaporation",
+            "distractors": [
+              "Condensation",
+              "Freezing",
+              "Sublimation"
+            ]
+          },
+          {
+            "id": "s2_s3",
+            "type": "property",
+            "difficulty": "intermediate",
+            "template": "Which property describes a solid?",
+            "answer": "Fixed shape and volume",
+            "distractors": [
+              "No fixed shape",
+              "No fixed volume",
+              "Flows freely"
+            ]
+          }
+        ]
+      },
+      "human_body": {
+        "patterns": [
+          {
+            "id": "s2_h1",
+            "type": "organ_function",
+            "difficulty": "beginner",
+            "template": "Which organ pumps blood throughout the body?",
+            "answer": "Heart",
+            "distractors": [
+              "Lungs",
+              "Brain",
+              "Stomach"
+            ]
+          },
+          {
+            "id": "s2_h2",
+            "type": "system",
+            "difficulty": "intermediate",
+            "template": "Which system is responsible for breathing?",
+            "answer": "Respiratory system",
+            "distractors": [
+              "Digestive system",
+              "Nervous system",
+              "Circulatory system"
+            ]
+          },
+          {
+            "id": "s2_h3",
+            "type": "organ_id",
+            "difficulty": "advanced",
+            "template": "Which organ filters blood and removes wastes?",
+            "answer": "Kidney",
+            "distractors": [
+              "Liver",
+              "Lungs",
+              "Spleen"
+            ]
+          }
+        ]
+      },
+      "food_nutrition": {
+        "patterns": [
+          {
+            "id": "s2_fn1",
+            "type": "vitamin",
+            "difficulty": "intermediate",
+            "template": "Which vitamin do we get from sunlight?",
+            "answer": "Vitamin D",
+            "distractors": [
+              "Vitamin A",
+              "Vitamin C",
+              "Vitamin B"
+            ]
+          }
+        ]
+      },
+      "water_cycle": {
+        "patterns": [
+          {
+            "id": "s2_wc1",
+            "type": "process",
+            "difficulty": "intermediate",
+            "template": "What is the process of water vapour turning into liquid called?",
+            "answer": "Condensation",
+            "distractors": [
+              "Evaporation",
+              "Precipitation",
+              "Sublimation"
+            ]
+          }
+        ]
+      },
+      "simple_machines": {
+        "patterns": [
+          {
+            "id": "s2_sm1",
+            "type": "example",
+            "difficulty": "beginner",
+            "template": "A see-saw is an example of which simple machine?",
+            "answer": "Lever",
+            "distractors": [
+              "Pulley",
+              "Wedge",
+              "Screw"
+            ]
+          }
+        ]
+      }
+    },
+    "grade3": {
+      "genetics": {
+        "patterns": [
+          {
+            "id": "s3_g1",
+            "type": "definition",
+            "difficulty": "intermediate",
+            "template": "What molecule carries genetic information in living organisms?",
+            "answer": "DNA",
+            "distractors": [
+              "RNA",
+              "Protein",
+              "ATP"
+            ]
+          },
+          {
+            "id": "s3_g2",
+            "type": "classification",
+            "difficulty": "advanced",
+            "template": "What term describes characteristics passed from parents to offspring?",
+            "answer": "Inherited traits",
+            "distractors": [
+              "Acquired traits",
+              "Environmental adaptations",
+              "Mutations"
+            ]
+          }
+        ]
+      },
+      "chemical_reactions": {
+        "patterns": [
+          {
+            "id": "s3_cr1",
+            "type": "definition",
+            "difficulty": "intermediate",
+            "template": "Which type of reaction releases energy as heat or light?",
+            "answer": "Exothermic reaction",
+            "distractors": [
+              "Endothermic reaction",
+              "Neutralization",
+              "Decomposition"
+            ]
+          },
+          {
+            "id": "s3_cr2",
+            "type": "product",
+            "difficulty": "advanced",
+            "template": "What is formed when an acid reacts with a base?",
+            "answer": "Salt and water",
+            "distractors": [
+              "More acid",
+              "A gas",
+              "Only water"
+            ]
+          }
+        ]
+      },
+      "forces": {
+        "patterns": [
+          {
+            "id": "s3_f1",
+            "type": "definition",
+            "difficulty": "beginner",
+            "template": "What force pulls all objects towards the Earth?",
+            "answer": "Gravity",
+            "distractors": [
+              "Friction",
+              "Magnetism",
+              "Tension"
+            ]
+          },
+          {
+            "id": "s3_f2",
+            "type": "application",
+            "difficulty": "intermediate",
+            "template": "Which force slows down a moving object on a rough surface?",
+            "answer": "Friction",
+            "distractors": [
+              "Gravity",
+              "Normal force",
+              "Air resistance"
+            ]
+          },
+          {
+            "id": "s3_f3",
+            "type": "calculation_concept",
+            "difficulty": "advanced",
+            "template": "According to Newton's second law, if force is doubled and mass stays the same, acceleration:",
+            "answer": "Doubles",
+            "distractors": [
+              "Halves",
+              "Stays the same",
+              "Triples"
+            ]
+          }
+        ]
+      },
+      "human_body": {
+        "patterns": [
+          {
+            "id": "s3_hb1",
+            "type": "skeleton",
+            "difficulty": "intermediate",
+            "template": "How many bones are in the adult human body?",
+            "answer": "206",
+            "distractors": [
+              "106",
+              "306",
+              "256"
+            ]
+          }
+        ]
+      },
+      "soil": {
+        "patterns": [
+          {
+            "id": "s3_sl1",
+            "type": "type",
+            "difficulty": "intermediate",
+            "template": "Which type of soil holds the most water?",
+            "answer": "Clay soil",
+            "distractors": [
+              "Sandy soil",
+              "Loamy soil",
+              "Rocky soil"
+            ]
+          }
+        ]
+      },
+      "light": {
+        "patterns": [
+          {
+            "id": "s3_lt1",
+            "type": "property",
+            "difficulty": "intermediate",
+            "template": "What happens when light passes through a prism?",
+            "answer": "It splits into seven colours",
+            "distractors": [
+              "It becomes brighter",
+              "It turns white",
+              "It disappears"
+            ]
+          }
+        ]
+      },
+      "sound": {
+        "patterns": [
+          {
+            "id": "s3_snd1",
+            "type": "definition",
+            "difficulty": "intermediate",
+            "template": "Sound travels fastest through which medium?",
+            "answer": "Solids",
+            "distractors": [
+              "Liquids",
+              "Gases",
+              "Vacuum"
+            ]
+          }
+        ]
+      }
+    },
+    "grade4": {
+      "electricity": {
+        "patterns": [
+          {
+            "id": "s4_e1",
+            "type": "definition",
+            "difficulty": "intermediate",
+            "template": "What is the unit of electrical resistance?",
+            "answer": "Ohm",
+            "distractors": [
+              "Ampere",
+              "Volt",
+              "Watt"
+            ]
+          },
+          {
+            "id": "s4_e2",
+            "type": "law",
+            "difficulty": "advanced",
+            "template": "According to Ohm's law, if voltage doubles and resistance is constant, what happens to current?",
+            "answer": "Current doubles",
+            "distractors": [
+              "Current halves",
+              "Current stays the same",
+              "Current quadruples"
+            ]
+          },
+          {
+            "id": "s4_e3",
+            "type": "component",
+            "difficulty": "intermediate",
+            "template": "Which component in a circuit converts electrical energy to light?",
+            "answer": "Light bulb",
+            "distractors": [
+              "Battery",
+              "Resistor",
+              "Switch"
+            ]
+          }
+        ]
+      },
+      "ecology": {
+        "patterns": [
+          {
+            "id": "s4_ec1",
+            "type": "definition",
+            "difficulty": "intermediate",
+            "template": "What is a food chain?",
+            "answer": "The transfer of energy from one organism to another",
+            "distractors": [
+              "A chain made of food",
+              "A list of animals",
+              "Animals eating plants only"
+            ]
+          },
+          {
+            "id": "s4_ec2",
+            "type": "classification",
+            "difficulty": "advanced",
+            "template": "An organism that makes its own food using sunlight is called a:",
+            "answer": "Producer",
+            "distractors": [
+              "Consumer",
+              "Decomposer",
+              "Predator"
+            ]
+          }
+        ]
+      },
+      "magnetism": {
+        "patterns": [
+          {
+            "id": "s4_mg1",
+            "type": "property",
+            "difficulty": "intermediate",
+            "template": "Which end of a magnet is attracted to the north pole of another magnet?",
+            "answer": "South pole",
+            "distractors": [
+              "North pole",
+              "Both poles",
+              "Neither pole"
+            ]
+          }
+        ]
+      },
+      "reproduction": {
+        "patterns": [
+          {
+            "id": "s4_rp1",
+            "type": "plant",
+            "difficulty": "intermediate",
+            "template": "Which part of the flower contains the pollen?",
+            "answer": "Anther",
+            "distractors": [
+              "Stigma",
+              "Petal",
+              "Sepal"
+            ]
+          }
+        ]
+      },
+      "rocks_minerals": {
+        "patterns": [
+          {
+            "id": "s4_rm1",
+            "type": "classification",
+            "difficulty": "intermediate",
+            "template": "Which type of rock is formed from cooled lava?",
+            "answer": "Igneous rock",
+            "distractors": [
+              "Sedimentary rock",
+              "Metamorphic rock",
+              "Limestone"
+            ]
+          }
+        ]
+      }
+    },
+    "grade5": {
+      "genetics": {
+        "patterns": [
+          {
+            "id": "s5_g1",
+            "type": "advanced_concept",
+            "difficulty": "advanced",
+            "template": "What is the term for a change in the DNA sequence of an organism?",
+            "answer": "Mutation",
+            "distractors": [
+              "Mitosis",
+              "Osmosis",
+              "Diffusion"
+            ]
+          },
+          {
+            "id": "s5_g2",
+            "type": "principle",
+            "difficulty": "advanced",
+            "template": "According to Mendel, a trait that is hidden in the F1 generation is called:",
+            "answer": "Recessive",
+            "distractors": [
+              "Dominant",
+              "Codominant",
+              "Homozygous"
+            ]
+          }
+        ]
+      },
+      "ecology": {
+        "patterns": [
+          {
+            "id": "s5_ec1",
+            "type": "concept",
+            "difficulty": "advanced",
+            "template": "What happens to energy as it moves up each trophic level in a food chain?",
+            "answer": "It decreases",
+            "distractors": [
+              "It increases",
+              "It stays the same",
+              "It doubles"
+            ]
+          }
+        ]
+      },
+      "acids_bases": {
+        "patterns": [
+          {
+            "id": "s5_ab1",
+            "type": "indicator",
+            "difficulty": "advanced",
+            "template": "Litmus paper turns red in which type of solution?",
+            "answer": "Acidic",
+            "distractors": [
+              "Basic",
+              "Neutral",
+              "Salty"
+            ]
+          }
+        ]
+      },
+      "periodic_table": {
+        "patterns": [
+          {
+            "id": "s5_pt1",
+            "type": "element",
+            "difficulty": "advanced",
+            "template": "What is the chemical symbol for Gold?",
+            "answer": "Au",
+            "distractors": [
+              "Ag",
+              "Go",
+              "Gd"
+            ]
+          }
+        ]
+      },
+      "forces": {
+        "patterns": [
+          {
+            "id": "s5_f1",
+            "type": "friction",
+            "difficulty": "advanced",
+            "template": "Friction is greater on which surface?",
+            "answer": "Rough surface",
+            "distractors": [
+              "Smooth surface",
+              "Wet surface",
+              "Icy surface"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "english": {
+    "grade1": {
+      "parts_of_speech": {
+        "patterns": [
+          {
+            "id": "e1_p1",
+            "type": "noun_identification",
+            "difficulty": "beginner",
+            "template": "Which word is a noun in: 'The dog runs fast.'",
+            "answer": "Dog",
+            "distractors": [
+              "Runs",
+              "Fast",
+              "The"
+            ]
+          },
+          {
+            "id": "e1_p2",
+            "type": "verb_identification",
+            "difficulty": "beginner",
+            "template": "Which word is a verb in: 'She sings beautifully every morning.'",
+            "answer": "Sings",
+            "distractors": [
+              "She",
+              "Beautifully",
+              "Morning"
+            ]
+          },
+          {
+            "id": "e1_p3",
+            "type": "adjective_id",
+            "difficulty": "intermediate",
+            "template": "Which word is an adjective in: 'The tall tree fell down.'",
+            "answer": "Tall",
+            "distractors": [
+              "Tree",
+              "Fell",
+              "Down"
+            ]
+          },
+          {
+            "id": "e1_p4",
+            "type": "pronoun_id",
+            "difficulty": "intermediate",
+            "template": "Which word is a pronoun in: 'He gave it to her.'",
+            "answer": "He",
+            "distractors": [
+              "Gave",
+              "It",
+              "To"
+            ]
+          }
+        ]
+      },
+      "vocabulary": {
+        "patterns": [
+          {
+            "id": "e1_v1",
+            "type": "opposite",
+            "difficulty": "beginner",
+            "template": "What is the opposite of 'big'?",
+            "answer": "Small",
+            "distractors": [
+              "Tall",
+              "Fast",
+              "Heavy"
+            ]
+          },
+          {
+            "id": "e1_v2",
+            "type": "similar",
+            "difficulty": "beginner",
+            "template": "Which word means the same as 'happy'?",
+            "answer": "Joyful",
+            "distractors": [
+              "Sad",
+              "Angry",
+              "Tired"
+            ]
+          }
+        ]
+      },
+      "spelling": {
+        "patterns": [
+          {
+            "id": "e1_sp1",
+            "type": "correct_spell",
+            "difficulty": "beginner",
+            "template": "Which is the correct spelling?",
+            "answer": "Beautiful",
+            "distractors": [
+              "Beautful",
+              "Beutiful",
+              "Beatiful"
+            ]
+          }
+        ]
+      },
+      "reading": {
+        "patterns": [
+          {
+            "id": "e1_rd1",
+            "type": "comprehension",
+            "difficulty": "intermediate",
+            "template": "'The cat sat on the mat.' Where is the cat?",
+            "answer": "On the mat",
+            "distractors": [
+              "Under the table",
+              "In the garden",
+              "On the chair"
+            ]
+          }
+        ]
+      }
+    },
+    "grade2": {
+      "figures_of_speech": {
+        "patterns": [
+          {
+            "id": "e2_fig1",
+            "type": "simile",
+            "difficulty": "beginner",
+            "template": "Which sentence contains a simile?",
+            "answer": "She runs like the wind",
+            "distractors": [
+              "The sun smiled at us",
+              "He is a lion",
+              "The wind whispered"
+            ]
+          },
+          {
+            "id": "e2_fig2",
+            "type": "metaphor",
+            "difficulty": "intermediate",
+            "template": "Which sentence contains a metaphor?",
+            "answer": "Life is a roller coaster",
+            "distractors": [
+              "He eats like a horse",
+              "The flowers danced",
+              "She is as cold as ice"
+            ]
+          },
+          {
+            "id": "e2_fig3",
+            "type": "personification",
+            "difficulty": "intermediate",
+            "template": "Which sentence uses personification?",
+            "answer": "The trees whispered secrets to each other",
+            "distractors": [
+              "She is as brave as a lion",
+              "He runs as fast as a cheetah",
+              "The cake was sweet"
+            ]
+          }
+        ]
+      },
+      "punctuation": {
+        "patterns": [
+          {
+            "id": "e2_pun1",
+            "type": "end_mark",
+            "difficulty": "beginner",
+            "template": "Which punctuation mark ends a question?",
+            "answer": "Question mark (?)",
+            "distractors": [
+              "Full stop (.)",
+              "Exclamation mark (!)",
+              "Comma (,)"
+            ]
+          },
+          {
+            "id": "e2_pun2",
+            "type": "comma_use",
+            "difficulty": "intermediate",
+            "template": "In which sentence is the comma used correctly?",
+            "answer": "I bought apples, oranges, and bananas.",
+            "distractors": [
+              "I bought, apples oranges and bananas.",
+              "I, bought apples oranges and bananas.",
+              "I bought apples oranges, and bananas"
+            ]
+          },
+          {
+            "id": "e2_pun3",
+            "type": "apostrophe",
+            "difficulty": "advanced",
+            "template": "What does the apostrophe show in 'Riya's book'?",
+            "answer": "Possession",
+            "distractors": [
+              "Contraction",
+              "Plural",
+              "Quotation"
+            ]
+          }
+        ]
+      },
+      "tenses": {
+        "patterns": [
+          {
+            "id": "e2_t1",
+            "type": "past",
+            "difficulty": "beginner",
+            "template": "What is the past tense of 'run'?",
+            "answer": "Ran",
+            "distractors": [
+              "Runned",
+              "Running",
+              "Runs"
+            ]
+          },
+          {
+            "id": "e2_t2",
+            "type": "present",
+            "difficulty": "intermediate",
+            "template": "Choose the correct form: 'She ___ to school every day.'",
+            "answer": "goes",
+            "distractors": [
+              "go",
+              "going",
+              "gone"
+            ]
+          }
+        ]
+      },
+      "sentence_types": {
+        "patterns": [
+          {
+            "id": "e2_st1",
+            "type": "question",
+            "difficulty": "beginner",
+            "template": "Which is an interrogative sentence?",
+            "answer": "Where are you going?",
+            "distractors": [
+              "Close the door.",
+              "The sun is bright.",
+              "What a beautiful day!"
+            ]
+          }
+        ]
+      }
+    },
+    "grade3": {
+      "literary_devices": {
+        "patterns": [
+          {
+            "id": "e3_lit1",
+            "type": "alliteration",
+            "difficulty": "beginner",
+            "template": "Which phrase is an example of alliteration?",
+            "answer": "Peter Piper picked peppers",
+            "distractors": [
+              "The early bird catches the worm",
+              "All that glitters is not gold",
+              "To be or not to be"
+            ]
+          },
+          {
+            "id": "e3_lit2",
+            "type": "irony",
+            "difficulty": "advanced",
+            "template": "A fire station burns down. This is an example of:",
+            "answer": "Situational irony",
+            "distractors": [
+              "Verbal irony",
+              "Dramatic irony",
+              "Metaphor"
+            ]
+          }
+        ]
+      },
+      "grammar": {
+        "patterns": [
+          {
+            "id": "e3_gr1",
+            "type": "tense",
+            "difficulty": "intermediate",
+            "template": "Which sentence is in the past perfect tense?",
+            "answer": "She had finished her homework before dinner",
+            "distractors": [
+              "She finishes homework daily",
+              "She is finishing homework",
+              "She will finish homework"
+            ]
+          },
+          {
+            "id": "e3_gr2",
+            "type": "subject_verb",
+            "difficulty": "beginner",
+            "template": "Which sentence has correct subject-verb agreement?",
+            "answer": "The dogs run fast.",
+            "distractors": [
+              "The dogs runs fast.",
+              "The dog run fast.",
+              "The dogs is fast."
+            ]
+          },
+          {
+            "id": "e3_gr3",
+            "type": "article",
+            "difficulty": "intermediate",
+            "template": "Which article is correct: '___ university'?",
+            "answer": "A",
+            "distractors": [
+              "An",
+              "The",
+              "No article"
+            ]
+          },
+          {
+            "id": "e3_gr4",
+            "type": "active_passive",
+            "difficulty": "advanced",
+            "template": "Convert to passive: 'The chef cooked the meal.'",
+            "answer": "The meal was cooked by the chef",
+            "distractors": [
+              "The meal cooked by the chef",
+              "The chef was cooking the meal",
+              "The meal is cooked"
+            ]
+          }
+        ]
+      },
+      "sentence_structure": {
+        "patterns": [
+          {
+            "id": "e3_ss1",
+            "type": "clause",
+            "difficulty": "intermediate",
+            "template": "Which is an independent clause?",
+            "answer": "She went to the market",
+            "distractors": [
+              "Because she was hungry",
+              "When it rains",
+              "Although he tried"
+            ]
+          },
+          {
+            "id": "e3_ss2",
+            "type": "sentence_type",
+            "difficulty": "advanced",
+            "template": "'Although he was tired, he completed the race.' — What type of sentence is this?",
+            "answer": "Complex sentence",
+            "distractors": [
+              "Simple sentence",
+              "Compound sentence",
+              "Fragment"
+            ]
+          }
+        ]
+      },
+      "poetry": {
+        "patterns": [
+          {
+            "id": "e3_po1",
+            "type": "rhyme",
+            "difficulty": "beginner",
+            "template": "Which word rhymes with 'cat'?",
+            "answer": "Bat",
+            "distractors": [
+              "Dog",
+              "Cup",
+              "Sun"
+            ]
+          },
+          {
+            "id": "e3_po2",
+            "type": "stanza",
+            "difficulty": "intermediate",
+            "template": "A group of lines in a poem is called a:",
+            "answer": "Stanza",
+            "distractors": [
+              "Paragraph",
+              "Chapter",
+              "Verse only"
+            ]
+          }
+        ]
+      },
+      "pronouns": {
+        "patterns": [
+          {
+            "id": "e3_pr1",
+            "type": "replace",
+            "difficulty": "intermediate",
+            "template": "Replace the noun: 'Riya is playing.' Which pronoun replaces Riya?",
+            "answer": "She",
+            "distractors": [
+              "He",
+              "It",
+              "They"
+            ]
+          }
+        ]
+      },
+      "conjunctions": {
+        "patterns": [
+          {
+            "id": "e3_cj1",
+            "type": "joining",
+            "difficulty": "beginner",
+            "template": "Choose the correct conjunction: 'I want tea ___ coffee.'",
+            "answer": "or",
+            "distractors": [
+              "and",
+              "but",
+              "so"
+            ]
+          }
+        ]
+      }
+    },
+    "grade4": {
+      "advanced_grammar": {
+        "patterns": [
+          {
+            "id": "e4_ag1",
+            "type": "modal_verb",
+            "difficulty": "intermediate",
+            "template": "Which sentence uses a modal verb correctly?",
+            "answer": "You should eat vegetables for good health",
+            "distractors": [
+              "You eating vegetables",
+              "You eat vegetables should",
+              "Vegetables should you eat"
+            ]
+          },
+          {
+            "id": "e4_ag2",
+            "type": "conditional",
+            "difficulty": "advanced",
+            "template": "Which is a second conditional sentence?",
+            "answer": "If I had a million dollars, I would travel the world",
+            "distractors": [
+              "If it rains, I will stay home",
+              "I travel when I have money",
+              "Because I have money I travel"
+            ]
+          }
+        ]
+      },
+      "vocabulary": {
+        "patterns": [
+          {
+            "id": "e4_v1",
+            "type": "synonym",
+            "difficulty": "intermediate",
+            "template": "What is a synonym of 'benevolent'?",
+            "answer": "Kind",
+            "distractors": [
+              "Cruel",
+              "Angry",
+              "Timid"
+            ]
+          },
+          {
+            "id": "e4_v2",
+            "type": "antonym",
+            "difficulty": "intermediate",
+            "template": "What is the antonym of 'verbose'?",
+            "answer": "Concise",
+            "distractors": [
+              "Talkative",
+              "Long-winded",
+              "Detailed"
+            ]
+          },
+          {
+            "id": "e4_v3",
+            "type": "word_meaning",
+            "difficulty": "advanced",
+            "template": "What does 'ephemeral' mean?",
+            "answer": "Short-lived",
+            "distractors": [
+              "Long-lasting",
+              "Ancient",
+              "Invisible"
+            ]
+          }
+        ]
+      },
+      "comprehension": {
+        "patterns": [
+          {
+            "id": "e4_c1",
+            "type": "inference",
+            "difficulty": "intermediate",
+            "template": "'Dark clouds gathered. People opened their umbrellas.' What is likely happening?",
+            "answer": "It is about to rain",
+            "distractors": [
+              "It is sunny",
+              "It is snowing",
+              "It is windy"
+            ]
+          }
+        ]
+      },
+      "idioms": {
+        "patterns": [
+          {
+            "id": "e4_id1",
+            "type": "meaning",
+            "difficulty": "intermediate",
+            "template": "What does 'break the ice' mean?",
+            "answer": "To start a conversation in a social setting",
+            "distractors": [
+              "To break something frozen",
+              "To cause trouble",
+              "To end a friendship"
+            ]
+          }
+        ]
+      },
+      "prepositions": {
+        "patterns": [
+          {
+            "id": "e4_pp1",
+            "type": "fill",
+            "difficulty": "beginner",
+            "template": "The book is ___ the table.",
+            "answer": "on",
+            "distractors": [
+              "under",
+              "behind",
+              "through"
+            ]
+          }
+        ]
+      },
+      "direct_indirect": {
+        "patterns": [
+          {
+            "id": "e4_di1",
+            "type": "convert",
+            "difficulty": "advanced",
+            "template": "Change to indirect speech: He said, 'I am happy.'",
+            "answer": "He said that he was happy",
+            "distractors": [
+              "He said I am happy",
+              "He says he is happy",
+              "He said he is happy"
+            ]
+          }
+        ]
+      }
+    },
+    "grade5": {
+      "linguistics": {
+        "patterns": [
+          {
+            "id": "e5_l1",
+            "type": "morphology",
+            "difficulty": "advanced",
+            "template": "The prefix 'un-' in 'unhappy' changes the meaning to:",
+            "answer": "The opposite of happy",
+            "distractors": [
+              "More than happy",
+              "Related to happy",
+              "Less than happy"
+            ]
+          },
+          {
+            "id": "e5_l2",
+            "type": "etymology",
+            "difficulty": "advanced",
+            "template": "The word 'biology' comes from Greek roots meaning:",
+            "answer": "Study of life",
+            "distractors": [
+              "Study of animals",
+              "Study of plants",
+              "Study of molecules"
+            ]
+          }
+        ]
+      },
+      "advanced_writing": {
+        "patterns": [
+          {
+            "id": "e5_w1",
+            "type": "rhetorical_device",
+            "difficulty": "advanced",
+            "template": "'Ask not what your country can do for you' is an example of:",
+            "answer": "Chiasmus",
+            "distractors": [
+              "Anaphora",
+              "Alliteration",
+              "Hyperbole"
+            ]
+          },
+          {
+            "id": "e5_w2",
+            "type": "essay_structure",
+            "difficulty": "advanced",
+            "template": "What is the purpose of a thesis statement in an essay?",
+            "answer": "To state the main argument of the essay",
+            "distractors": [
+              "To provide evidence",
+              "To summarise the conclusion",
+              "To list examples"
+            ]
+          }
+        ]
+      },
+      "essay_writing": {
+        "patterns": [
+          {
+            "id": "e5_ew1",
+            "type": "structure",
+            "difficulty": "advanced",
+            "template": "Which part of an essay introduces the main argument?",
+            "answer": "Introduction",
+            "distractors": [
+              "Body",
+              "Conclusion",
+              "References"
+            ]
+          }
+        ]
+      },
+      "clause_types": {
+        "patterns": [
+          {
+            "id": "e5_ct1",
+            "type": "identify",
+            "difficulty": "advanced",
+            "template": "'Because he was late' is what type of clause?",
+            "answer": "Subordinate clause",
+            "distractors": [
+              "Main clause",
+              "Independent clause",
+              "Relative clause"
+            ]
+          }
+        ]
+      },
+      "reported_speech": {
+        "patterns": [
+          {
+            "id": "e5_rs1",
+            "type": "convert",
+            "difficulty": "advanced",
+            "template": "Convert: 'Will you come?' she asked. → She asked ___",
+            "answer": "if I would come",
+            "distractors": [
+              "will I come",
+              "that I will come",
+              "I would come"
+            ]
+          }
+        ]
+      }
+    }
+  }
 }
