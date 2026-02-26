@@ -44,7 +44,7 @@ export default function Profile() {
     const router = useRouter();
 
     const [profileName, setProfileName] = useState('');
-    const [gradeBand, setGradeBand] = useState(1);
+    const [gradeBand, setGradeBand] = useState(2);
     const [skills, setSkills] = useState<SkillData[]>([]);
     const [masteryMap, setMasteryMap] = useState<Record<string, number>>({});
     const [dataUsedKB, setDataUsedKB] = useState(0);
@@ -53,7 +53,7 @@ export default function Profile() {
         if (!ready) return;
 
         getLocalProfile().then(p => {
-            if (p) { setProfileName(p.name); setGradeBand(p.gradeBand); }
+            if (p) { setProfileName(p.name); setGradeBand(p.gradeBand ?? 2); }
         });
 
         getSkillProfile().then(data =>

@@ -52,7 +52,15 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        return NextResponse.json({ topics });
+        return NextResponse.json(
+            { topics },
+            {
+                headers: {
+                    // Cache for 5 min; serve stale up to 10 min while revalidating
+                    'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+                },
+            }
+        );
     } catch (err) {
         console.error('[API/topics] Error reading question_bank.json:', err);
         return NextResponse.json({ topics: [] });
