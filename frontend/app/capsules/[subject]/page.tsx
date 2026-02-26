@@ -324,12 +324,12 @@ export default function CapsuleView() {
                                             <span className="text-sm font-brand text-foreground">{item.label}</span>
                                             {item.result === 'correct' && (
                                                 <span className="flex items-center gap-1 text-xs font-brand text-green-600 dark:text-green-400">
-                                                    <CheckCircle2 className="h-3.5 w-3.5" /> 100%
+                                                    <CheckCircle2 className="h-3.5 w-3.5" /> Right
                                                 </span>
                                             )}
                                             {item.result === 'incorrect' && (
                                                 <span className="flex items-center gap-1 text-xs font-brand text-red-600 dark:text-red-400">
-                                                    <XCircle className="h-3.5 w-3.5" /> 0%
+                                                    <XCircle className="h-3.5 w-3.5" /> Wrong
                                                 </span>
                                             )}
                                             {item.result === null && (
