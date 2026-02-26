@@ -62,7 +62,7 @@ math_adds = {
             {"id":"m4_g2","type":"circle_part","difficulty":"beginner","template":"What is the name of the distance around a circle?","answer":"Circumference","distractors":["Radius","Diameter","Area"]},
         ]},
         "factors": {"patterns": [
-            {"id":"m4_fc1","type":"lcm","difficulty":"advanced","template":"What is the LCM of {a} and {b}?","answer_expr":"(a*b) // __import__('math').gcd(a,b)","distractor_exprs":["a*b","a+b","max(a,b)"],"constraints":{"a":[3,8],"b":[4,9]}},
+            {"id":"m4_fc1","type":"lcm","difficulty":"advanced","template":"What is the LCM of {a} and {b}?","answer_expr":"(a*b) // gcd(a,b)","distractor_exprs":["a*b","a+b","max(a,b)"],"constraints":{"a":[3,8],"b":[4,9]}},
         ]},
         "number_system": {"patterns": [
             {"id":"m4_ns1","type":"place_value","difficulty":"beginner","template":"What is the place value of 5 in {c}?","computed":{"c":"a*1000 + 500 + b"},"answer":"500","distractors":["50","5","5000"],"constraints":{"a":[2,8],"b":[10,99]}},

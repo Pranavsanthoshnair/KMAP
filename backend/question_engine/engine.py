@@ -10,6 +10,7 @@ Architecture:
 """
 
 import json
+import hashlib
 import logging
 import random
 from pathlib import Path
@@ -19,13 +20,37 @@ log = logging.getLogger(__name__)
 
 BANK_FILE = Path(__file__).parent / "question_bank.json"
 _BANK: Optional[Dict] = None
-_SAFE = {"abs": abs, "round": round, "max": max, "min": min, "__builtins__": {}}
 LEVEL_TO_DIFF = {1: "beginner", 2: "intermediate", 3: "advanced"}
 DIFF_FALLBACKS = {
     "beginner":     ["beginner", "intermediate"],
     "intermediate": ["intermediate", "beginner", "advanced"],
     "advanced":     ["advanced", "intermediate"],
 }
+
+def gcd(a, b) -> int:
+    a = abs(int(a))
+    b = abs(int(b))
+    while b:
+        a, b = b, a % b
+    return a
+
+_SAFE = {
+    "abs": abs,
+    "round": round,
+    "max": max,
+    "min": min,
+    "int": int,
+    "str": str,
+    "gcd": gcd,
+    "__builtins__": {},
+}
+
+def _stable_id_suffix(text: str) -> str:
+    """
+    Python's built-in hash() is salted per process, so it changes between runs.
+    Use a stable digest so question IDs remain consistent across sessions.
+    """
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:8]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -157,7 +182,7 @@ def generate_from_pattern(
             session_sigs.add(sig)
 
         return {
-            "id":       f"{pattern['id']}_{abs(hash(question_text)) % 100000}",
+            "id":       f"{pattern['id']}_{_stable_id_suffix(question_text)}",
             "type":     pattern["type"],
             "question": question_text,
             "choices":  choices[:4],

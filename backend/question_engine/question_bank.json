@@ -1163,7 +1163,7 @@
             "type": "lcm",
             "difficulty": "advanced",
             "template": "What is the LCM of {a} and {b}?",
-            "answer_expr": "(a*b) // __import__('math').gcd(a,b)",
+            "answer_expr": "(a*b) // gcd(a,b)",
             "distractor_exprs": [
               "a*b",
               "a+b",
