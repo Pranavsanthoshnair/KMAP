@@ -51,11 +51,8 @@ export default function Signup() {
             recoveryKey,
         });
 
-        toast({
-            title: 'Check your email',
-            description: 'We sent you a confirmation link. Please verify your email to continue.',
-        });
-        setLoading(false);
+        toast({ title: 'Welcome to KMAP!', description: 'Your account has been created.' });
+        router.push('/dashboard');
     };
 
     return (

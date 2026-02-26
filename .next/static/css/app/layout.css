@@ -822,6 +822,12 @@ body{
 .mt-auto{
   margin-top: auto;
 }
+.mb-6{
+  margin-bottom: 1.5rem;
+}
+.mr-1\.5{
+  margin-right: 0.375rem;
+}
 .block{
   display: block;
 }
@@ -915,6 +921,9 @@ body{
 }
 .h-svh{
   height: 100svh;
+}
+.h-36{
+  height: 9rem;
 }
 .max-h-96{
   max-height: 24rem;
@@ -1124,6 +1133,15 @@ body{
 .animate-pulse{
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+@keyframes spin{
+
+  to{
+    transform: rotate(360deg);
+  }
+}
+.animate-spin{
+  animation: spin 1s linear infinite;
+}
 .cursor-default{
   cursor: default;
 }
@@ -1328,6 +1346,12 @@ body{
 .border-transparent{
   border-color: transparent;
 }
+.border-current{
+  border-color: currentColor;
+}
+.border-destructive\/40{
+  border-color: hsl(var(--destructive) / 0.4);
+}
 .border-l-transparent{
   border-left-color: transparent;
 }
@@ -1387,6 +1411,12 @@ body{
 }
 .bg-transparent{
   background-color: transparent;
+}
+.bg-destructive\/10{
+  background-color: hsl(var(--destructive) / 0.1);
+}
+.bg-muted\/20{
+  background-color: hsl(var(--muted) / 0.2);
 }
 .fill-current{
   fill: currentColor;
@@ -1478,6 +1508,10 @@ body{
 .py-6{
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+}
+.py-2\.5{
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
 }
 .pb-3{
   padding-bottom: 0.75rem;
@@ -1926,6 +1960,14 @@ body{
   border-color: hsl(var(--primary) / 0.3);
 }
 
+.hover\:border-primary\/50:hover{
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.hover\:border-primary\/40:hover{
+  border-color: hsl(var(--primary) / 0.4);
+}
+
 .hover\:bg-accent:hover{
   background-color: hsl(var(--accent));
 }
@@ -1968,6 +2010,10 @@ body{
 
 .hover\:bg-sidebar-accent:hover{
   background-color: hsl(var(--sidebar-accent));
+}
+
+.hover\:bg-accent\/30:hover{
+  background-color: hsl(var(--accent) / 0.3);
 }
 
 .hover\:text-accent-foreground:hover{
