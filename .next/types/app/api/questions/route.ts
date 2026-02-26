@@ -1,4 +1,4 @@
-// File: C:\Users\PRANAV\smart-capsule-learn\app\api\questions\route.ts
+// File: C:\Users\anant\Desktop\KMAP\app\api\questions\route.ts
 import * as entry from '../../../../../app/api/questions/route.js'
 import type { NextRequest } from 'next/server.js'
 

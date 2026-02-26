@@ -1,4 +1,4 @@
-// File: C:\Users\PRANAV\smart-capsule-learn\app\capsules\[subject]\page.tsx
+// File: C:\Users\anant\Desktop\KMAP\app\capsules\[subject]\page.tsx
 import * as entry from '../../../../../app/capsules/[subject]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

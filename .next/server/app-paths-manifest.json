@@ -1,9 +1,9 @@
 {
   "/api/topics/route": "app/api/topics/route.js",
-  "/api/questions/route": "app/api/questions/route.js",
-  "/page": "app/page.js",
+  "/api/resources/route": "app/api/resources/route.js",
   "/login/page": "app/login/page.js",
+  "/test-resources/page": "app/test-resources/page.js",
   "/signup/page": "app/signup/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/capsules/[subject]/page": "app/capsules/[subject]/page.js"
+  "/capsules/[subject]/page": "app/capsules/[subject]/page.js",
+  "/dashboard/page": "app/dashboard/page.js"
 }

@@ -777,6 +777,9 @@ body{
 .mb-4{
   margin-bottom: 1rem;
 }
+.mb-6{
+  margin-bottom: 1.5rem;
+}
 .ml-1{
   margin-left: 0.25rem;
 }
@@ -785,6 +788,9 @@ body{
 }
 .mr-1{
   margin-right: 0.25rem;
+}
+.mr-1\.5{
+  margin-right: 0.375rem;
 }
 .mr-2{
   margin-right: 0.5rem;
@@ -822,11 +828,8 @@ body{
 .mt-auto{
   margin-top: auto;
 }
-.mb-6{
-  margin-bottom: 1.5rem;
-}
-.mr-1\.5{
-  margin-right: 0.375rem;
+.mb-2{
+  margin-bottom: 0.5rem;
 }
 .block{
   display: block;
@@ -883,6 +886,9 @@ body{
 .h-3\.5{
   height: 0.875rem;
 }
+.h-36{
+  height: 9rem;
+}
 .h-4{
   height: 1rem;
 }
@@ -921,9 +927,6 @@ body{
 }
 .h-svh{
   height: 100svh;
-}
-.h-36{
-  height: 9rem;
 }
 .max-h-96{
   max-height: 24rem;
@@ -1052,6 +1055,9 @@ body{
 }
 .max-w-sm{
   max-width: 24rem;
+}
+.max-w-4xl{
+  max-width: 56rem;
 }
 .flex-1{
   flex: 1 1 0%;
@@ -1245,6 +1251,11 @@ body{
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
+.space-y-6 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+}
 .overflow-auto{
   overflow: auto;
 }
@@ -1283,6 +1294,9 @@ body{
 }
 .rounded-sm{
   border-radius: calc(var(--radius) - 4px);
+}
+.rounded-xl{
+  border-radius: 0.75rem;
 }
 .rounded-t-\[10px\]{
   border-top-left-radius: 10px;
@@ -1328,8 +1342,14 @@ body{
 .border-border\/50{
   border-color: hsl(var(--border) / 0.5);
 }
+.border-current{
+  border-color: currentColor;
+}
 .border-destructive{
   border-color: hsl(var(--destructive));
+}
+.border-destructive\/40{
+  border-color: hsl(var(--destructive) / 0.4);
 }
 .border-destructive\/50{
   border-color: hsl(var(--destructive) / 0.5);
@@ -1346,11 +1366,9 @@ body{
 .border-transparent{
   border-color: transparent;
 }
-.border-current{
-  border-color: currentColor;
-}
-.border-destructive\/40{
-  border-color: hsl(var(--destructive) / 0.4);
+.border-red-200{
+  --tw-border-opacity: 1;
+  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));
 }
 .border-l-transparent{
   border-left-color: transparent;
@@ -1379,11 +1397,17 @@ body{
 .bg-destructive{
   background-color: hsl(var(--destructive));
 }
+.bg-destructive\/10{
+  background-color: hsl(var(--destructive) / 0.1);
+}
 .bg-foreground{
   background-color: hsl(var(--foreground));
 }
 .bg-muted{
   background-color: hsl(var(--muted));
+}
+.bg-muted\/20{
+  background-color: hsl(var(--muted) / 0.2);
 }
 .bg-muted\/50{
   background-color: hsl(var(--muted) / 0.5);
@@ -1412,11 +1436,12 @@ body{
 .bg-transparent{
   background-color: transparent;
 }
-.bg-destructive\/10{
-  background-color: hsl(var(--destructive) / 0.1);
+.bg-background\/80{
+  background-color: hsl(var(--background) / 0.8);
 }
-.bg-muted\/20{
-  background-color: hsl(var(--muted) / 0.2);
+.bg-red-50{
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));
 }
 .fill-current{
   fill: currentColor;
@@ -1444,6 +1469,9 @@ body{
 }
 .p-\[1px\]{
   padding: 1px;
+}
+.p-8{
+  padding: 2rem;
 }
 .px-1{
   padding-left: 0.25rem;
@@ -1497,6 +1525,10 @@ body{
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
+.py-2\.5{
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
 .py-3{
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
@@ -1508,10 +1540,6 @@ body{
 .py-6{
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-}
-.py-2\.5{
-  padding-top: 0.625rem;
-  padding-bottom: 0.625rem;
 }
 .pb-3{
   padding-bottom: 0.75rem;
@@ -1554,6 +1582,9 @@ body{
 }
 .text-center{
   text-align: center;
+}
+.text-right{
+  text-align: right;
 }
 .align-middle{
   vertical-align: middle;
@@ -1598,6 +1629,10 @@ body{
 .text-xs{
   font-size: 0.75rem;
   line-height: 1rem;
+}
+.text-3xl{
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 .font-bold{
   font-weight: 700;
@@ -1681,6 +1716,14 @@ body{
 .text-sidebar-foreground\/70{
   color: hsl(var(--sidebar-foreground) / 0.7);
 }
+.text-blue-500{
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity, 1));
+}
+.text-red-500{
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity, 1));
+}
 .underline{
   text-decoration-line: underline;
 }
@@ -1732,6 +1775,11 @@ body{
   --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
+.shadow-2xl{
+  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
 .outline-none{
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -1760,6 +1808,14 @@ body{
 }
 .filter{
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.\!filter{
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow) !important;
+}
+.backdrop-blur-sm{
+  --tw-backdrop-blur: blur(4px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .transition{
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
@@ -1960,16 +2016,20 @@ body{
   border-color: hsl(var(--primary) / 0.3);
 }
 
-.hover\:border-primary\/50:hover{
-  border-color: hsl(var(--primary) / 0.5);
-}
-
 .hover\:border-primary\/40:hover{
   border-color: hsl(var(--primary) / 0.4);
 }
 
+.hover\:border-primary\/50:hover{
+  border-color: hsl(var(--primary) / 0.5);
+}
+
 .hover\:bg-accent:hover{
   background-color: hsl(var(--accent));
+}
+
+.hover\:bg-accent\/30:hover{
+  background-color: hsl(var(--accent) / 0.3);
 }
 
 .hover\:bg-destructive\/80:hover{
@@ -2010,10 +2070,6 @@ body{
 
 .hover\:bg-sidebar-accent:hover{
   background-color: hsl(var(--sidebar-accent));
-}
-
-.hover\:bg-accent\/30:hover{
-  background-color: hsl(var(--accent) / 0.3);
 }
 
 .hover\:text-accent-foreground:hover{
