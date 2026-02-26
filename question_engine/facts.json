@@ -1,0 +1,266 @@
+[
+    {
+        "id": "sci_cell_001",
+        "fact": "Mitochondria produces energy in the form of ATP",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Mitochondria",
+        "key_term_2": "ATP",
+        "verb": "produces",
+        "category": "organelle",
+        "wrong_terms": [
+            "Nucleus",
+            "Ribosome",
+            "Vacuole"
+        ],
+        "wrong_term_2_options": [
+            "Glucose",
+            "Protein",
+            "Water"
+        ]
+    },
+    {
+        "id": "sci_cell_002",
+        "fact": "Nucleus controls the activities of the cell",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Nucleus",
+        "key_term_2": "activities",
+        "verb": "controls",
+        "category": "organelle",
+        "wrong_terms": [
+            "Mitochondria",
+            "Ribosome",
+            "Vacuole"
+        ],
+        "wrong_term_2_options": [
+            "energy",
+            "protein",
+            "water"
+        ]
+    },
+    {
+        "id": "sci_cell_003",
+        "fact": "Ribosome synthesises protein for the cell",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Ribosome",
+        "key_term_2": "protein",
+        "verb": "synthesises",
+        "category": "organelle",
+        "wrong_terms": [
+            "Nucleus",
+            "Mitochondria",
+            "Vacuole"
+        ],
+        "wrong_term_2_options": [
+            "glucose",
+            "ATP",
+            "lipid"
+        ]
+    },
+    {
+        "id": "sci_cell_004",
+        "fact": "Vacuole stores water and nutrients in the cell",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 1,
+        "key_term_1": "Vacuole",
+        "key_term_2": "water",
+        "verb": "stores",
+        "category": "organelle",
+        "wrong_terms": [
+            "Nucleus",
+            "Ribosome",
+            "Mitochondria"
+        ],
+        "wrong_term_2_options": [
+            "protein",
+            "ATP",
+            "glucose"
+        ]
+    },
+    {
+        "id": "sci_cell_005",
+        "fact": "Chloroplast captures sunlight for photosynthesis",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Chloroplast",
+        "key_term_2": "sunlight",
+        "verb": "captures",
+        "category": "organelle",
+        "wrong_terms": [
+            "Nucleus",
+            "Ribosome",
+            "Vacuole"
+        ],
+        "wrong_term_2_options": [
+            "glucose",
+            "ATP",
+            "water"
+        ]
+    },
+    {
+        "id": "sci_cell_006",
+        "fact": "Cell membrane regulates passage of substances",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Cell membrane",
+        "key_term_2": "passage",
+        "verb": "regulates",
+        "category": "structure",
+        "wrong_terms": [
+            "Nucleus",
+            "Ribosome",
+            "Vacuole"
+        ],
+        "wrong_term_2_options": [
+            "energy",
+            "protein",
+            "ATP"
+        ]
+    },
+    {
+        "id": "sci_cell_007",
+        "fact": "Cell wall provides rigidity and support to plant cells",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 3,
+        "key_term_1": "Cell wall",
+        "key_term_2": "rigidity",
+        "verb": "provides",
+        "category": "structure",
+        "wrong_terms": [
+            "Cell membrane",
+            "Vacuole",
+            "Chloroplast"
+        ],
+        "wrong_term_2_options": [
+            "flexibility",
+            "energy",
+            "growth"
+        ]
+    },
+    {
+        "id": "sci_cell_008",
+        "fact": "Golgi apparatus packages and transports proteins",
+        "subject": "science",
+        "topic": "cell_structure",
+        "grade_band": 2,
+        "level": 3,
+        "key_term_1": "Golgi apparatus",
+        "key_term_2": "proteins",
+        "verb": "packages",
+        "category": "organelle",
+        "wrong_terms": [
+            "Ribosome",
+            "Mitochondria",
+            "Nucleus"
+        ],
+        "wrong_term_2_options": [
+            "glucose",
+            "lipids",
+            "minerals"
+        ]
+    },
+    {
+        "id": "math_add_001",
+        "fact": "Addition combines two numbers to produce a sum",
+        "subject": "math",
+        "topic": "arithmetic",
+        "grade_band": 1,
+        "level": 1,
+        "key_term_1": "Addition",
+        "key_term_2": "sum",
+        "verb": "produces",
+        "category": "operation",
+        "wrong_terms": [
+            "Subtraction",
+            "Multiplication",
+            "Division"
+        ],
+        "wrong_term_2_options": [
+            "difference",
+            "product",
+            "quotient"
+        ]
+    },
+    {
+        "id": "math_mul_001",
+        "fact": "Multiplication produces a product from two factors",
+        "subject": "math",
+        "topic": "arithmetic",
+        "grade_band": 1,
+        "level": 2,
+        "key_term_1": "Multiplication",
+        "key_term_2": "product",
+        "verb": "produces",
+        "category": "operation",
+        "wrong_terms": [
+            "Addition",
+            "Subtraction",
+            "Division"
+        ],
+        "wrong_term_2_options": [
+            "sum",
+            "difference",
+            "quotient"
+        ]
+    },
+    {
+        "id": "sci_photo_001",
+        "fact": "Photosynthesis converts sunlight into glucose",
+        "subject": "science",
+        "topic": "photosynthesis",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Photosynthesis",
+        "key_term_2": "glucose",
+        "verb": "converts",
+        "category": "process",
+        "wrong_terms": [
+            "Respiration",
+            "Digestion",
+            "Transpiration"
+        ],
+        "wrong_term_2_options": [
+            "ATP",
+            "protein",
+            "oxygen"
+        ]
+    },
+    {
+        "id": "sci_photo_002",
+        "fact": "Stomata allows gas exchange in leaves",
+        "subject": "science",
+        "topic": "photosynthesis",
+        "grade_band": 2,
+        "level": 2,
+        "key_term_1": "Stomata",
+        "key_term_2": "gas exchange",
+        "verb": "allows",
+        "category": "structure",
+        "wrong_terms": [
+            "Chloroplast",
+            "Vacuole",
+            "Mesophyll"
+        ],
+        "wrong_term_2_options": [
+            "water transport",
+            "protein synthesis",
+            "mineral absorption"
+        ]
+    }
+]
