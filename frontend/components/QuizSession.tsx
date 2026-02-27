@@ -38,7 +38,7 @@ type Phase = 'quiz' | 'computing' | 'results';
 
 const CHOICE_LETTERS = ['A', 'B', 'C', 'D'];
 
-const FORM_LABELS: Record<number, string> = {
+const FORM_LABELS: Record<string, string> = {
     1: 'Direct', 2: 'Reverse', 3: 'True / False',
     4: 'Fill Blank', 5: 'Category', 6: 'Negative',
 };
@@ -167,7 +167,7 @@ export default function QuizSession({
                 body: JSON.stringify({ requests, low_data_mode: lowDataMode }),
             });
 
-            const data = (await res.json()) as { resources?: Array<{ id: string; title: string; thumbnail_url?: string | null }> };
+            const data = (await res.json()) as { resources?: Array<{ id: string; title: string; thumbnail_url?: string | null; difficulty?: number; subject?: string; subtopic?: string; }> };
             const list = data.resources ?? [];
             setResourceIds(list.map(r => r.id));
             setResources(list.map(r => ({
@@ -176,6 +176,9 @@ export default function QuizSession({
                 thumbnail_url: r.thumbnail_url ?? null,
                 type: 'text',
                 size_kb: 0,
+                difficulty: r.difficulty,
+                subject: r.subject,
+                subtopic: r.subtopic,
             })));
 
             setPhase('results');

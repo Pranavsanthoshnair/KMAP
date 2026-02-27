@@ -18,6 +18,9 @@ interface ResourceMeta {
     id: string;
     title: string;
     thumbnail_url: string | null;
+    difficulty: number;
+    subject: string;
+    subtopic: string;
 }
 
 /**
@@ -65,30 +68,45 @@ export async function POST(request: NextRequest) {
             continue;
         }
 
-        let query = supabase
+        // First try exact difficulty match
+        const { data: exactRows, error: exactErr } = await supabase
             .from('resources')
-            .select('id, title, thumbnail_url, difficulty, type, size_kb')
+            .select('id, title, thumbnail_url, difficulty, type, size_kb, subject, subtopic')
             .eq('subject', subject_id)
-            .eq('subtopic', subtopic_id);
+            .eq('subtopic', subtopic_id)
+            .eq('difficulty', skill_level);
 
-        const { data: rows, error } = await query;
-
-        if (error) {
+        if (exactErr) {
             continue;
         }
 
-        let list = (rows ?? []) as Array<{ id: string; title: string; thumbnail_url: string | null; difficulty: number; type: string; size_kb: number }>;
+        let list = (exactRows ?? []) as Array<{ id: string; title: string; thumbnail_url: string | null; difficulty: number; type: string; size_kb: number; subject: string; subtopic: string; }>;
+
+        // Fallback: if no exact match, get nearest level
+        if (list.length === 0) {
+            const { data: fallbackRows } = await supabase
+                .from('resources')
+                .select('id, title, thumbnail_url, difficulty, type, size_kb, subject, subtopic')
+                .eq('subject', subject_id)
+                .eq('subtopic', subtopic_id)
+                .order('difficulty', { ascending: true })
+                .limit(5);
+
+            list = ((fallbackRows ?? []) as typeof list)
+                .sort((a, b) => Math.abs(a.difficulty - skill_level) - Math.abs(b.difficulty - skill_level));
+        }
+
         if (low_data_mode) {
             list = list.filter(r => r.type !== 'video' && (r.size_kb ?? 0) <= 500);
         }
-        list = list
-            .map(r => ({ ...r, _score: Math.abs((r.difficulty ?? 2) - skill_level) }))
-            .sort((a, b) => (a._score as number) - (b._score as number))
-            .slice(0, 3);
-        const metaList: ResourceMeta[] = list.map(({ id, title, thumbnail_url }) => ({
+        list = list.slice(0, 3);
+        const metaList: ResourceMeta[] = list.map(({ id, title, thumbnail_url, difficulty, subject, subtopic }) => ({
             id,
             title,
             thumbnail_url: thumbnail_url ?? null,
+            difficulty,
+            subject,
+            subtopic,
         }));
 
         for (const r of metaList) {

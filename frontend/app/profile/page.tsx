@@ -14,7 +14,8 @@ import { Button } from '@/components/ui/button';
 import { User, Brain, Wifi, RotateCcw, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { SkillDashboard, type SubjectId } from '@/components/profile/SkillDashboard';
+import { SkillDashboard } from '@/components/profile/SkillDashboard';
+import { type SubjectId } from '@/lib/subjects';
 import { getGradeLabel, GRADE_BAND_OPTIONS } from '@/lib/grades';
 import { saveLocalProfile } from '@/lib/indexeddb';
 import {

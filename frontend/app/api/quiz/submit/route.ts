@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabase } from '@/lib/supabase/server';
+import { mightContain } from '@/lib/bloom';
 
 export interface QuizResult {
     subtopic: string;
@@ -9,13 +10,22 @@ export interface QuizResult {
 export interface SubmitPayload {
     subject: string;
     grade: number;
-    skill_level?: number;
     subtopic_results: QuizResult[];
     recent_resource_ids?: string[];
     low_data_mode?: boolean;
 }
 
-// ── Mastery computation (mirrors allocator.py:compute_mastery) ───────────────
+// ── Score → knowledge level mapping ─────────────────────────────────────────
+// 0–33%  → Level 1 (Fundamentals)
+// 34–66% → Level 2 (Building Understanding)
+// 67–100%→ Level 3 (Mastery)
+function scoreToLevel(pct: number): number {
+    if (pct >= 67) return 3;
+    if (pct >= 34) return 2;
+    return 1;
+}
+
+// ── Mastery computation ─────────────────────────────────────────────────────
 function computeMastery(results: QuizResult[]): Record<string, number> {
     const stats: Record<string, { c: number; t: number }> = {};
     for (const r of results) {
@@ -25,104 +35,25 @@ function computeMastery(results: QuizResult[]): Record<string, number> {
     }
     const mastery: Record<string, number> = {};
     for (const [st, s] of Object.entries(stats)) {
-        mastery[st] = Math.round((s.c / s.t) * 1000) / 1000;
+        mastery[st] = Math.round((s.c / s.t) * 100);   // percentage 0–100
     }
     return mastery;
-}
-
-// ── Classification (mirrors allocator.py:classify_subtopics) ─────────────────
-function classifySubtopics(mastery: Record<string, number>): Record<string, string> {
-    const out: Record<string, string> = {};
-    for (const [st, score] of Object.entries(mastery)) {
-        out[st] = score < 0.3 ? 'weak' : score <= 0.6 ? 'medium' : 'strong';
-    }
-    return out;
-}
-
-// ── Resource scoring (mirrors allocator.py:_score_resource) ──────────────────
-function scoreResource(
-    r: { grade: number; difficulty: number; size_kb: number; subtopic: string },
-    mastery: Record<string, number>,
-    targetGrade: number,
-    skillLevel: number,
-    classification: string,
-): number {
-    let score = classification === 'weak' ? 0.4 : classification === 'medium' ? 0.2 : 0;
-    if (r.grade === targetGrade) score += 0.3;
-    const diffGap = Math.abs((r.difficulty ?? 2) - skillLevel);
-    score += Math.max(0, 0.2 - diffGap * 0.08);
-    score += 0.1 * (1 / (1 + (r.size_kb ?? 500) / 500));
-    return score;
-}
-
-// ── Full allocation (mirrors allocator.py:allocate_resources) ────────────────
-function allocateResources(
-    mastery: Record<string, number>,
-    classified: Record<string, string>,
-    resources: Array<{ id: string; grade: number; subtopic: string; difficulty: number; size_kb: number; type: string }>,
-    subject: string,
-    grade: number,
-    skillLevel: number,
-    n: number,
-    recentIds: string[],
-    lowDataMode: boolean,
-): string[] {
-    const recent = new Set(recentIds);
-
-    // Step 1: filter by subject, grade ±1, matching subtopic, low-data constraints
-    const filtered = resources.filter(r => {
-        if (!(r.subtopic in mastery)) return false;
-        if (Math.abs(r.grade - grade) > 1) return false;
-        if (recent.has(r.id)) return false;
-        if (lowDataMode && (r.type === 'video' || r.size_kb > 500)) return false;
-        return true;
-    });
-
-    if (filtered.length === 0) {
-        // fallback: return anything from the subject sorted by grade proximity
-        return resources
-            .filter(r => !recent.has(r.id))
-            .sort((a, b) => Math.abs(a.grade - grade) - Math.abs(b.grade - grade))
-            .slice(0, n)
-            .map(r => r.id);
-    }
-
-    // Step 2: group by classification bucket and score
-    const groups: Record<string, Array<{ id: string; score: number }>> = { weak: [], medium: [], strong: [] };
-    for (const r of filtered) {
-        const cls = classified[r.subtopic] ?? 'medium';
-        groups[cls].push({ id: r.id, score: scoreResource(r, mastery, grade, skillLevel, cls) });
-    }
-    for (const cls of ['weak', 'medium', 'strong']) {
-        groups[cls].sort((a, b) => b.score - a.score);
-    }
-
-    // Step 3: 60 / 30 / 10 ratio
-    const weakN = Math.ceil(n * 0.6);
-    const mediumN = Math.ceil(n * 0.3);
-    const strongN = Math.max(1, Math.floor(n * 0.1));
-
-    const pick = (cls: string, count: number): string[] => {
-        const pool = groups[cls].slice(0, count).map(r => r.id);
-        if (pool.length < count) {
-            const fallbackCls = cls !== 'medium' ? 'medium' : 'weak';
-            const need = count - pool.length;
-            pool.push(...groups[fallbackCls].slice(groups[fallbackCls].length - need).map(r => r.id));
-        }
-        return pool;
-    };
-
-    const picked = [...pick('weak', weakN), ...pick('medium', mediumN), ...pick('strong', strongN)];
-    const seen = new Set<string>();
-    return picked.filter(id => { if (seen.has(id)) return false; seen.add(id); return true; }).slice(0, n);
 }
 
 /**
  * POST /api/quiz/submit
  *
- * Receives quiz answers → computes mastery → runs allocation → returns resource IDs.
- * Pure TypeScript — no Python subprocesses.
- * No user data is persisted server-side.
+ * Receives quiz results → computes per-topic scores → derives knowledge level →
+ * fetches resources at that level for matched topics from Supabase.
+ *
+ * The Bloom filter identifies WHICH topics. The score determines WHICH level.
+ *
+ * Score → Level mapping:
+ *   0–33%  → Level 1 (needs fundamentals)
+ *   34–66% → Level 2 (building understanding)
+ *   67–100%→ Level 3 (mastery)
+ *
+ * No user data is stored server-side.
  */
 export async function POST(request: NextRequest) {
     let body: SubmitPayload;
@@ -135,7 +66,6 @@ export async function POST(request: NextRequest) {
     const {
         subject,
         grade,
-        skill_level = 2,
         subtopic_results,
         recent_resource_ids = [],
         low_data_mode = false,
@@ -145,18 +75,23 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // ── Step 1: Compute mastery & classify ──────────────────────────────────
+    // ── Step 1: Compute per-topic score percentages ──────────────────────────
     const mastery = computeMastery(subtopic_results);
-    const classified = classifySubtopics(mastery);
-    const subtopics = Object.keys(mastery);
 
-    // ── Step 2: Fetch matching resources from Supabase ──────────────────────
+    // ── Step 2: Derive overall knowledge level from average score ────────────
+    const scores = Object.values(mastery);
+    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const knowledgeLevel = scoreToLevel(avgScore);
+
+    // ── Step 3: Fetch resources from Supabase at the correct level ───────────
     const supabase = createServerSupabase();
+    const subtopics = Object.keys(mastery);
 
     const { data: resources, error } = await supabase
         .from('resources')
-        .select('id, subject, grade, subtopic, difficulty, type, size_kb')
+        .select('id, title, type, size_kb, preview_text, subject, grade, subtopic, difficulty, storage_path')
         .eq('subject', subject)
+        .eq('difficulty', knowledgeLevel)
         .in('subtopic', subtopics);
 
     if (error) {
@@ -164,18 +99,38 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Failed to fetch resources' }, { status: 500 });
     }
 
-    // ── Step 3: Allocate (pure TS, no subprocess) ───────────────────────────
-    const resource_ids = allocateResources(
-        mastery,
-        classified,
-        (resources ?? []) as Array<{ id: string; grade: number; subtopic: string; difficulty: number; size_kb: number; type: string }>,
-        subject,
-        grade,
-        skill_level,
-        10,
-        recent_resource_ids,
-        low_data_mode,
-    );
+    // ── Step 4: Filter by grade tolerance and recency ────────────────────────
+    const recent = new Set(recent_resource_ids);
+    const filtered = (resources ?? []).filter(r => {
+        if (Math.abs(r.grade - grade) > 0) return false;  // exact grade match only
+        if (recent.has(r.id)) return false;
+        if (low_data_mode && r.size_kb > 500) return false;
+        return true;
+    });
 
-    return NextResponse.json({ resource_ids, mastery, classified });
+    // Fallback: anything at the right level for the subject
+    const pool = filtered.length > 0 ? filtered : (resources ?? []).filter(r => !recent.has(r.id));
+
+    const resource_ids = pool.map(r => r.id);
+
+    // Return resource metadata so the client can display cards immediately
+    const resource_meta = pool.map(r => ({
+        id: r.id,
+        title: r.title,
+        type: r.type,
+        size_kb: r.size_kb,
+        preview_text: r.preview_text,
+        subject: r.subject,
+        grade: r.grade,
+        subtopic: r.subtopic,
+        difficulty: r.difficulty,
+    }));
+
+    return NextResponse.json({
+        resource_ids,
+        resources: resource_meta,
+        knowledge_level: knowledgeLevel,
+        average_score: Math.round(avgScore),
+        mastery,
+    });
 }

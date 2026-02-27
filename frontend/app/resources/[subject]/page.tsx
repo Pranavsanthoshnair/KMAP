@@ -17,6 +17,9 @@ type SimpleResource = {
     subtopic?: string;
     preview_text?: string;
     thumbnail_url?: string | null;
+    subject?: string;
+    grade?: number;
+    difficulty?: number;
 };
 
 type ResourceSection = {
@@ -122,7 +125,7 @@ export default function ResourcesPage() {
                 if (cancelled) return;
 
                 const list: SimpleResource[] = Array.isArray(metaJson) && metaJson.length > 0
-                    ? metaJson.map((r: { id: string; title: string; type?: string; size_kb?: number; subtopic?: string; preview_text?: string; thumbnail_url?: string | null }) => ({
+                    ? metaJson.map((r: { id: string; title: string; type?: string; size_kb?: number; subtopic?: string; preview_text?: string; thumbnail_url?: string | null; subject?: string; grade?: number; difficulty?: number }) => ({
                         id: r.id,
                         title: r.title,
                         type: r.type ?? 'pdf',
@@ -130,6 +133,9 @@ export default function ResourcesPage() {
                         subtopic: r.subtopic,
                         preview_text: r.preview_text,
                         thumbnail_url: r.thumbnail_url,
+                        subject: r.subject,
+                        grade: r.grade,
+                        difficulty: r.difficulty,
                     }))
                     : allocated.map(r => ({ id: r.id, title: r.title, type: 'pdf', size_kb: 0, subtopic: undefined as string | undefined }));
 
@@ -231,6 +237,9 @@ export default function ResourcesPage() {
                                                 subtopic: r.subtopic,
                                                 preview_text: r.preview_text,
                                                 thumbnail_url: r.thumbnail_url,
+                                                subject: r.subject,
+                                                grade: r.grade,
+                                                difficulty: r.difficulty,
                                             }}
                                             lowDataMode={lowDataMode}
                                         />
