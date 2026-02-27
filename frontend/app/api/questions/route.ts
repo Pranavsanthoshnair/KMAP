@@ -32,19 +32,6 @@ export async function GET(request: NextRequest) {
 
     const engineDir = path.join(process.cwd(), '..', 'backend', 'question_engine');
 
-    // On Vercel (or other environments without the Python engine), short‑circuit with a
-    // graceful fallback so builds don't fail trying to exec the engine.
-    if (process.env.VERCEL === '1') {
-        return NextResponse.json(
-            {
-                questions: [],
-                exhausted: true,
-                error: 'Question engine is not available in this deployment environment.',
-            },
-            { status: 503 },
-        );
-    }
-
     const args = [
         'python run.py',
         `--topic=${topic}`,
