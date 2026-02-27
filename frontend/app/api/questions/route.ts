@@ -67,8 +67,11 @@ export async function GET(request: NextRequest) {
                 PYTHONIOENCODING: 'utf-8',
             },
         };
-        const { stdout } = await execAsync(args, options);
-        const raw = stdout.trim();
+        const result = await execAsync(args, options);
+        const raw =
+            typeof result.stdout === 'string'
+                ? result.stdout.trim()
+                : String(result.stdout).trim();
         let data: unknown;
         try {
             data = JSON.parse(raw);
