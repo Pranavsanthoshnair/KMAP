@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ResourceCard from '@/components/ResourceCard';
@@ -39,7 +39,7 @@ function gradeBandToSkillLevel(gradeBand: number): number {
     return 3;
 }
 
-export default function ResourcesPage() {
+function ResourcesContent() {
     const params = useParams<{ subject: string }>();
     const search = useSearchParams();
     const router = useRouter();
@@ -192,84 +192,99 @@ export default function ResourcesPage() {
     const prettySubject = formatSubjectId(subject);
 
     return (
+        <main className="container mx-auto max-w-4xl px-4 py-8">
+            <div className="animate-fade-in space-y-6">
+                <div className="flex items-center justify-between gap-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => router.back()}
+                        className="gap-1.5"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back
+                    </Button>
+                </div>
+
+                <div>
+                    <h1 className="font-brand text-2xl font-bold text-foreground">
+                        {prettySubject} Resources
+                    </h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Curated materials based on your recent quiz performance. Tap a
+                        resource to open it in a low-data friendly viewer.
+                    </p>
+                </div>
+
+                {loading && (
+                    <div className="flex flex-col items-center gap-3 py-10 text-sm text-muted-foreground">
+                        <BookOpen className="h-6 w-6 animate-pulse text-primary" />
+                        Loading resources…
+                    </div>
+                )}
+
+                {!loading && error && (
+                    <p className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
+                        {error}
+                    </p>
+                )}
+
+                {!loading && sections.length === 0 && (
+                    <p className="rounded-md border border-border bg-card/60 p-4 text-sm text-muted-foreground">
+                        No resources available yet for this subject and level. Try another
+                        quiz to refresh your recommendations.
+                    </p>
+                )}
+
+                {!loading && sections.length > 0 && (
+                    <div className="space-y-3">
+                        {sections.flatMap((section) =>
+                            section.resources.map((r) => (
+                                <div key={r.id} className="flex flex-col gap-1">
+                                    {section.subtopicLabel && section.subtopicLabel !== 'Recommended' && (
+                                        <span className="text-[10px] font-brand uppercase tracking-wide text-muted-foreground">
+                                            {section.subtopicLabel}
+                                        </span>
+                                    )}
+                                    <ResourceCard
+                                        resource={{
+                                            id: r.id,
+                                            title: r.title,
+                                            type: r.type,
+                                            size_kb: r.size_kb,
+                                            subtopic: r.subtopic,
+                                            preview_text: r.preview_text,
+                                            thumbnail_url: r.thumbnail_url,
+                                            subject: r.subject,
+                                            grade: r.grade,
+                                            difficulty: r.difficulty,
+                                        }}
+                                        lowDataMode={lowDataMode}
+                                    />
+                                </div>
+                            )),
+                        )}
+                    </div>
+                )}
+            </div>
+        </main>
+    );
+}
+
+export default function ResourcesPage() {
+    return (
         <div className="flex min-h-screen flex-col bg-background">
             <Navbar />
-            <main className="container mx-auto max-w-4xl px-4 py-8">
-                <div className="animate-fade-in space-y-6">
-                    <div className="flex items-center justify-between gap-2">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => router.back()}
-                            className="gap-1.5"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            Back
-                        </Button>
+            <Suspense fallback={
+                <main className="container mx-auto max-w-4xl px-4 py-8">
+                    <div className="flex flex-col items-center gap-3 py-10 text-sm text-muted-foreground">
+                        <BookOpen className="h-6 w-6 animate-pulse text-primary" />
+                        Loading resources…
                     </div>
-
-                    <div>
-                        <h1 className="font-brand text-2xl font-bold text-foreground">
-                            {prettySubject} Resources
-                        </h1>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            Curated materials based on your recent quiz performance. Tap a
-                            resource to open it in a low-data friendly viewer.
-                        </p>
-                    </div>
-
-                    {loading && (
-                        <div className="flex flex-col items-center gap-3 py-10 text-sm text-muted-foreground">
-                            <BookOpen className="h-6 w-6 animate-pulse text-primary" />
-                            Loading resources…
-                        </div>
-                    )}
-
-                    {!loading && error && (
-                        <p className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
-                            {error}
-                        </p>
-                    )}
-
-                    {!loading && sections.length === 0 && (
-                        <p className="rounded-md border border-border bg-card/60 p-4 text-sm text-muted-foreground">
-                            No resources available yet for this subject and level. Try another
-                            quiz to refresh your recommendations.
-                        </p>
-                    )}
-
-                    {!loading && sections.length > 0 && (
-                        <div className="space-y-3">
-                            {sections.flatMap((section) =>
-                                section.resources.map((r) => (
-                                    <div key={r.id} className="flex flex-col gap-1">
-                                        {section.subtopicLabel && section.subtopicLabel !== 'Recommended' && (
-                                            <span className="text-[10px] font-brand uppercase tracking-wide text-muted-foreground">
-                                                {section.subtopicLabel}
-                                            </span>
-                                        )}
-                                        <ResourceCard
-                                            resource={{
-                                                id: r.id,
-                                                title: r.title,
-                                                type: r.type,
-                                                size_kb: r.size_kb,
-                                                subtopic: r.subtopic,
-                                                preview_text: r.preview_text,
-                                                thumbnail_url: r.thumbnail_url,
-                                                subject: r.subject,
-                                                grade: r.grade,
-                                                difficulty: r.difficulty,
-                                            }}
-                                            lowDataMode={lowDataMode}
-                                        />
-                                    </div>
-                                )),
-                            )}
-                        </div>
-                    )}
-                </div>
-            </main>
+                </main>
+            }>
+                <ResourcesContent />
+            </Suspense>
         </div>
     );
 }
