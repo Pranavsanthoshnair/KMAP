@@ -54,7 +54,7 @@ Each academic topic is structured as a lightweight JSON-based concept object:
 }
 
 Project Structure
-
+'''
 app/               → Next.js app router pages
 components/        → Reusable UI components
 contexts/          → Global state management
@@ -64,6 +64,7 @@ question_engine/   → Procedural question generator logic
 resource_engine/   → Concept loading & resource allocation
 supabase/          → Backend / database integration
 public/            → Static assets
+'''
 
 ⚙️ Tech Stack
 Next.js (App Router)
