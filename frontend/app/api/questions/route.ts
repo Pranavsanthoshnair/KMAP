@@ -32,17 +32,66 @@ export async function GET(request: NextRequest) {
 
     const engineDir = path.join(process.cwd(), '..', 'backend', 'question_engine');
 
-    // On Vercel (or other environments without the Python engine), short‑circuit with a
-    // graceful fallback so builds don't fail trying to exec the engine.
+    // On Vercel, use the external Python engine over HTTP.
     if (process.env.VERCEL === '1') {
-        return NextResponse.json(
-            {
-                questions: [],
-                exhausted: true,
-                error: 'Question engine is not available in this deployment environment.',
-            },
-            { status: 503 },
-        );
+        const engineUrl = process.env.QUESTION_ENGINE_URL2 ?? process.env.QUESTION_ENGINE_URL;
+        if (!engineUrl) {
+            return NextResponse.json(
+                {
+                    questions: [],
+                    exhausted: true,
+                    error: 'QUESTION_ENGINE_URL2 not configured on server.',
+                },
+                { status: 500 },
+            );
+        }
+
+        try {
+            const res = await fetch(engineUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    topic,
+                    subject,
+                    grade_band,
+                    level,
+                    count,
+                    mode,
+                    subtopics,
+                    reset,
+                }),
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                console.error('[API/questions] HTTP engine error', res.status, text);
+                return NextResponse.json(
+                    {
+                        questions: [],
+                        exhausted: true,
+                        error: 'Remote question engine HTTP error.',
+                        details: text,
+                        status: res.status,
+                    },
+                    { status: 500 },
+                );
+            }
+
+            const data = await res.json();
+            return NextResponse.json(data);
+        } catch (err: unknown) {
+            const e = err as { message?: string };
+            console.error('[API/questions] HTTP engine exception', e?.message);
+            return NextResponse.json(
+                {
+                    questions: [],
+                    exhausted: true,
+                    error: 'Remote question engine network error.',
+                    details: e?.message ?? 'Unknown HTTP exception',
+                },
+                { status: 500 },
+            );
+        }
     }
 
     const args = [
