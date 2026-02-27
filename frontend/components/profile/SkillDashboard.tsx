@@ -8,6 +8,8 @@ import { useSkillContext } from '@/contexts/SkillContext';
 import { useRouter } from 'next/navigation';
 import { SUBJECT_LABEL, type SubjectId } from '@/lib/subjects';
 
+const RECENT_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
 function levelBadgeColor(level: 1 | 2 | 3): string {
     if (level === 1) return 'bg-red-500/10 text-red-500 border-red-500/40';
     if (level === 2) return 'bg-amber-500/10 text-amber-500 border-amber-500/40';
@@ -15,7 +17,7 @@ function levelBadgeColor(level: 1 | 2 | 3): string {
 }
 
 export function SkillDashboard({ subjects }: { subjects: SubjectId[] }) {
-    const { getSkill, lastScores } = useSkillContext();
+    const { getSkill, getLastAttendedAt, lastScores } = useSkillContext();
     const router = useRouter();
 
     if (!subjects || subjects.length === 0) return null;
@@ -30,6 +32,10 @@ export function SkillDashboard({ subjects }: { subjects: SubjectId[] }) {
                     const level = getSkill(id);
                     const lastScore = lastScores[id] ?? null;
                     const pct = lastScore != null ? Math.max(0, Math.min(100, Math.round(lastScore))) : null;
+                    const attendedAt = getLastAttendedAt(id);
+                    const recentEnough = attendedAt != null && Date.now() - attendedAt <= RECENT_DAYS_MS;
+                    const canAttemptPromotion = level < 3 && recentEnough;
+                    const showRecentHint = level < 3 && !recentEnough;
 
                     return (
                         <Card key={id} className="p-4 flex items-center justify-between gap-3">
@@ -60,13 +66,17 @@ export function SkillDashboard({ subjects }: { subjects: SubjectId[] }) {
                                     size="sm"
                                     variant="outline"
                                     className="font-brand text-xs"
-                                    disabled={level >= 3}
+                                    disabled={level >= 3 || !canAttemptPromotion}
                                     onClick={() => router.push(`/promotion/${id}?target=${level + 1}`)}
                                 >
                                     {level >= 3 ? 'Max Level' : 'Attempt Promotion'}
                                 </Button>
-                                <p className="text-[10px] text-muted-foreground">
-                                    Promotion test required to move up.
+                                <p className="text-[10px] text-muted-foreground text-right max-w-[200px]">
+                                    {level >= 3
+                                        ? 'Max level reached.'
+                                        : showRecentHint
+                                            ? 'Complete some questions in this subject recently to unlock promotion.'
+                                            : 'Promotion test required to move up.'}
                                 </p>
                             </div>
                         </Card>

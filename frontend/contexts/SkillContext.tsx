@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { getAllSubjectSkills, setSubjectSkill as setSubjectSkillIdb } from '@/lib/indexeddb';
+import { getAllSubjectSkills, setSubjectSkill as setSubjectSkillIdb, touchSubjectAttendance as touchSubjectAttendanceIdb } from '@/lib/indexeddb';
 
 export type SkillLevel = 1 | 2 | 3;
 
@@ -12,8 +12,11 @@ export type ScoreMap = Record<string, number>;
 interface SkillContextType {
     skills: SkillMap;
     lastScores: ScoreMap;
+    lastAttendedAt: Record<string, number>;
     getSkill: (subjectId: string) => SkillLevel;
+    getLastAttendedAt: (subjectId: string) => number | undefined;
     updateSkill: (subjectId: string, level: SkillLevel, lastScore?: number) => void;
+    touchSubjectAttendance: (subjectId: string) => void;
 }
 
 const SkillContext = createContext<SkillContextType | undefined>(undefined);
@@ -44,6 +47,7 @@ export function SkillProvider({ children }: { children: ReactNode }) {
     const { ready } = useAuth();
     const [skills, setSkills] = useState<SkillMap>({});
     const [lastScores, setLastScores] = useState<ScoreMap>({});
+    const [lastAttendedAt, setLastAttendedAt] = useState<Record<string, number>>({});
 
     useEffect(() => {
         if (!ready) return;
@@ -51,9 +55,10 @@ export function SkillProvider({ children }: { children: ReactNode }) {
         (async () => {
             await migrateFromLocalStorageIfPresent();
             if (cancelled) return;
-            const { skills: s, lastScores: ls } = await getAllSubjectSkills();
+            const { skills: s, lastScores: ls, lastAttendedAt: lat } = await getAllSubjectSkills();
             setSkills(s);
             setLastScores(ls);
+            setLastAttendedAt(lat ?? {});
         })();
         return () => {
             cancelled = true;
@@ -70,8 +75,14 @@ export function SkillProvider({ children }: { children: ReactNode }) {
         [skills],
     );
 
+    const getLastAttendedAt = useCallback(
+        (subjectId: string): number | undefined => lastAttendedAt[subjectId.toLowerCase()],
+        [lastAttendedAt],
+    );
+
     const updateSkill = useCallback((subjectId: string, level: SkillLevel, lastScore?: number) => {
         const key = subjectId.toLowerCase();
+        const now = Date.now();
         setSkills(prev => ({ ...prev, [key]: level }));
         setLastScores(prev => {
             const next = { ...prev };
@@ -80,14 +91,21 @@ export function SkillProvider({ children }: { children: ReactNode }) {
             }
             return next;
         });
+        setLastAttendedAt(prev => ({ ...prev, [key]: now }));
         setSubjectSkillIdb(key, level, lastScore).catch(() => {
             // ignore IDB errors — in-memory state still correct
         });
-        // Privacy-first: no server sync. Skill map stays in IndexedDB only.
+    }, []);
+
+    const touchSubjectAttendance = useCallback((subjectId: string) => {
+        const key = subjectId.toLowerCase();
+        const now = Date.now();
+        setLastAttendedAt(prev => ({ ...prev, [key]: now }));
+        touchSubjectAttendanceIdb(key).catch(() => {});
     }, []);
 
     return (
-        <SkillContext.Provider value={{ skills, lastScores, getSkill, updateSkill }}>
+        <SkillContext.Provider value={{ skills, lastScores, lastAttendedAt, getSkill, getLastAttendedAt, updateSkill, touchSubjectAttendance }}>
             {children}
         </SkillContext.Provider>
     );

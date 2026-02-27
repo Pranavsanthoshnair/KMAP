@@ -1,0 +1,39 @@
+{
+  "misconception_templates": {
+    "multiplication_confused_with_addition": "You likely added instead of multiplying.",
+    "digit_reversal_error": "You may have reversed digits during calculation.",
+    "overestimation_error": "That value is too high for this question.",
+    "underestimation_error": "That value is too low for this question.",
+    "addition_instead_of_subtraction": "You may have added instead of subtracting.",
+    "subtraction_instead_of_addition": "You may have subtracted instead of adding.",
+    "division_underestimation": "You may have divided incorrectly; check the result.",
+    "confused_with_subtraction": "Division is not the same as subtraction.",
+    "multiplication_confusion": "That would be correct for a different operation.",
+    "sign_error": "You likely made a sign mistake.",
+    "distribution_error": "You may have distributed incorrectly.",
+    "unit_or_quantity_confusion": "Check the units or quantities in the problem.",
+    "concept_recall_wrong": "That concept applies to a different situation.",
+    "formula_misapplication": "The formula was applied incorrectly for this case.",
+    "off_by_one_counting": "Check your counting; you may be off by one.",
+    "wrong_operation": "Try checking which operation (add, subtract, multiply, divide) fits the question.",
+    "counting_groups_vs_add": "Remember: groups of things often mean multiplication, not just addition.",
+    "basic_biology_concept": "That term or idea belongs to a different topic in biology.",
+    "cell_concept_mix": "That describes a different part or process of the cell.",
+    "photosynthesis_mix": "That is not what happens in photosynthesis.",
+    "human_body_system": "That belongs to a different system or part of the body."
+  },
+  "by_subtopic": {
+    "arithmetic": "For this arithmetic question, the right answer is: {answer}.",
+    "counting": "When counting or ordering numbers, the right answer here is: {answer}.",
+    "fractions": "For fractions, the right answer is: {answer}.",
+    "geometry": "For this geometry question, the right answer is: {answer}.",
+    "basic_biology": "In basic biology, the right answer here is: {answer}.",
+    "cell_structure": "For cell structure, the right answer is: {answer}.",
+    "photosynthesis": "For photosynthesis, the right answer is: {answer}.",
+    "human_body": "For the human body, the right answer here is: {answer}."
+  },
+  "by_subject": {
+    "math": "In maths, the right answer here is: {answer}.",
+    "science": "In science, the right answer here is: {answer}."
+  }
+}

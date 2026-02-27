@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import { getLocalProfile, getSkillProfile, getMasteryMap } from '@/lib/indexeddb';
-import { getDailyUsage, resetDailyUsage } from '@/lib/data-tracker';
+import { getDailyUsage, resetDailyUsage, getDailyLimitKb, setDailyLimitKb } from '@/lib/data-tracker';
 import type { SkillData } from '@/lib/indexeddb';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { User, Brain, Wifi, RotateCcw, Settings } from 'lucide-react';
+import { User, Brain, Wifi, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { SkillDashboard } from '@/components/profile/SkillDashboard';
@@ -25,8 +25,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-
-const DATA_CAP_KB = 10 * 1024; // 10 MB display cap
+import { Slider } from '@/components/ui/slider';
+import { AlertTriangle } from 'lucide-react';
 
 function masteryColor(m: number) {
     if (m >= 80) return 'text-emerald-500';
@@ -55,6 +55,7 @@ export default function Profile() {
     const [skills, setSkills] = useState<SkillData[]>([]);
     const [masteryMap, setMasteryMap] = useState<Record<string, number>>({});
     const [dataUsedKB, setDataUsedKB] = useState(0);
+    const [dailyLimitKB, setDailyLimitKB] = useState(10 * 1024);
 
     useEffect(() => {
         if (!ready) return;
@@ -76,6 +77,7 @@ export default function Profile() {
         // Data usage — client-only
         const usage = getDailyUsage();
         setDataUsedKB(usage.data_used_kb);
+        setDailyLimitKB(getDailyLimitKb());
     }, [ready]);
 
     const totalCorrect = skills.reduce((s, k) => s + k.correct, 0);
@@ -83,7 +85,9 @@ export default function Profile() {
     const overallMastery = totalAttempts > 0
         ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
 
-    const dataPercent = Math.min(100, Math.round((dataUsedKB / DATA_CAP_KB) * 100));
+    const dataLimitKB = dailyLimitKB;
+    const dataPercent = Math.min(100, dataLimitKB > 0 ? Math.round((dataUsedKB / dataLimitKB) * 100) : 0);
+    const isOverDataLimit = dataLimitKB > 0 && dataUsedKB >= dataLimitKB;
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
@@ -104,11 +108,6 @@ export default function Profile() {
                             >
                                 Subjects
                             </Button>
-                            <Link href="/settings">
-                                <Button variant="ghost" size="sm">
-                                    <Settings className="h-4 w-4" />
-                                </Button>
-                            </Link>
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -142,6 +141,7 @@ export default function Profile() {
                                     setGradeBand(band);
                                     const profile = await getLocalProfile();
                                     if (profile) await saveLocalProfile({ ...profile, gradeBand: band });
+                                    if (typeof window !== 'undefined') window.localStorage.setItem('grade_band', String(band));
                                 }}
                             >
                                 <SelectTrigger className="ml-auto h-8 w-auto min-w-[140px] border-border font-brand text-xs">
@@ -155,9 +155,18 @@ export default function Profile() {
                                     ))}
                                 </SelectContent>
                             </Select>
+                            <p className="mt-2 text-xs text-muted-foreground">
+                                Grade affects questions, subjects, subtopics, and resources across the app.
+                            </p>
                         </div>
                     </Card>
 
+                    {isOverDataLimit && (
+                        <div className="mt-4 flex items-center gap-2 rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-200">
+                            <AlertTriangle className="h-4 w-4 shrink-0" />
+                            <span className="font-brand">Daily data limit reached ({formatKB(dataUsedKB)}). Usage resets at midnight or use Reset below.</span>
+                        </div>
+                    )}
                     {/* Data Used Today */}
                     <Card className="mt-4 p-5">
                         <div className="flex items-center gap-2">
@@ -165,7 +174,7 @@ export default function Profile() {
                             <span className="font-brand text-sm font-semibold text-foreground flex-1">
                                 Data Used Today
                             </span>
-                            <span className="font-brand text-sm font-bold text-foreground">
+                            <span className={cn('font-brand text-sm font-bold', isOverDataLimit ? 'text-amber-600 dark:text-amber-400' : 'text-foreground')}>
                                 {formatKB(dataUsedKB)}
                             </span>
                             <Button
@@ -179,8 +188,23 @@ export default function Profile() {
                             </Button>
                         </div>
                         <Progress value={dataPercent} className="mt-2 h-1.5" />
+                        <p className="mt-2 font-brand text-xs text-muted-foreground">
+                            Daily limit
+                        </p>
+                        <Slider
+                            className="mt-1 w-full"
+                            min={1024}
+                            max={50 * 1024}
+                            step={1024}
+                            value={[dailyLimitKB]}
+                            onValueChange={([v]) => {
+                                const kb = v ?? dailyLimitKB;
+                                setDailyLimitKB(kb);
+                                setDailyLimitKb(kb);
+                            }}
+                        />
                         <p className="mt-1 text-xs text-muted-foreground">
-                            {formatKB(dataUsedKB)} of {formatKB(DATA_CAP_KB)} target · resets at midnight
+                            {formatKB(dataUsedKB)} of {formatKB(dataLimitKB)} · resets at midnight
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground italic">
                             Tracked locally only — never sent to server.

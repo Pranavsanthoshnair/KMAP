@@ -7,6 +7,7 @@ import { CheckCircle, XCircle, ChevronRight, Brain, ArrowLeft } from 'lucide-rea
 import { useSkillContext } from '@/contexts/SkillContext';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from './QuizSession';
+import WhyBox from '@/components/quiz/WhyBox';
 import { useRouter } from 'next/navigation';
 
 interface AssessmentSessionProps {
@@ -130,76 +131,75 @@ export default function AssessmentSession({
 
             <Progress value={((currentIndex + 1) / questions.length) * 100} className="h-2" />
 
-            {/* Question Card */}
-            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300">
-                <div className="flex items-center gap-2 border-b border-border bg-secondary/50 px-5 py-3">
-                    <span className="font-brand text-xs text-muted-foreground">Level {level} Assessment</span>
-                    <span className="rounded bg-background px-1.5 py-0.5 text-[10px] font-brand uppercase text-muted-foreground border border-border">
-                        {typeof current.form === 'number' ? (FORM_LABELS[current.form] ?? `Form ${current.form}`) : current.form}
-                    </span>
-                </div>
-
-                <div className="p-5 md:p-6 space-y-6">
-                    <p className="text-lg md:text-xl font-medium text-foreground leading-snug">
-                        {current.question}
-                    </p>
-
-                    <div className="grid gap-2.5">
-                        {current.choices.map(opt => {
-                            const isSelected = selectedChoice === opt;
-                            const isCorrectAns = opt === current.answer;
-
-                            let stateClass = "border-border hover:border-primary/50 hover:bg-secondary/50 text-foreground";
-                            if (isSubmitted) {
-                                if (isCorrectAns) {
-                                    stateClass = "border-green-500 bg-green-500/10 text-green-900 dark:text-green-100 ring-1 ring-green-500/50";
-                                } else if (isSelected) {
-                                    stateClass = "border-red-500/50 bg-red-500/10 text-red-900 dark:text-red-100";
-                                } else {
-                                    stateClass = "border-border/50 text-muted-foreground opacity-60";
-                                }
-                            }
-
-                            return (
-                                <button
-                                    key={opt}
-                                    disabled={isSubmitted}
-                                    onClick={() => handleAnswer(opt)}
-                                    className={cn(
-                                        "group relative flex w-full items-center justify-between rounded-lg border p-4 text-left transition-all",
-                                        stateClass
-                                    )}
-                                >
-                                    <span className="text-[15px] font-medium leading-tight">{opt}</span>
-                                    {isSubmitted && isCorrectAns && <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />}
-                                    {isSubmitted && isSelected && !isCorrectAns && <XCircle className="h-5 w-5 text-red-500 opacity-80 shrink-0" />}
-                                </button>
-                            );
-                        })}
+            {/* Question + Why side by side (Why on right when wrong) */}
+            <div className="flex flex-row gap-4 items-stretch">
+                <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300">
+                    <div className="flex items-center gap-2 border-b border-border bg-secondary/50 px-5 py-3">
+                        <span className="font-brand text-xs text-muted-foreground">Level {level} Assessment</span>
+                        <span className="rounded bg-background px-1.5 py-0.5 text-[10px] font-brand uppercase text-muted-foreground border border-border">
+                            {typeof current.form === 'number' ? (FORM_LABELS[current.form] ?? `Form ${current.form}`) : current.form}
+                        </span>
                     </div>
-                </div>
 
-                {/* Explanation area */}
-                <div className={cn(
-                    "grid transition-all duration-300 ease-in-out",
-                    isSubmitted ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                )}>
-                    <div className="overflow-hidden bg-secondary/30">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border px-5 py-4">
-                            <div className="flex-1">
+                    <div className="p-5 md:p-6 space-y-6">
+                        <p className="text-lg md:text-xl font-medium text-foreground leading-snug">
+                            {current.question}
+                        </p>
 
-                            </div>
+                        <div className="grid gap-2.5">
+                            {current.choices.map(opt => {
+                                const isSelected = selectedChoice === opt;
+                                const isCorrectAns = opt === current.answer;
+
+                                let stateClass = "border-border hover:border-primary/50 hover:bg-secondary/50 text-foreground";
+                                if (isSubmitted) {
+                                    if (isCorrectAns) {
+                                        stateClass = "border-green-500 bg-green-500/10 text-green-900 dark:text-green-100 ring-1 ring-green-500/50";
+                                    } else if (isSelected) {
+                                        stateClass = "border-red-500/50 bg-red-500/10 text-red-900 dark:text-red-100";
+                                    } else {
+                                        stateClass = "border-border/50 text-muted-foreground opacity-60";
+                                    }
+                                }
+
+                                return (
+                                    <button
+                                        key={opt}
+                                        disabled={isSubmitted}
+                                        onClick={() => handleAnswer(opt)}
+                                        className={cn(
+                                            "group relative flex w-full items-center justify-between rounded-lg border p-4 text-left transition-all",
+                                            stateClass
+                                        )}
+                                    >
+                                        <span className="text-[15px] font-medium leading-tight">{opt}</span>
+                                        {isSubmitted && isCorrectAns && <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />}
+                                        {isSubmitted && isSelected && !isCorrectAns && <XCircle className="h-5 w-5 text-red-500 opacity-80 shrink-0" />}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {isSubmitted && (
                             <Button
                                 onClick={handleNext}
-                                className="w-full sm:w-auto font-brand font-medium shadow-sm transition-transform active:scale-95"
+                                className="w-full font-brand font-medium shadow-sm"
                                 size="sm"
                             >
                                 {isLastQuestion ? 'Finish Assessment' : 'Next Question'}
                                 {!isLastQuestion && <ChevronRight className="ml-1.5 h-4 w-4" />}
                             </Button>
-                        </div>
+                        )}
                     </div>
                 </div>
+
+                {isSubmitted && selectedChoice !== null && selectedChoice !== current.answer && current.explanations && (
+                    <div className="w-52 sm:w-64 shrink-0 flex flex-col">
+                        <WhyBox
+                            explanation={current.explanations[String(current.choices.indexOf(selectedChoice))] ?? `The right answer is: ${current.answer}.`}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

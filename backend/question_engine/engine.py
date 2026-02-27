@@ -16,6 +16,8 @@ import random
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
+from why_engine import attach_explanations as attach_why_explanations
+
 log = logging.getLogger(__name__)
 
 BANK_FILE = Path(__file__).parent / "question_bank.json"
@@ -144,13 +146,16 @@ def generate_from_pattern(
         while len(choices) < 4:
             choices.append("None of the above")
         random.shuffle(choices)
-        return {
+        out = {
             "id":       pattern["id"],
             "type":     pattern["type"],
             "question": pattern["template"],
             "choices":  choices[:4],
             "answer":   answer,
         }
+        if "misconceptions" in pattern:
+            out["misconceptions"] = pattern["misconceptions"]
+        return out
 
     # Parametric pattern
     constraints   = pattern["constraints"]
@@ -205,13 +210,16 @@ def generate_from_pattern(
         if session_sigs is not None:
             session_sigs.add(sig)
 
-        return {
+        out = {
             "id":       f"{pattern['id']}_{_stable_id_suffix(question_text)}",
             "type":     pattern["type"],
             "question": question_text,
             "choices":  choices[:4],
             "answer":   answer,
         }
+        if "misconceptions" in pattern:
+            out["misconceptions"] = pattern["misconceptions"]
+        return out
 
     return None
 
@@ -504,27 +512,24 @@ def generate_questions(
         log.error("Generation error: %s", e)
         return {"questions": [], "exhausted": True, "error": str(e)}
 
-    def _explanations(choices: List[str], answer: str) -> Dict[str, str]:
-        """Per-option explanations (pre-generated, stateless). Keys: "0","1","2","3"."""
-        out: Dict[str, str] = {}
-        for i, c in enumerate(choices[:4]):
-            if c == answer:
-                out[str(i)] = "Correct."
-            else:
-                out[str(i)] = f"Incorrect. The correct answer is {answer}."
-        return out
-
     questions = []
     for q in raw_qs:
         choices = q.get("choices", [])[:4]
         answer = q.get("answer", "")
-        explanations = _explanations(choices, answer)
-        questions.append({
+        question_dict = {
             "id": q["id"],
             "form": q["type"],
             "question": q["question"],
             "choices": choices,
             "answer": answer,
-            "explanations": explanations,
-        })
+        }
+        if "misconceptions" in q:
+            question_dict["misconceptions"] = q["misconceptions"]
+        attach_why_explanations(
+            question_dict,
+            level=level,
+            subject=subj,
+            subtopic=primary,
+        )
+        questions.append(question_dict)
     return {"questions": questions, "exhausted": len(questions) < count}

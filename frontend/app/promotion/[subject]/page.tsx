@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
+import WhyBox from '@/components/quiz/WhyBox';
 import { getLocalProfile } from '@/lib/indexeddb';
 import { useSkillContext } from '@/contexts/SkillContext';
 import { formatSubjectId, type SubjectId } from '@/lib/subjects';
@@ -101,29 +102,31 @@ export default function PromotionPage() {
             const next = new Map(answers);
             next.set(currentIdx, choice);
             setAnswers(next);
-
-            if (isLast) {
-                // Compute result
-                const total = questions.length;
-                const correctCount = questions.reduce((acc, q, idx) => {
-                    const ans = next.get(idx);
-                    return acc + (ans === q.answer ? 1 : 0);
-                }, 0);
-                const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-                const currentLevel = getSkill(subject) as 1 | 2 | 3;
-                const outcome = promotionOutcome(currentLevel, targetLevel as 1 | 2 | 3, pct);
-                updateSkill(subject, outcome.newLevel, pct);
-                setPercentage(pct);
-                setStatus(outcome.status);
-                setFinished(true);
-            } else {
-                setTimeout(() => {
-                    setCurrentIdx(i => i + 1);
-                }, 800);
-            }
         },
-        [answers, current, currentIdx, getSkill, isLast, isSubmitted, questions, subject, targetLevel, updateSkill],
+        [answers, current, currentIdx, isSubmitted],
     );
+
+    const handleNextOrSubmit = useCallback(() => {
+        const selectedNow = answers.get(currentIdx);
+        if (selectedNow === undefined || !current) return;
+        if (isLast) {
+            const total = questions.length;
+            const next = new Map(answers);
+            const correctCount = questions.reduce((acc, q, idx) => {
+                const ans = idx === currentIdx ? selectedNow : next.get(idx);
+                return acc + (ans === q.answer ? 1 : 0);
+            }, 0);
+            const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            const currentLevel = getSkill(subject) as 1 | 2 | 3;
+            const outcome = promotionOutcome(currentLevel, targetLevel as 1 | 2 | 3, pct);
+            updateSkill(subject, outcome.newLevel, pct);
+            setPercentage(pct);
+            setStatus(outcome.status);
+            setFinished(true);
+        } else {
+            setCurrentIdx(i => i + 1);
+        }
+    }, [answers, current, currentIdx, getSkill, isLast, questions, subject, targetLevel, updateSkill]);
 
     if (loading) {
         return (
@@ -232,59 +235,77 @@ export default function PromotionPage() {
                         </p>
                     </div>
 
-                    <Card className="p-5 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-brand text-muted-foreground">
-                                Question {currentIdx + 1} / {questions.length}
-                            </span>
-                            <Progress
-                                value={((currentIdx + 1) / questions.length) * 100}
-                                className="h-1.5 w-32"
-                            />
-                        </div>
+                    <div className="flex flex-row gap-4 items-stretch">
+                        <Card className="p-5 space-y-4 min-w-0 flex-1">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-brand text-muted-foreground">
+                                    Question {currentIdx + 1} / {questions.length}
+                                </span>
+                                <Progress
+                                    value={((currentIdx + 1) / questions.length) * 100}
+                                    className="h-1.5 w-32"
+                                />
+                            </div>
 
-                        <p className="font-brand text-sm font-medium leading-relaxed text-foreground">
-                            {current.question}
-                        </p>
+                            <p className="font-brand text-sm font-medium leading-relaxed text-foreground">
+                                {current.question}
+                            </p>
 
-                        <div className="grid grid-cols-1 gap-2">
-                            {current.choices.map(choice => {
-                                const isThis = selected === choice;
-                                const isAnswer = choice === current.answer;
-                                return (
-                                    <button
-                                        key={choice}
-                                        onClick={() => handleAnswer(choice)}
-                                        disabled={isSubmitted}
-                                        className={cn(
-                                            'flex w-full items-center gap-3 rounded-md border px-4 py-2.5 text-left text-sm font-brand transition-all',
-                                            !isSubmitted &&
-                                                'cursor-pointer border-border bg-background text-foreground hover:border-primary/50 hover:bg-accent/30',
-                                            isSubmitted &&
-                                                isAnswer &&
-                                                'border-primary bg-accent text-accent-foreground',
-                                            isSubmitted &&
-                                                isThis &&
-                                                !isAnswer &&
-                                                'border-destructive bg-destructive/10 text-destructive',
-                                            isSubmitted &&
-                                                !isThis &&
-                                                !isAnswer &&
-                                                'border-border bg-muted/20 text-muted-foreground opacity-60',
-                                        )}
-                                    >
-                                        <span className="flex-1">{choice}</span>
-                                        {isSubmitted && isAnswer && (
-                                            <CheckCircle className="ml-auto h-4 w-4 shrink-0" />
-                                        )}
-                                        {isSubmitted && isThis && !isAnswer && (
-                                            <XCircle className="ml-auto h-4 w-4 shrink-0" />
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </Card>
+                            <div className="grid grid-cols-1 gap-2">
+                                {current.choices.map(choice => {
+                                    const isThis = selected === choice;
+                                    const isAnswer = choice === current.answer;
+                                    return (
+                                        <button
+                                            key={choice}
+                                            onClick={() => handleAnswer(choice)}
+                                            disabled={isSubmitted}
+                                            className={cn(
+                                                'flex w-full items-center gap-3 rounded-md border px-4 py-2.5 text-left text-sm font-brand transition-all',
+                                                !isSubmitted &&
+                                                    'cursor-pointer border-border bg-background text-foreground hover:border-primary/50 hover:bg-accent/30',
+                                                isSubmitted &&
+                                                    isAnswer &&
+                                                    'border-primary bg-accent text-accent-foreground',
+                                                isSubmitted &&
+                                                    isThis &&
+                                                    !isAnswer &&
+                                                    'border-destructive bg-destructive/10 text-destructive',
+                                                isSubmitted &&
+                                                    !isThis &&
+                                                    !isAnswer &&
+                                                    'border-border bg-muted/20 text-muted-foreground opacity-60',
+                                            )}
+                                        >
+                                            <span className="flex-1">{choice}</span>
+                                            {isSubmitted && isAnswer && (
+                                                <CheckCircle className="ml-auto h-4 w-4 shrink-0" />
+                                            )}
+                                            {isSubmitted && isThis && !isAnswer && (
+                                                <XCircle className="ml-auto h-4 w-4 shrink-0" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {isSubmitted && (
+                                <Button
+                                    className="w-full font-brand"
+                                    onClick={handleNextOrSubmit}
+                                >
+                                    {isLast ? 'Submit' : 'Next'}
+                                </Button>
+                            )}
+                        </Card>
+
+                        {isSubmitted && selected !== current.answer && current.explanations && (
+                            <div className="w-52 sm:w-64 shrink-0 flex flex-col">
+                                <WhyBox
+                                    explanation={current.explanations[String(current.choices.indexOf(selected!))] ?? `The right answer is: ${current.answer}.`}
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
             </main>
         </div>

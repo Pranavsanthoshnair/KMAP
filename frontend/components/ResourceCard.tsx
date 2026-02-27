@@ -53,22 +53,30 @@ export default function ResourceCard({ resource, lowDataMode = false }: Resource
     const Icon = TYPE_ICONS[typeKey] ?? FileText;
     const iconColor = TYPE_COLORS[typeKey] ?? 'text-muted-foreground';
 
-    /** Phase 2: fetch signed URL on user click */
-    const fetchContent = async () => {
-        if (url) return; // already fetched
+    /** Fetch signed URL only for View (open in browser) */
+    const fetchViewUrl = async (): Promise<string | null> => {
+        if (url) return url;
         setLoadingUrl(true);
         setUrlError('');
         try {
             const res = await fetch(`/api/resource/${resource.id}`);
             if (!res.ok) throw new Error('Not found');
             const data = await res.json();
-            setUrl(data.url);
-            trackResourceOpen(resource.size_kb); // track actual data used
+            const viewUrl = data.url as string;
+            setUrl(viewUrl);
+            trackResourceOpen(resource.size_kb);
+            return viewUrl;
         } catch {
             setUrlError('Could not load resource. Try again.');
+            return null;
         } finally {
             setLoadingUrl(false);
         }
+    };
+
+    const handleView = async () => {
+        const viewUrl = await fetchViewUrl();
+        if (viewUrl) window.open(viewUrl, '_blank', 'noopener,noreferrer');
     };
 
     return (
@@ -126,46 +134,34 @@ export default function ResourceCard({ resource, lowDataMode = false }: Resource
                     </p>
                 )}
 
-                {/* Phase 2: View + Download buttons (only after click) */}
-                <div className="mt-3 flex gap-2">
-                    {!url && (
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            className="font-brand text-xs"
-                            onClick={fetchContent}
-                            disabled={loadingUrl}
+                {/* View (in browser) + Download (save locally) */}
+                <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                        size="sm"
+                        className="font-brand text-xs"
+                        onClick={handleView}
+                        disabled={loadingUrl}
+                    >
+                        {loadingUrl ? 'Loading…' : (
+                            <>
+                                <ExternalLink className="h-3 w-3 mr-1.5" /> View
+                            </>
+                        )}
+                    </Button>
+                    <a
+                        href={`/api/resource/${resource.id}/download`}
+                        className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-1.5 text-xs font-brand text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                        download
+                    >
+                        <Download className="h-3 w-3" /> Download
+                    </a>
+                    {resource.subtopic && resource.subject && resource.difficulty && (
+                        <Link
+                            href={`/assess?subject=${encodeURIComponent(resource.subject)}&topic=${encodeURIComponent(resource.subtopic)}&level=${resource.difficulty}&title=${encodeURIComponent(resource.title)}`}
+                            className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-green-600/30 bg-green-500/10 px-3 py-1.5 text-xs font-brand text-green-700 dark:text-green-400 transition-colors hover:bg-green-500/20"
                         >
-                            {loadingUrl ? 'Loading…' : 'View Resource'}
-                        </Button>
-                    )}
-
-                    {url && (
-                        <>
-                            <a
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 rounded-md border border-primary bg-primary px-3 py-1.5 text-xs font-brand text-primary-foreground transition-colors hover:bg-primary/90"
-                            >
-                                <ExternalLink className="h-3 w-3" /> View
-                            </a>
-                            <a
-                                href={url}
-                                download
-                                className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-brand text-foreground transition-colors hover:bg-secondary"
-                            >
-                                <Download className="h-3 w-3" /> Download
-                            </a>
-                            {resource.subtopic && resource.subject && resource.difficulty && (
-                                <Link
-                                    href={`/assess?subject=${encodeURIComponent(resource.subject)}&topic=${encodeURIComponent(resource.subtopic)}&level=${resource.difficulty}&title=${encodeURIComponent(resource.title)}`}
-                                    className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-green-600/30 bg-green-500/10 px-3 py-1.5 text-xs font-brand text-green-700 dark:text-green-400 transition-colors hover:bg-green-500/20"
-                                >
-                                    Assess Knowledge
-                                </Link>
-                            )}
-                        </>
+                            Assess Knowledge
+                        </Link>
                     )}
                 </div>
 

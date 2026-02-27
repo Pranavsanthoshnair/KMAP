@@ -13,6 +13,10 @@
  */
 
 const KEY = 'kmap_data_usage';
+const LIMIT_KEY = 'kmap_daily_data_limit_kb';
+
+/** Default daily limit in KB (10 MB). */
+const DEFAULT_DAILY_LIMIT_KB = 10 * 1024;
 
 interface DailyUsage {
     date: string;       // YYYY-MM-DD
@@ -63,6 +67,27 @@ export function incrementDataUsage(kb: number): void {
 export function resetDailyUsage(): void {
     if (typeof window === 'undefined') return;
     localStorage.setItem(KEY, JSON.stringify({ date: today(), data_used_kb: 0 }));
+}
+
+/** Get user-set daily data limit in KB (stored locally). */
+export function getDailyLimitKb(): number {
+    if (typeof window === 'undefined') return DEFAULT_DAILY_LIMIT_KB;
+    try {
+        const raw = localStorage.getItem(LIMIT_KEY);
+        if (raw == null) return DEFAULT_DAILY_LIMIT_KB;
+        const n = parseInt(raw, 10);
+        if (Number.isNaN(n) || n < 1024) return DEFAULT_DAILY_LIMIT_KB; // min 1 MB
+        return Math.min(100 * 1024, n); // cap 100 MB
+    } catch {
+        return DEFAULT_DAILY_LIMIT_KB;
+    }
+}
+
+/** Set daily data limit in KB (e.g. 1024 = 1 MB). Min 1024, max 102400. */
+export function setDailyLimitKb(kb: number): void {
+    if (typeof window === 'undefined') return;
+    const clamped = Math.max(1024, Math.min(102400, Math.round(kb)));
+    localStorage.setItem(LIMIT_KEY, String(clamped));
 }
 
 // ── Convenience helpers ───────────────────────────────────────────────────────
