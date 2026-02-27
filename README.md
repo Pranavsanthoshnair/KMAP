@@ -1,65 +1,54 @@
-# Welcome to your Lovable project
+# KMAP – Knowledge Mapping Adaptive Platform
 
+KMAP is a low-bandwidth, privacy-preserving adaptive learning platform designed for rural environments. It uses a rule-driven procedural question engine and modular concept-based resource delivery to provide personalized learning without heavy AI dependency or large data transfers.
 
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🚀 Problem Statement
 
-Changes made via Lovable will be committed automatically to this repo.
+In rural and low-bandwidth regions:
 
-**Use your preferred IDE**
+- Internet connectivity is slow or intermittent
+- Large PDFs and video lectures are not practical
+- Sending raw student performance data to cloud servers raises privacy concerns
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+KMAP solves this by:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Performing local skill assessment
+- Delivering lightweight modular learning resources
+- Generating questions dynamically without relying on heavy AI APIs
+- Preserving student privacy
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🧠 Core Innovation
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+KMAP introduces:
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 1️⃣ Procedural Question Engine
+Instead of hardcoded questions or runtime AI generation, KMAP uses a rule-based generation engine that dynamically creates questions based on:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+- Subject rules
+- Concept metadata
+- Difficulty scaling
+- Parameter ranges
 
-**Edit a file directly in GitHub**
+This enables:
+- Infinite variations
+- Offline compatibility
+- Low bandwidth usage
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+### 2️⃣ Knowledge Object Model
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Each academic topic is structured as a lightweight JSON-based concept object:
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```json
+{
+  "concept": "Photosynthesis",
+  "definition": "...",
+  "key_points": [],
+  "examples": [],
+  "relationships": []
+}
