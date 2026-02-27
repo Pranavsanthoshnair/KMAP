@@ -92,7 +92,7 @@ export default function AssessmentSession({
                         Assessment Complete
                     </h2>
                     <p className="mt-2 text-sm text-muted-foreground">
-                        You've completed the assessment for <span className="font-medium text-foreground">{resourceTitle}</span>.
+                        You&apos;ve completed the assessment for <span className="font-medium text-foreground">{resourceTitle}</span>.
                     </p>
 
                     <div className="mt-6 inline-flex flex-col items-center justify-center rounded-lg border border-border bg-background p-6 shadow-xs w-full max-w-xs">

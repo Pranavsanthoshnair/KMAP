@@ -86,6 +86,14 @@ export default function CapsuleView() {
     const [lastTotal, setLastTotal] = useState(0);
     const [newBadges, setNewBadges] = useState<BadgeDefinition[]>([]);
 
+    // ── Derived State ──────────────────────────────────────────────────────────
+    const currentItem = items[currentIdx];
+    const totalItems = items.length;
+    const correctCount = items.filter(i => i.result === 'correct').length;
+    const overallPct = totalItems > 0
+        ? Math.round((correctCount / totalItems) * 100)
+        : 0;
+
     // ── Load all topics then pre-fetch 1 question per topic ───────────────────
     const runSession = useCallback(async (gb: number) => {
         setPhase('loading');
@@ -239,7 +247,7 @@ export default function CapsuleView() {
         }
 
         router.push(`/resources/${subject}?${params.toString()}`);
-    }, [items, gradeBand, overallScore, router, subject]);
+    }, [items, gradeBand, overallPct, router, subject]);
 
     // ── Loading ───────────────────────────────────────────────────────────────
     if (!ready || !initialized) {
@@ -252,13 +260,6 @@ export default function CapsuleView() {
             </div>
         );
     }
-
-    const currentItem = items[currentIdx];
-    const totalItems = items.length;
-    const correctCount = items.filter(i => i.result === 'correct').length;
-    const overallPct = totalItems > 0
-        ? Math.round((correctCount / totalItems) * 100)
-        : 0;
 
     const prettySubject = formatSubjectId(subject);
 
