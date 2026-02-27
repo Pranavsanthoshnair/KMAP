@@ -99,84 +99,47 @@ function ResourcesContent() {
                         return;
                     }
                     const topicsData = await topicsRes.json();
-                    const topics = (topicsData.topics ?? []) as { topic: string; label: string }[];
-                    subtopicIds = topics.slice(0, 8).map(t => t.topic);
+                    subtopicIds = (topicsData.topics || []).map((t: { topic: string }) => t.topic);
                 }
+
+                if (cancelled) return;
 
                 if (subtopicIds.length === 0) {
                     setSections([]);
+                    setLoading(false);
                     return;
                 }
 
-                const requests = subtopicIds.map(subtopic_id => ({
-                    subject_id: subject,
-                    subtopic_id,
-                    skill_level: skillLevel,
-                }));
-
-                const allocRes = await fetch('/api/resources/allocate', {
+                // Batch request resources for these subtopics
+                const res = await fetch('/api/resources/allocate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ requests, low_data_mode: lowDataMode }),
+                    body: JSON.stringify({
+                        subject,
+                        grade_band: gradeBand,
+                        skill_level: skillLevel,
+                        subtopics: subtopicIds,
+                        limit_per_subtopic: 3
+                    })
                 });
 
-                if (!allocRes.ok) {
-                    setError(allocRes.status === 503 ? 'Resources service unavailable.' : 'Could not load recommended resources.');
-                    setSections([]);
-                    return;
-                }
-
-                const allocData = (await allocRes.json()) as { resources?: Array<{ id: string; title: string }> };
-                const allocated = allocData.resources ?? [];
-                if (cancelled) return;
-                if (allocated.length === 0) {
-                    setSections([]);
-                    return;
-                }
-
-                const ids = allocated.map(r => r.id).join(',');
-                const metaRes = await fetch(`/api/resources?ids=${encodeURIComponent(ids)}&low_data=${lowDataMode}`);
-                if (metaRes.status === 503) {
-                    setError('Resources service unavailable.');
-                    setSections([]);
-                    return;
-                }
-                const metaJson = await metaRes.json();
                 if (cancelled) return;
 
-                const list: SimpleResource[] = Array.isArray(metaJson) && metaJson.length > 0
-                    ? metaJson.map((r: { id: string; title: string; type?: string; size_kb?: number; subtopic?: string; preview_text?: string; thumbnail_url?: string | null; subject?: string; grade?: number; difficulty?: number }) => ({
-                        id: r.id,
-                        title: r.title,
-                        type: r.type ?? 'pdf',
-                        size_kb: r.size_kb ?? 0,
-                        subtopic: r.subtopic,
-                        preview_text: r.preview_text,
-                        thumbnail_url: r.thumbnail_url,
-                        subject: r.subject,
-                        grade: r.grade,
-                        difficulty: r.difficulty,
-                    }))
-                    : allocated.map(r => ({ id: r.id, title: r.title, type: 'pdf', size_kb: 0, subtopic: undefined as string | undefined }));
-
-                const bySubtopic = new Map<string, SimpleResource[]>();
-                for (const r of list) {
-                    const key = r.subtopic ?? 'general';
-                    if (!bySubtopic.has(key)) bySubtopic.set(key, []);
-                    bySubtopic.get(key)!.push(r);
+                if (!res.ok) {
+                    throw new Error('Failed to load recommended resources');
                 }
-                const collected: ResourceSection[] = Array.from(bySubtopic.entries()).map(([st, resources]) => ({
-                    subtopicLabel: humanizeSubtopic(st === 'general' ? 'Recommended' : st),
-                    resources,
-                }));
 
-                setSections(collected);
-                trackMetadataFetch(list.length);
-            } catch (e: unknown) {
-                if (cancelled) return;
-                const err = e as { message?: string };
-                setError(err?.message || 'Unable to load resources.');
-                setSections([]);
+                const data = await res.json();
+                const rawSections = (data.sections || []) as ResourceSection[];
+
+                // Track analytics for fetched resources
+                const allResources = rawSections.flatMap(s => s.resources || []);
+                trackMetadataFetch(allResources.length);
+
+                setSections(rawSections);
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Error loading resources';
+                if (!cancelled) setError(message);
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -187,7 +150,7 @@ function ResourcesContent() {
         return () => {
             cancelled = true;
         };
-    }, [subject, gradeBand, weakSubtopics.join(',')]);
+    }, [subject, gradeBand, weakParam, urlSkillLevel, weakSubtopics]);
 
     const prettySubject = formatSubjectId(subject);
 

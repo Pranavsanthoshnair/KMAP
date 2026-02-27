@@ -91,8 +91,7 @@ function PromotionContent() {
     const handleFinish = async () => {
         const correct = questions.filter((q, i) => answers.get(i) === q.answer).length;
         const pct = Math.round((correct / questions.length) * 100);
-        const currentSkill = getSkill(subject);
-        const currentLevel = (currentSkill?.level || 1) as 1 | 2 | 3;
+        const currentLevel = getSkill(subject) as 1 | 2 | 3;
         const outcome = promotionOutcome(currentLevel, targetLevel as 1 | 2 | 3, pct);
 
         await updateSkill(subject, outcome.newLevel);
@@ -164,7 +163,7 @@ function PromotionContent() {
 
                 {selected && (
                     <div className="animate-in fade-in slide-in-from-bottom-2">
-                        <WhyBox explanation={currentQuestion.explanation} />
+                        <WhyBox explanation={currentQuestion.explanations?.[String(currentQuestion.choices.indexOf(selected))] || `The correct answer is: ${currentQuestion.answer}`} />
                         <Button onClick={handleNext} className="w-full mt-6">
                             {currentIdx + 1 === questions.length ? 'Finish Test' : 'Next Question'}
                         </Button>
