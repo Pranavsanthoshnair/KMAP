@@ -8,7 +8,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getLocalProfile, getAllCachedCapsules } from '@/lib/indexeddb';
 import { getGradeLabel } from '@/lib/grades';
-import { BookOpen, FlaskConical, Languages, ChevronRight, Trophy } from 'lucide-react';
+import { BookOpen, FlaskConical, Languages, ChevronRight, Trophy, CheckCircle2, RefreshCw } from 'lucide-react';
+import { getCapsuleDone, clearCapsuleDone } from '@/lib/capsule';
 import { cn } from '@/lib/utils';
 import { fetchSubjects, FALLBACK_SUBJECTS, type SubjectId } from '@/lib/subjects';
 
@@ -35,6 +36,8 @@ export default function Dashboard() {
             setSubjectOptions(list);
 
             const profile = await getLocalProfile();
+            if (profile?.name) setName(profile.name);
+            if (typeof profile?.gradeBand === 'number') setGradeBand(profile.gradeBand);
             const validIds = list.map(s => s.id);
             if (profile?.subjects?.length) {
                 const valid = profile.subjects.filter((s): s is string => validIds.includes(s));
@@ -104,6 +107,11 @@ export default function Dashboard() {
                                     const tag = meta.tag;
                                     const cacheCount = cacheCounts[id] ?? 0;
                                     const approxKb = cacheCount * 4; // rough estimate
+                                    const capsuleDone = getCapsuleDone(id, gradeBand);
+                                    const handleReattempt = () => {
+                                        clearCapsuleDone(id, gradeBand);
+                                        router.push(`/capsules/${id}`);
+                                    };
                                     return (
                                         <Card
                                             key={id}
@@ -120,9 +128,16 @@ export default function Dashboard() {
                                                             <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 text-[10px] font-brand uppercase tracking-wide text-muted-foreground">
                                                                 {tag}
                                                             </span>
-                                                            <h3 className="mt-1 font-brand text-base font-semibold text-foreground">
-                                                                {label}
-                                                            </h3>
+                                                            <div className="mt-1 flex items-center gap-2">
+                                                                <h3 className="font-brand text-base font-semibold text-foreground">
+                                                                    {label}
+                                                                </h3>
+                                                                {capsuleDone && (
+                                                                    <span className="flex items-center gap-1 rounded-full bg-green-500/10 px-1.5 py-0.5 text-[10px] font-brand text-green-600 dark:text-green-400" title="Completed">
+                                                                        <CheckCircle2 className="h-3.5 w-3.5" />
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <Badge className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-brand text-primary">
@@ -131,7 +146,7 @@ export default function Dashboard() {
                                                     </Badge>
                                                 </div>
 
-                                                <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                                                <div className="mt-3 flex items-center justify-between gap-2 text-xs text-muted-foreground">
                                                     <div className="flex flex-col">
                                                         <span className="font-brand text-[11px] uppercase tracking-wide">
                                                             Cache
@@ -140,14 +155,36 @@ export default function Dashboard() {
                                                             {approxKb} KB
                                                         </span>
                                                     </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => router.push(`/capsules/${id}`)}
-                                                        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90"
-                                                    >
-                                                        Open Lesson
-                                                        <ChevronRight className="ml-1 h-3.5 w-3.5" />
-                                                    </button>
+                                                    <div className="flex items-center gap-2">
+                                                        {capsuleDone ? (
+                                                            <>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={handleReattempt}
+                                                                    className="inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-brand text-foreground transition hover:bg-secondary"
+                                                                >
+                                                                    <RefreshCw className="h-3.5 w-3.5" /> Reattempt
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => router.push(`/resources/${id}?grade_band=${gradeBand}`)}
+                                                                    className="inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-brand text-foreground transition hover:bg-secondary"
+                                                                >
+                                                                    View Resources
+                                                                    <ChevronRight className="h-3.5 w-3.5" />
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => router.push(`/capsules/${id}`)}
+                                                                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90"
+                                                            >
+                                                                Open Lesson
+                                                                <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </Card>

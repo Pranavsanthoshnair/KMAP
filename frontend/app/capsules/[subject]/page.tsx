@@ -5,46 +5,16 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import { getLocalProfile } from '@/lib/indexeddb';
-import { ArrowLeft, CheckCircle2, XCircle, BarChart3, RefreshCw, BookOpen } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, BarChart3, BookOpen, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
 import { formatSubjectId } from '@/lib/subjects';
 import WhyBox from '@/components/quiz/WhyBox';
+import { getCapsuleDone, setCapsuleDone } from '@/lib/capsule';
+import { useSkillContext } from '@/contexts/SkillContext';
 
 const SEEN_KEY = 'kmap_seen_questions';
-const CAPSULE_DONE_PREFIX = 'kmap_capsule_done_';
-
-function getCapsuleDone(subject: string, gradeBand: number): { score: number; total: number } | null {
-    if (typeof window === 'undefined') return null;
-    try {
-        const raw = sessionStorage.getItem(`${CAPSULE_DONE_PREFIX}${subject}_${gradeBand}`);
-        if (!raw) return null;
-        const data = JSON.parse(raw) as { score: number; total: number };
-        if (typeof data?.score !== 'number' || typeof data?.total !== 'number') return null;
-        return { score: data.score, total: data.total };
-    } catch {
-        return null;
-    }
-}
-
-function setCapsuleDone(subject: string, gradeBand: number, score: number, total: number) {
-    if (typeof window === 'undefined') return;
-    try {
-        sessionStorage.setItem(`${CAPSULE_DONE_PREFIX}${subject}_${gradeBand}`, JSON.stringify({ score, total }));
-    } catch {
-        // ignore
-    }
-}
-
-function clearCapsuleDone(subject: string, gradeBand: number) {
-    if (typeof window === 'undefined') return;
-    try {
-        sessionStorage.removeItem(`${CAPSULE_DONE_PREFIX}${subject}_${gradeBand}`);
-    } catch {
-        // ignore
-    }
-}
 
 function getSeen(): Record<string, string[]> {
     if (typeof window === 'undefined') return {};
@@ -99,6 +69,7 @@ export default function CapsuleView() {
     const params = useParams<{ subject: string }>();
     const subject = params?.subject ?? '';
     const { ready } = useAuth();
+    const { touchSubjectAttendance } = useSkillContext();
     const router = useRouter();
 
     const [gradeBand, setGradeBand] = useState(2);
@@ -107,9 +78,6 @@ export default function CapsuleView() {
     const [selected, setSelected] = useState<string | null>(null);
     const [phase, setPhase] = useState<'loading' | 'quiz' | 'results'>('loading');
     const [initialized, setInitialized] = useState(false);
-    const [showCompletedSummary, setShowCompletedSummary] = useState(false);
-    const [lastScore, setLastScore] = useState(0);
-    const [lastTotal, setLastTotal] = useState(0);
 
     // ── Load all topics then pre-fetch 1 question per topic ───────────────────
     const runSession = useCallback(async (gb: number) => {
@@ -128,15 +96,12 @@ export default function CapsuleView() {
                 return;
             }
 
-            // Placeholder items while questions load
-            setItems(topics.map(t => ({ topic: t.topic, label: t.label, question: null, result: null })));
-
-            // Fetch 1 question per topic in parallel
+            // Fetch all questions first; stay on full-screen loading until done
             const level = gradeBandToLevel(gb);
             const seen = getSeen();
             const fetched = await Promise.all(
                 topics.map(t =>
-                    fetch(`/api/questions?topic=${t.topic}&subject=${subject}&grade_band=${gb}&level=${level}&count=4`)
+                    fetch(`/api/questions?topic=${t.topic}&subject=${subject}&grade_band=${gb}&level=${level}&count=1`)
                         .then(r => r.json())
                         .then(d => {
                             const qs = (d.questions ?? []) as EngineQuestion[];
@@ -154,12 +119,15 @@ export default function CapsuleView() {
             }
             setSeen(seen);
 
-            setItems(topics.map((t, i) => ({
+            const newItems = topics.map((t, i) => ({
                 topic: t.topic,
                 label: t.label,
                 question: fetched[i],
                 result: null,
-            })));
+            }));
+            setItems(newItems);
+            const firstValidIdx = newItems.findIndex(it => it.question != null);
+            setCurrentIdx(firstValidIdx >= 0 ? firstValidIdx : 0);
             setPhase('quiz');
         } catch {
             setPhase('results');
@@ -173,15 +141,12 @@ export default function CapsuleView() {
             setGradeBand(gb);
             const done = getCapsuleDone(subject, gb);
             if (done) {
-                setLastScore(done.score);
-                setLastTotal(done.total);
-                setShowCompletedSummary(true);
-                setInitialized(true);
-            } else {
-                runSession(gb).finally(() => setInitialized(true));
+                router.replace('/dashboard');
+                return;
             }
+            runSession(gb).finally(() => setInitialized(true));
         });
-    }, [ready, runSession, subject]);
+    }, [ready, runSession, subject, router]);
 
     // ── Answer handler — record result only; advance via Next/Submit ─────────────
     const handleAnswer = useCallback((choice: string) => {
@@ -214,15 +179,8 @@ export default function CapsuleView() {
         if (phase !== 'results' || items.length === 0) return;
         const correctCount = items.filter(i => i.result === 'correct').length;
         setCapsuleDone(subject, gradeBand, correctCount, items.length);
-    }, [phase, items, subject, gradeBand]);
-
-    // ── Reattempt: clear completed state and start fresh ─────────────────────
-    const handleReattempt = useCallback(() => {
-        clearCapsuleDone(subject, gradeBand);
-        setShowCompletedSummary(false);
-        setInitialized(false);
-        runSession(gradeBand).finally(() => setInitialized(true));
-    }, [subject, gradeBand, runSession]);
+        touchSubjectAttendance(subject);
+    }, [phase, items, subject, gradeBand, touchSubjectAttendance]);
 
     // ── Retry — reset results and replay same questions ───────────────────────
     const handleRetry = useCallback(() => {
@@ -284,46 +242,17 @@ export default function CapsuleView() {
                         )}
                     </div>
 
-                    {/* ── Already completed: show summary + Reattempt ───────────────────── */}
-                    {showCompletedSummary && (
-                        <div className="rounded-xl border border-border bg-card p-6 space-y-4">
-                            <div className="flex items-center gap-3 text-green-600 dark:text-green-400">
-                                <CheckCircle2 className="h-8 w-8 shrink-0" />
-                                <p className="font-brand font-semibold text-foreground">You completed this capsule</p>
-                            </div>
-                            <p className="text-sm text-muted-foreground font-brand">
-                                {lastScore} of {lastTotal} correct
-                                {lastTotal > 0 && (
-                                    <span className="ml-1">
-                                        ({Math.round((lastScore / lastTotal) * 100)}%)
-                                    </span>
-                                )}
-                            </p>
-                            <div className="flex flex-wrap gap-2 pt-2">
-                                <Button className="font-brand" onClick={handleReattempt}>
-                                    <RefreshCw className="mr-1.5 h-4 w-4" /> Reattempt
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="font-brand"
-                                    onClick={() => router.push(`/resources/${subject}?grade_band=${gradeBand}`)}
-                                >
-                                    <BookOpen className="mr-1.5 h-4 w-4" /> View Resources
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* ── Quiz Phase ────────────────────────────────────────────────────── */}
-                    {!showCompletedSummary && phase === 'loading' && (
+                    {/* ── Loading: full-screen style until questions are ready ─────────── */}
+                    {(phase === 'loading' || (phase === 'quiz' && (!currentItem || !currentItem.question))) && (
                         <div className="space-y-3 mt-6">
+                            <p className="text-sm text-muted-foreground font-brand">Preparing…</p>
                             {[1, 2, 3].map(i => (
                                 <div key={i} className="h-14 animate-pulse rounded-lg border border-border bg-secondary/30" />
                             ))}
                         </div>
                     )}
 
-                    {!showCompletedSummary && phase === 'quiz' && currentItem && (
+                    {phase === 'quiz' && currentItem && currentItem.question && (
                         <div className="space-y-5">
                             {/* Progress bar */}
                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
@@ -340,55 +269,95 @@ export default function CapsuleView() {
                                 </span>
                             </div>
 
-                            {/* Question card */}
-                            {!currentItem.question ? (
-                                <div className="h-48 animate-pulse rounded-xl border border-border bg-secondary/20" />
-                            ) : (
-                                <div className="rounded-xl border border-border bg-card p-5 shadow-sm space-y-5">
-                                    <p className="text-base font-medium leading-relaxed text-foreground">
-                                        {currentItem.question.question}
-                                    </p>
-
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {currentItem.question.choices.map((choice, idx) => {
-                                            const isSelected = selected === choice;
-                                            const correctAnswer = currentItem.question!.answer;
-                                            const isCorrectOpt = choice === correctAnswer;
-                                            const showFeedback = selected !== null;
-
-                                            return (
-                                                <button
-                                                    key={choice}
-                                                    disabled={selected !== null}
-                                                    onClick={() => handleAnswer(choice)}
-                                                    className={cn(
-                                                        'w-full rounded-lg border px-4 py-3 text-left text-sm font-brand transition-all duration-200',
-                                                        !showFeedback && 'border-border hover:border-primary/60 hover:bg-primary/5',
-                                                        showFeedback && isCorrectOpt &&
-                                                        'border-green-500 bg-green-500/10 text-green-700 dark:text-green-400',
-                                                        showFeedback && isSelected && !isCorrectOpt &&
-                                                        'border-red-500 bg-red-500/10 text-red-700 dark:text-red-400',
-                                                        showFeedback && !isSelected && !isCorrectOpt &&
-                                                        'border-border opacity-40',
-                                                    )}
-                                                >
-                                                    {choice}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    {selected !== null && selected !== currentItem.question!.answer && currentItem.question!.explanations && (
-                                        <WhyBox
-                                            explanation={currentItem.question!.explanations[String(currentItem.question!.choices.indexOf(selected))] ?? 'Incorrect.'}
-                                        />
-                                    )}
-                                    {selected !== null && (
+                            {/* Question box: empty/retry state or full question + options */}
+                            {!currentItem.question.question?.trim() || !Array.isArray(currentItem.question.choices) || currentItem.question.choices.length === 0 ? (
+                                <div className="min-w-[280px] flex-1 rounded-xl border-2 border-border bg-card p-5 shadow-md space-y-5">
+                                    <p className="text-sm text-muted-foreground font-brand">No question available for this topic.</p>
+                                    <div className="flex flex-wrap gap-2">
                                         <Button
-                                            className="w-full font-brand mt-2"
-                                            onClick={handleNextOrSubmit}
+                                            variant="outline"
+                                            size="sm"
+                                            className="font-brand"
+                                            onClick={() => {
+                                                setItems(prev => prev.map((it, i) => i === currentIdx ? { ...it, question: null } : it));
+                                                const gb = gradeBand;
+                                                fetch(`/api/questions?topic=${currentItem.topic}&subject=${subject}&grade_band=${gb}&level=${gradeBandToLevel(gb)}&count=1`)
+                                                    .then(r => r.json())
+                                                    .then(d => {
+                                                        const qs = (d.questions ?? []) as EngineQuestion[];
+                                                        const pick = qs?.[0] ?? null;
+                                                        setItems(prev => prev.map((it, i) => i === currentIdx ? { ...it, question: pick } : it));
+                                                    })
+                                                    .catch(() => {});
+                                            }}
                                         >
-                                            {currentIdx >= items.length - 1 ? 'Submit' : 'Next'}
+                                            Try again
                                         </Button>
+                                        <Button
+                                            size="sm"
+                                            className="font-brand"
+                                            onClick={() => {
+                                                if (currentIdx >= items.length - 1) setPhase('results');
+                                                else setCurrentIdx(i => i + 1);
+                                            }}
+                                        >
+                                            Skip
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-row gap-4 items-stretch">
+                                    {/* Left: question card (question + options + Next/Submit) */}
+                                    <div className="min-w-[280px] flex-1 rounded-xl border-2 border-border bg-card p-5 shadow-md space-y-5">
+                                        <p className="text-base font-medium leading-relaxed text-foreground">
+                                            {currentItem.question.question}
+                                        </p>
+
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {currentItem.question.choices.map((choice, idx) => {
+                                                const isSelected = selected === choice;
+                                                const correctAnswer = currentItem.question!.answer;
+                                                const isCorrectOpt = choice === correctAnswer;
+                                                const showFeedback = selected !== null;
+
+                                                return (
+                                                    <button
+                                                        key={idx}
+                                                        disabled={selected !== null}
+                                                        onClick={() => handleAnswer(choice)}
+                                                        className={cn(
+                                                            'w-full rounded-lg border px-4 py-3 text-left text-sm font-brand transition-all duration-200',
+                                                            !showFeedback && 'border-border hover:border-primary/60 hover:bg-primary/5',
+                                                            showFeedback && isCorrectOpt &&
+                                                            'border-green-500 bg-green-500/10 text-green-700 dark:text-green-400',
+                                                            showFeedback && isSelected && !isCorrectOpt &&
+                                                            'border-red-500 bg-red-500/10 text-red-700 dark:text-red-400',
+                                                            showFeedback && !isSelected && !isCorrectOpt &&
+                                                            'border-border opacity-40',
+                                                        )}
+                                                    >
+                                                        {choice}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                        {selected !== null && (
+                                            <Button
+                                                className="w-full font-brand mt-2"
+                                                onClick={handleNextOrSubmit}
+                                            >
+                                                {currentIdx >= items.length - 1 ? 'Submit' : 'Next'}
+                                            </Button>
+                                        )}
+                                    </div>
+
+                                    {/* Right: Why box (only when wrong answer) */}
+                                    {selected !== null && selected !== currentItem.question!.answer && currentItem.question!.explanations && (
+                                        <div className="w-52 sm:w-64 shrink-0 flex flex-col">
+                                            <WhyBox
+                                                explanation={currentItem.question!.explanations[String(currentItem.question!.choices.indexOf(selected))] ?? `The right answer is: ${currentItem.question!.answer}.`}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             )}
@@ -396,7 +365,7 @@ export default function CapsuleView() {
                     )}
 
                     {/* ── Results Phase ──────────────────────────────────────────────────── */}
-                    {!showCompletedSummary && phase === 'results' && (
+                    {phase === 'results' && (
                         <div className="space-y-5">
 
                             {/* Overall score card */}

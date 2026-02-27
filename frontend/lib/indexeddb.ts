@@ -73,6 +73,7 @@ interface KMAPSchema extends DBSchema {
             subjectId: string;
             level: 1 | 2 | 3;
             lastScore?: number;
+            lastAttendedAt?: number; // timestamp of last question/capsule activity
         };
     };
 }
@@ -177,25 +178,33 @@ export async function getSkillProfile() {
 }
 
 // ── Subject skills (level 1–3, optional lastScore) — IndexedDB source of truth ──
-export async function getSubjectSkill(subjectId: string): Promise<{ level: 1 | 2 | 3; lastScore?: number } | undefined> {
+export async function getSubjectSkill(subjectId: string): Promise<{ level: 1 | 2 | 3; lastScore?: number; lastAttendedAt?: number } | undefined> {
     const db = await getDB();
     const row = await db.get('subjectSkills', subjectId.toLowerCase());
     if (!row) return undefined;
-    return { level: row.level, lastScore: row.lastScore };
+    return { level: row.level, lastScore: row.lastScore, lastAttendedAt: row.lastAttendedAt };
 }
 
-export async function getAllSubjectSkills(): Promise<{ skills: Record<string, 1 | 2 | 3>; lastScores: Record<string, number> }> {
+export async function getAllSubjectSkills(): Promise<{
+    skills: Record<string, 1 | 2 | 3>;
+    lastScores: Record<string, number>;
+    lastAttendedAt: Record<string, number>;
+}> {
     const db = await getDB();
     const all = await db.getAll('subjectSkills');
     const skills: Record<string, 1 | 2 | 3> = {};
     const lastScores: Record<string, number> = {};
+    const lastAttendedAt: Record<string, number> = {};
     for (const row of all) {
         skills[row.subjectId] = row.level;
         if (typeof row.lastScore === 'number' && !Number.isNaN(row.lastScore)) {
             lastScores[row.subjectId] = row.lastScore;
         }
+        if (typeof row.lastAttendedAt === 'number' && !Number.isNaN(row.lastAttendedAt)) {
+            lastAttendedAt[row.subjectId] = row.lastAttendedAt;
+        }
     }
-    return { skills, lastScores };
+    return { skills, lastScores, lastAttendedAt };
 }
 
 export async function setSubjectSkill(
@@ -205,9 +214,30 @@ export async function setSubjectSkill(
 ): Promise<void> {
     const db = await getDB();
     const key = subjectId.toLowerCase();
-    const value: KMAPSchema['subjectSkills']['value'] = { subjectId: key, level };
+    const existing = await db.get('subjectSkills', key);
+    const value: KMAPSchema['subjectSkills']['value'] = {
+        subjectId: key,
+        level,
+        lastAttendedAt: Date.now(),
+    };
     if (typeof lastScore === 'number' && !Number.isNaN(lastScore)) {
         value.lastScore = lastScore;
+    }
+    await db.put('subjectSkills', value);
+}
+
+/** Mark that the user attended (e.g. completed a capsule) for this subject; keeps level/lastScore. */
+export async function touchSubjectAttendance(subjectId: string): Promise<void> {
+    const db = await getDB();
+    const key = subjectId.toLowerCase();
+    const existing = await db.get('subjectSkills', key);
+    const value: KMAPSchema['subjectSkills']['value'] = {
+        subjectId: key,
+        level: existing?.level ?? 1,
+        lastAttendedAt: Date.now(),
+    };
+    if (typeof existing?.lastScore === 'number' && !Number.isNaN(existing.lastScore)) {
+        value.lastScore = existing.lastScore;
     }
     await db.put('subjectSkills', value);
 }

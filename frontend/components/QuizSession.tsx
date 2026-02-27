@@ -294,6 +294,8 @@ export default function QuizSession({
     }
 
     // ── Quiz phase ─────────────────────────────────────────────────────────────
+    const showWhy = isSubmitted && selectedChoice !== null && selectedChoice !== current.answer && current.explanations;
+
     return (
         <div className="space-y-4">
             {/* Progress bar */}
@@ -304,76 +306,80 @@ export default function QuizSession({
                 <Progress value={((currentIndex + 1) / questions.length) * 100} className="flex-1 h-1.5" />
             </div>
 
-            {/* Question card — NO reattempt */}
-            <Card className="overflow-hidden">
-                <div className="flex items-center gap-2 border-b border-border bg-secondary/50 px-5 py-3">
-                    <span className="font-brand text-xs text-muted-foreground">Q{currentIndex + 1}</span>
-                    <Badge variant="outline" className="font-brand text-xs">
-                        {typeof current.form === 'number'
-                            ? (FORM_LABELS[current.form] ?? `Form ${current.form}`)
-                            : current.form}
-                    </Badge>
-                </div>
-
-                <div className="space-y-4 p-5">
-                    <p className="font-brand text-sm font-medium leading-relaxed text-foreground">
-                        {current.question}
-                    </p>
-
-                    <div className="grid grid-cols-1 gap-2">
-                        {current.choices.map((choice, i) => {
-                            const isThis = selectedChoice === choice;
-                            const isAnswer = choice === current.answer;
-                            return (
-                                <button
-                                    key={i}
-                                    onClick={() => handleAnswer(choice)}
-                                    disabled={isSubmitted}
-                                    className={cn(
-                                        'flex w-full items-center gap-3 rounded-md border px-4 py-2.5 text-left text-sm font-brand transition-all',
-                                        !isSubmitted && 'cursor-pointer border-border bg-background text-foreground hover:border-primary/50 hover:bg-accent/30',
-                                        isSubmitted && isAnswer && 'border-primary bg-accent text-accent-foreground',
-                                        isSubmitted && isThis && !isAnswer && 'border-destructive bg-destructive/10 text-destructive',
-                                        isSubmitted && !isThis && !isAnswer && 'border-border bg-muted/20 text-muted-foreground opacity-60',
-                                    )}
-                                >
-                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-xs font-bold">
-                                        {CHOICE_LETTERS[i]}
-                                    </span>
-                                    <span className="flex-1">{choice}</span>
-                                    {isSubmitted && isAnswer && <CheckCircle className="ml-auto h-4 w-4 shrink-0" />}
-                                    {isSubmitted && isThis && !isAnswer && <XCircle className="ml-auto h-4 w-4 shrink-0" />}
-                                </button>
-                            );
-                        })}
+            {/* Question + Why side by side (Why on right when wrong) — one screen, no scroll */}
+            <div className="flex flex-row gap-4 items-stretch">
+                <Card className="overflow-hidden min-w-0 flex-1">
+                    <div className="flex items-center gap-2 border-b border-border bg-secondary/50 px-5 py-3">
+                        <span className="font-brand text-xs text-muted-foreground">Q{currentIndex + 1}</span>
+                        <Badge variant="outline" className="font-brand text-xs">
+                            {typeof current.form === 'number'
+                                ? (FORM_LABELS[current.form] ?? `Form ${current.form}`)
+                                : current.form}
+                        </Badge>
                     </div>
 
-                    {/* Feedback — no reattempt, just show correct answer */}
-                    {isSubmitted && (
-                        <div className={cn(
-                            'flex items-center gap-2 font-brand text-sm',
-                            selectedChoice === current.answer ? 'text-primary' : 'text-destructive',
-                        )}>
-                            {selectedChoice === current.answer
-                                ? <><CheckCircle className="h-4 w-4" /> Correct!</>
-                                : <><XCircle className="h-4 w-4" /> Correct answer: <strong>{current.answer}</strong></>
-                            }
-                        </div>
-                    )}
-                    {isSubmitted && selectedChoice !== current.answer && current.explanations && (
-                        <WhyBox
-                            explanation={current.explanations[String(current.choices.indexOf(selectedChoice))] ?? 'Incorrect.'}
-                        />
-                    )}
-                </div>
-            </Card>
+                    <div className="space-y-4 p-5">
+                        <p className="font-brand text-sm font-medium leading-relaxed text-foreground">
+                            {current.question}
+                        </p>
 
-            {/* Next button (appears after answering, hidden on last Q — auto-submits) */}
-            {isSubmitted && !isLastQuestion && (
-                <Button className="w-full font-brand" onClick={advance}>
-                    Next Question <ChevronRight className="ml-1.5 h-4 w-4" />
-                </Button>
-            )}
+                        <div className="grid grid-cols-1 gap-2">
+                            {current.choices.map((choice, i) => {
+                                const isThis = selectedChoice === choice;
+                                const isAnswer = choice === current.answer;
+                                return (
+                                    <button
+                                        key={i}
+                                        onClick={() => handleAnswer(choice)}
+                                        disabled={isSubmitted}
+                                        className={cn(
+                                            'flex w-full items-center gap-3 rounded-md border px-4 py-2.5 text-left text-sm font-brand transition-all',
+                                            !isSubmitted && 'cursor-pointer border-border bg-background text-foreground hover:border-primary/50 hover:bg-accent/30',
+                                            isSubmitted && isAnswer && 'border-primary bg-accent text-accent-foreground',
+                                            isSubmitted && isThis && !isAnswer && 'border-destructive bg-destructive/10 text-destructive',
+                                            isSubmitted && !isThis && !isAnswer && 'border-border bg-muted/20 text-muted-foreground opacity-60',
+                                        )}
+                                    >
+                                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-xs font-bold">
+                                            {CHOICE_LETTERS[i]}
+                                        </span>
+                                        <span className="flex-1">{choice}</span>
+                                        {isSubmitted && isAnswer && <CheckCircle className="ml-auto h-4 w-4 shrink-0" />}
+                                        {isSubmitted && isThis && !isAnswer && <XCircle className="ml-auto h-4 w-4 shrink-0" />}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {isSubmitted && (
+                            <>
+                                <div className={cn(
+                                    'flex items-center gap-2 font-brand text-sm',
+                                    selectedChoice === current.answer ? 'text-primary' : 'text-destructive',
+                                )}>
+                                    {selectedChoice === current.answer
+                                        ? <><CheckCircle className="h-4 w-4" /> Correct!</>
+                                        : <><XCircle className="h-4 w-4" /> Correct answer: <strong>{current.answer}</strong></>
+                                    }
+                                </div>
+                                {!isLastQuestion && (
+                                    <Button className="w-full font-brand" onClick={advance}>
+                                        Next Question <ChevronRight className="ml-1.5 h-4 w-4" />
+                                    </Button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </Card>
+
+                {showWhy && (
+                    <div className="w-52 sm:w-64 shrink-0 flex flex-col">
+                        <WhyBox
+                            explanation={current.explanations![String(current.choices.indexOf(selectedChoice!))] ?? `The right answer is: ${current.answer}.`}
+                        />
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

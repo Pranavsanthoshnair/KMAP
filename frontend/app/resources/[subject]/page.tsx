@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { trackMetadataFetch } from '@/lib/data-tracker';
 import { formatSubjectId } from '@/lib/subjects';
+import { getLocalProfile } from '@/lib/indexeddb';
 
 type SimpleResource = {
     id: string;
@@ -44,7 +45,8 @@ export default function ResourcesPage() {
     const router = useRouter();
 
     const subject = (params?.subject ?? '').toLowerCase();
-    const gradeBand = parseInt(search.get('grade_band') || '2', 10) || 2;
+    const gradeFromUrl = search.get('grade_band');
+    const [gradeBand, setGradeBand] = useState(() => parseInt(gradeFromUrl || '2', 10) || 2);
     const weakParam = search.get('weak') || '';
     const weakSubtopics = Array.from(
         new Set(
@@ -59,6 +61,18 @@ export default function ResourcesPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const lowDataMode = typeof window !== 'undefined' && localStorage.getItem('kmap_low_data') === 'true';
+
+    // Sync grade from profile when URL has no grade_band so dropdown drives content everywhere
+    useEffect(() => {
+        if (gradeFromUrl != null && gradeFromUrl !== '') return;
+        getLocalProfile().then(p => {
+            const gb = p?.gradeBand ?? 2;
+            setGradeBand(gb);
+            const url = new URL(window.location.href);
+            url.searchParams.set('grade_band', String(gb));
+            router.replace(url.pathname + '?' + url.searchParams.toString(), { scroll: false });
+        }).catch(() => {});
+    }, [gradeFromUrl, router]);
 
     useEffect(() => {
         let cancelled = false;
