@@ -6,12 +6,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, XCircle, ChevronRight, RotateCcw, Brain } from 'lucide-react';
-import { saveMastery, updateSkill } from '@/lib/indexeddb';
+import { saveMastery, updateSkill, recordQuizActivity, getMasteryMap } from '@/lib/indexeddb';
 import { trackQuestionsFetch } from '@/lib/data-tracker';
 import { cn } from '@/lib/utils';
 import { useSkillContext } from '@/contexts/SkillContext';
 import ResourceCard, { ResourceMeta } from './ResourceCard';
 import WhyBox from './quiz/WhyBox';
+import { BadgeToastQueue } from '@/components/BadgeToast';
+import { checkAndAwardBadges } from '@/lib/checkBadges';
+import type { BadgeDefinition } from '@/lib/badges';
 
 export interface EngineQuestion {
     id: string;
@@ -91,6 +94,7 @@ export default function QuizSession({
     const [resources, setResources] = useState<ResourceMeta[]>([]);
     const [computing, setComputing] = useState(false);
     const [overallScore, setOverallScore] = useState<number | null>(null);
+    const [newBadges, setNewBadges] = useState<BadgeDefinition[]>([]);
     const [lowDataMode] = useState(
         () => typeof window !== 'undefined' && localStorage.getItem('kmap_low_data') === 'true'
     );
@@ -146,6 +150,17 @@ export default function QuizSession({
             for (const [st, score] of Object.entries(m)) {
                 await saveMastery(st, score);
             }
+
+            // ── Award badges ──────────────────────────────────────────────────
+            const isPerfect = percentage === 100;
+            const updatedStats = await recordQuizActivity(
+                results.filter(r => r.correct).length,
+                results.length,
+                isPerfect,
+            );
+            const masteryMap = await getMasteryMap();
+            const earned = await checkAndAwardBadges(updatedStats, masteryMap);
+            if (earned.length > 0) setNewBadges(earned);
 
             // Update per-subject skill level based on overall percentage.
             const levelFromScore = determineLevelFromPercentage(percentage);
@@ -219,6 +234,8 @@ export default function QuizSession({
 
         return (
             <div className="space-y-6">
+                {/* Badge toasts */}
+                <BadgeToastQueue badges={newBadges} />
                 {/* Score summary */}
                 <Card className="p-5">
                     <div className="flex items-center gap-3">

@@ -56,6 +56,9 @@ export default function ResourcesPage() {
                 .filter(Boolean),
         ),
     );
+    // skill_level from URL takes priority; fall back to grade-band-derived level
+    const urlSkillLevel = parseInt(search.get('skill_level') || '0', 10);
+
 
     const [sections, setSections] = useState<ResourceSection[]>([]);
     const [loading, setLoading] = useState(true);
@@ -81,7 +84,10 @@ export default function ResourcesPage() {
             setLoading(true);
             setError(null);
             try {
-                const skillLevel = gradeBandToSkillLevel(gradeBand);
+                const skillLevel = (urlSkillLevel >= 1 && urlSkillLevel <= 3)
+                    ? urlSkillLevel
+                    : gradeBandToSkillLevel(gradeBand);
+
                 const lowDataMode = typeof window !== 'undefined' && localStorage.getItem('kmap_low_data') === 'true';
 
                 let subtopicIds: string[] = weakSubtopics;

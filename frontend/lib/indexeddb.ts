@@ -1,5 +1,20 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 
+export interface ActivityStats {
+    id: 'singleton';
+    totalQuestionsAnswered: number;
+    totalCorrect: number;
+    currentStreak: number;
+    longestStreak: number;
+    lastStudyDate: string | null; // "YYYY-MM-DD"
+    perfectQuizzes: number;
+}
+
+export interface EarnedBadge {
+    id: string;
+    earnedAt: number; // timestamp
+}
+
 interface KMAPSchema extends DBSchema {
     profile: {
         key: string;
@@ -76,13 +91,23 @@ interface KMAPSchema extends DBSchema {
             lastAttendedAt?: number; // timestamp of last question/capsule activity
         };
     };
+    /** Aggregate activity counters for streak & badge evaluation */
+    activityStats: {
+        key: 'singleton';
+        value: ActivityStats;
+    };
+    /** Badges the user has earned */
+    earnedBadges: {
+        key: string; // badge id
+        value: EarnedBadge;
+    };
 }
 
 let dbPromise: Promise<IDBPDatabase<KMAPSchema>> | null = null;
 
 function getDB() {
     if (!dbPromise) {
-        dbPromise = openDB<KMAPSchema>('kmap-db', 3, {
+        dbPromise = openDB<KMAPSchema>('kmap-db', 4, {
             upgrade(db, _oldVersion) {
                 // ── Version 1 stores ─────────────────────────────────────────
                 if (!db.objectStoreNames.contains('profile')) {
@@ -109,6 +134,13 @@ function getDB() {
                 // ── Version 3: subject-level skills (privacy-first, no server sync) ──
                 if (!db.objectStoreNames.contains('subjectSkills')) {
                     db.createObjectStore('subjectSkills', { keyPath: 'subjectId' });
+                }
+                // ── Version 4: badge system ───────────────────────────────────────
+                if (!db.objectStoreNames.contains('activityStats')) {
+                    db.createObjectStore('activityStats', { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains('earnedBadges')) {
+                    db.createObjectStore('earnedBadges', { keyPath: 'id' });
                 }
             },
         });
@@ -320,6 +352,81 @@ export async function restoreFromRecovery(data: {
     }
 }
 
+// ── Activity Stats ──────────────────────────────────────────────────────────
+const DEFAULT_STATS: ActivityStats = {
+    id: 'singleton',
+    totalQuestionsAnswered: 0,
+    totalCorrect: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    lastStudyDate: null,
+    perfectQuizzes: 0,
+};
+
+export async function getActivityStats(): Promise<ActivityStats> {
+    const db = await getDB();
+    return (await db.get('activityStats', 'singleton')) ?? { ...DEFAULT_STATS };
+}
+
+/**
+ * Called after every quiz session.
+ * @param correctCount  number of correct answers in the session
+ * @param totalCount    total questions in the session
+ * @param perfectScore  true if user got 100%
+ */
+export async function recordQuizActivity(
+    correctCount: number,
+    totalCount: number,
+    perfectScore: boolean
+): Promise<ActivityStats> {
+    const db = await getDB();
+    const stats = (await db.get('activityStats', 'singleton')) ?? { ...DEFAULT_STATS };
+
+    stats.totalQuestionsAnswered += totalCount;
+    stats.totalCorrect += correctCount;
+    if (perfectScore) stats.perfectQuizzes += 1;
+
+    // ── Streak calculation ────────────────────────────────────────────────────
+    const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    if (stats.lastStudyDate === today) {
+        // Already studied today — streak unchanged
+    } else if (stats.lastStudyDate) {
+        const prev = new Date(stats.lastStudyDate);
+        const now = new Date(today);
+        const diffDays = Math.round((now.getTime() - prev.getTime()) / 86400000);
+        if (diffDays === 1) {
+            stats.currentStreak += 1; // consecutive day
+        } else {
+            stats.currentStreak = 1; // streak broken
+        }
+    } else {
+        stats.currentStreak = 1; // first study day ever
+    }
+    stats.lastStudyDate = today;
+    stats.longestStreak = Math.max(stats.longestStreak, stats.currentStreak);
+
+    await db.put('activityStats', stats);
+    return stats;
+}
+
+// ── Earned Badges ────────────────────────────────────────────────────────────
+export async function getEarnedBadges(): Promise<EarnedBadge[]> {
+    const db = await getDB();
+    return db.getAll('earnedBadges');
+}
+
+/**
+ * Awards a badge if not already earned.
+ * @returns true if the badge was newly awarded, false if already had it.
+ */
+export async function awardBadge(id: string): Promise<boolean> {
+    const db = await getDB();
+    const existing = await db.get('earnedBadges', id);
+    if (existing) return false;
+    await db.put('earnedBadges', { id, earnedAt: Date.now() });
+    return true;
+}
+
 // ── Global reset ────────────────────────────────────────────────────────────
 export async function clearAllLocalData() {
     const db = await getDB();
@@ -331,6 +438,8 @@ export async function clearAllLocalData() {
         'seenResources',
         'errorPatterns',
         'subjectSkills',
+        'activityStats',
+        'earnedBadges',
     ] as const;
     for (const name of stores) {
         await db.clear(name);
