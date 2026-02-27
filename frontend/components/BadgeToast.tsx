@@ -84,7 +84,7 @@ export function BadgeToast({ badge, onDismiss }: BadgeToastProps) {
  * Pass the newly-earned badge array returned by checkAndAwardBadges().
  */
 export function BadgeToastQueue({ badges }: { badges: BadgeDefinition[] }) {
-    const [queue, setQueue] = useState<BadgeDefinition[]>(badges);
+    const [, setQueue] = useState<BadgeDefinition[]>(badges);
     const [showing, setShowing] = useState<BadgeDefinition | null>(badges[0] ?? null);
 
     useEffect(() => {

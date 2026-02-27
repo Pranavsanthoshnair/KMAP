@@ -36,6 +36,7 @@ export default function AssessmentSession({
     level,
     resourceTitle,
 }: AssessmentSessionProps) {
+    void topic;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answered, setAnswered] = useState<Map<number, string>>(new Map());
     const [phase, setPhase] = useState<'quiz' | 'results'>('quiz');
@@ -51,8 +52,6 @@ export default function AssessmentSession({
 
     const handleAnswer = useCallback(async (choice: string) => {
         if (answered.has(currentIndex)) return;
-
-        const isCorrect = choice === current.answer;
         const next = new Map(answered);
         next.set(currentIndex, choice);
         setAnswered(next);
@@ -74,7 +73,7 @@ export default function AssessmentSession({
 
             setPhase('results');
         }
-    }, [answered, currentIndex, current, isLastQuestion, questions, subject, skillCtx]);
+    }, [answered, currentIndex, isLastQuestion, questions, subject, skillCtx]);
 
     const handleNext = () => {
         if (!isLastQuestion) setCurrentIndex(i => i + 1);

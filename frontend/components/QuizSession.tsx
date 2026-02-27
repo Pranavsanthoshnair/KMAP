@@ -85,14 +85,13 @@ export default function QuizSession({
     gradeBand,
     onNewSet,
 }: QuizSessionProps) {
+    void gradeBand;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answered, setAnswered] = useState<Map<number, string>>(new Map());
     const [phase, setPhase] = useState<Phase>('quiz');
     const [mastery, setMastery] = useState<Record<string, number>>({});
     const [classified, setClassified] = useState<Record<string, string>>({});
-    const [resourceIds, setResourceIds] = useState<string[]>([]);
     const [resources, setResources] = useState<ResourceMeta[]>([]);
-    const [computing, setComputing] = useState(false);
     const [overallScore, setOverallScore] = useState<number | null>(null);
     const [newBadges, setNewBadges] = useState<BadgeDefinition[]>([]);
     const [lowDataMode] = useState(
@@ -109,30 +108,8 @@ export default function QuizSession({
         trackQuestionsFetch(questions.length);
     }, [questions]);
 
-    const handleAnswer = useCallback(async (choice: string) => {
-        if (answered.has(currentIndex)) return; // No reattempt
-
-        const isCorrect = choice === current.answer;
-        const next = new Map(answered);
-        next.set(currentIndex, choice);
-        setAnswered(next);
-
-        // Update IndexedDB skill by topic
-        try { await updateSkill(topic, isCorrect); } catch { }
-
-        if (isLastQuestion) {
-            // Build results list and submit
-            const allResults: QuizResult[] = questions.map((q, i) => ({
-                subtopic: topic,
-                correct: (i === currentIndex ? isCorrect : next.get(i) === q.answer),
-            }));
-            submitQuiz(allResults);
-        }
-    }, [answered, currentIndex, current, isLastQuestion, questions, topic]);
-
-    const submitQuiz = async (results: QuizResult[]) => {
+    const submitQuiz = useCallback(async (results: QuizResult[]) => {
         setPhase('computing');
-        setComputing(true);
 
         try {
             const total = results.length;
@@ -187,7 +164,6 @@ export default function QuizSession({
 
             const data = (await res.json()) as { resources?: Array<{ id: string; title: string; thumbnail_url?: string | null; difficulty?: number; subject?: string; subtopic?: string; }> };
             const list = data.resources ?? [];
-            setResourceIds(list.map(r => r.id));
             setResources(list.map(r => ({
                 id: r.id,
                 title: r.title,
@@ -202,10 +178,29 @@ export default function QuizSession({
             setPhase('results');
         } catch {
             setPhase('results'); // show results even on error
-        } finally {
-            setComputing(false);
         }
-    };
+    }, [lowDataMode, skillCtx, subject, topic]);
+
+    const handleAnswer = useCallback(async (choice: string) => {
+        if (answered.has(currentIndex)) return; // No reattempt
+
+        const isCorrect = choice === current.answer;
+        const next = new Map(answered);
+        next.set(currentIndex, choice);
+        setAnswered(next);
+
+        // Update IndexedDB skill by topic
+        try { await updateSkill(topic, isCorrect); } catch { }
+
+        if (isLastQuestion) {
+            // Build results list and submit
+            const allResults: QuizResult[] = questions.map((q, i) => ({
+                subtopic: topic,
+                correct: (i === currentIndex ? isCorrect : next.get(i) === q.answer),
+            }));
+            submitQuiz(allResults);
+        }
+    }, [answered, currentIndex, current, isLastQuestion, questions, submitQuiz, topic]);
 
     const advance = () => {
         if (currentIndex < questions.length - 1) setCurrentIndex(i => i + 1);

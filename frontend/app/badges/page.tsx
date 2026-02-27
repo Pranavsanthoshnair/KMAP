@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Award, Lock, Flame, BookOpen, Star } from 'lucide-react';
 import { getEarnedBadges, getActivityStats } from '@/lib/indexeddb';
-import { ALL_BADGES, BADGE_MAP } from '@/lib/badges';
+import { ALL_BADGES } from '@/lib/badges';
 import { cn } from '@/lib/utils';
 import type { EarnedBadge, ActivityStats } from '@/lib/indexeddb';
 

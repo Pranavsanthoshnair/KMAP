@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabase } from '@/lib/supabase/server';
-import { mightContain } from '@/lib/bloom';
 
 export interface QuizResult {
     subtopic: string;

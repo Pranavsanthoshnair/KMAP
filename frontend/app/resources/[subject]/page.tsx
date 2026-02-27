@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useMemo } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ResourceCard from '@/components/ResourceCard';
@@ -48,14 +48,14 @@ function ResourcesContent() {
     const gradeFromUrl = search.get('grade_band');
     const [gradeBand, setGradeBand] = useState(() => parseInt(gradeFromUrl || '2', 10) || 2);
     const weakParam = search.get('weak') || '';
-    const weakSubtopics = Array.from(
+    const weakSubtopics = useMemo(() => Array.from(
         new Set(
             weakParam
                 .split(',')
                 .map(s => s.trim())
                 .filter(Boolean),
         ),
-    );
+    ), [weakParam]);
     // skill_level from URL takes priority; fall back to grade-band-derived level
     const urlSkillLevel = parseInt(search.get('skill_level') || '0', 10);
 
@@ -87,8 +87,6 @@ function ResourcesContent() {
                 const skillLevel = (urlSkillLevel >= 1 && urlSkillLevel <= 3)
                     ? urlSkillLevel
                     : gradeBandToSkillLevel(gradeBand);
-
-                const lowDataMode = typeof window !== 'undefined' && localStorage.getItem('kmap_low_data') === 'true';
 
                 let subtopicIds: string[] = weakSubtopics;
                 if (subtopicIds.length === 0) {
@@ -179,34 +177,28 @@ function ResourcesContent() {
                     </p>
                 </div>
 
-                {loading && (
+                {loading ? (
                     <div className="flex flex-col items-center gap-3 py-10 text-sm text-muted-foreground">
                         <BookOpen className="h-6 w-6 animate-pulse text-primary" />
                         Loading resources…
                     </div>
-                )}
-
-                {!loading && error && (
+                ) : error ? (
                     <p className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
                         {error}
                     </p>
-                )}
-
-                {!loading && sections.length === 0 && (
+                ) : sections.length === 0 ? (
                     <p className="rounded-md border border-border bg-card/60 p-4 text-sm text-muted-foreground">
                         No resources available yet for this subject and level. Try another
                         quiz to refresh your recommendations.
                     </p>
-                )}
-
-                {!loading && sections.length > 0 && (
+                ) : (
                     <div className="space-y-3">
                         {sections.flatMap((section) =>
                             section.resources.map((r) => (
                                 <div key={r.id} className="flex flex-col gap-1">
                                     {section.subtopicLabel && section.subtopicLabel !== 'Recommended' && (
                                         <span className="text-[10px] font-brand uppercase tracking-wide text-muted-foreground">
-                                            {section.subtopicLabel}
+                                            {humanizeSubtopic(section.subtopicLabel)}
                                         </span>
                                     )}
                                     <ResourceCard
@@ -251,4 +243,5 @@ export default function ResourcesPage() {
         </div>
     );
 }
+
 

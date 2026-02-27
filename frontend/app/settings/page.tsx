@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Wifi, Image, Video, FileText, ArrowLeft } from 'lucide-react';
 

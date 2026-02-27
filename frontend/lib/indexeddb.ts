@@ -108,7 +108,7 @@ let dbPromise: Promise<IDBPDatabase<KMAPSchema>> | null = null;
 function getDB() {
     if (!dbPromise) {
         dbPromise = openDB<KMAPSchema>('kmap-db', 4, {
-            upgrade(db, _oldVersion) {
+            upgrade(db) {
                 // ── Version 1 stores ─────────────────────────────────────────
                 if (!db.objectStoreNames.contains('profile')) {
                     db.createObjectStore('profile', { keyPath: 'id' });
@@ -246,7 +246,6 @@ export async function setSubjectSkill(
 ): Promise<void> {
     const db = await getDB();
     const key = subjectId.toLowerCase();
-    const existing = await db.get('subjectSkills', key);
     const value: KMAPSchema['subjectSkills']['value'] = {
         subjectId: key,
         level,

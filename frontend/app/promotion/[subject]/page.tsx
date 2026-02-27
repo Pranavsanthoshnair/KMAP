@@ -6,14 +6,13 @@ import Navbar from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
+import { CheckCircle, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
 import WhyBox from '@/components/quiz/WhyBox';
 import { getLocalProfile } from '@/lib/indexeddb';
 import { useSkillContext } from '@/contexts/SkillContext';
-import { formatSubjectId, type SubjectId } from '@/lib/subjects';
+import { type SubjectId } from '@/lib/subjects';
 
 function promotionOutcome(
     currentLevel: 1 | 2 | 3,
@@ -44,7 +43,6 @@ function PromotionContent() {
     const subject = params?.subject ?? 'math';
     const targetLevel = Number(search.get('target') || '2');
 
-    const [gradeBand, setGradeBand] = useState(2);
     const [questions, setQuestions] = useState<EngineQuestion[]>([]);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [answers, setAnswers] = useState<Map<number, string>>(new Map());
@@ -68,7 +66,6 @@ function PromotionContent() {
     useEffect(() => {
         getLocalProfile().then(p => {
             const gb = p?.gradeBand ?? 2;
-            setGradeBand(gb);
             loadQuestions(gb);
         });
     }, [loadQuestions]);

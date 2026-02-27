@@ -81,9 +81,6 @@ export default function CapsuleView() {
     const [selected, setSelected] = useState<string | null>(null);
     const [phase, setPhase] = useState<'loading' | 'quiz' | 'results'>('loading');
     const [initialized, setInitialized] = useState(false);
-    const [showCompletedSummary, setShowCompletedSummary] = useState(false);
-    const [lastScore, setLastScore] = useState(0);
-    const [lastTotal, setLastTotal] = useState(0);
     const [newBadges, setNewBadges] = useState<BadgeDefinition[]>([]);
 
     // ── Derived State ──────────────────────────────────────────────────────────
