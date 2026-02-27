@@ -504,9 +504,27 @@ def generate_questions(
         log.error("Generation error: %s", e)
         return {"questions": [], "exhausted": True, "error": str(e)}
 
-    questions = [
-        {"id": q["id"], "form": q["type"],
-         "question": q["question"], "choices": q["choices"], "answer": q["answer"]}
-        for q in raw_qs
-    ]
+    def _explanations(choices: List[str], answer: str) -> Dict[str, str]:
+        """Per-option explanations (pre-generated, stateless). Keys: "0","1","2","3"."""
+        out: Dict[str, str] = {}
+        for i, c in enumerate(choices[:4]):
+            if c == answer:
+                out[str(i)] = "Correct."
+            else:
+                out[str(i)] = f"Incorrect. The correct answer is {answer}."
+        return out
+
+    questions = []
+    for q in raw_qs:
+        choices = q.get("choices", [])[:4]
+        answer = q.get("answer", "")
+        explanations = _explanations(choices, answer)
+        questions.append({
+            "id": q["id"],
+            "form": q["type"],
+            "question": q["question"],
+            "choices": choices,
+            "answer": answer,
+            "explanations": explanations,
+        })
     return {"questions": questions, "exhausted": len(questions) < count}
