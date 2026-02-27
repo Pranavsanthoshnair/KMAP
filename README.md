@@ -52,3 +52,52 @@ Each academic topic is structured as a lightweight JSON-based concept object:
   "examples": [],
   "relationships": []
 }
+
+Project Structure
+
+app/               → Next.js app router pages
+components/        → Reusable UI components
+contexts/          → Global state management
+hooks/             → Custom React hooks
+lib/               → Utility functions
+question_engine/   → Procedural question generator logic
+resource_engine/   → Concept loading & resource allocation
+supabase/          → Backend / database integration
+public/            → Static assets
+
+⚙️ Tech Stack
+Next.js (App Router)
+TypeScript
+Tailwind CSS
+Shadcn UI
+Supabase
+Rule-Based Procedural Engine
+
+🔄 How It Works
+Student selects subject
+Micro-diagnostic evaluates skill locally
+System assigns difficulty level
+Question engine generates adaptive questions
+Resource engine loads only required concept
+Data is cached for offline usage
+
+🌍 Designed for Rural Deployment
+Text-first learning model
+Micro-content delivery
+Optional compressed media
+No heavy streaming
+Offline caching supported
+
+🧩 Future Enhancements
+AI-assisted concept structuring pipeline
+Knowledge graph-based progression mapping
+Confidence-based adaptive difficulty
+Federated learning support
+
+📌 Hackathon Focus
+KMAP demonstrates:
+Scalable architecture
+AI used intelligently (not as a wrapper)
+Procedural generation innovation
+Privacy-preserving learning model
+Low-bandwidth optimization
