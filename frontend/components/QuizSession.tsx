@@ -11,7 +11,8 @@ import { trackQuestionsFetch } from '@/lib/data-tracker';
 import { cn } from '@/lib/utils';
 import { useSkillContext } from '@/contexts/SkillContext';
 import ResourceCard, { ResourceMeta } from './ResourceCard';
-import { BadgeToastQueue } from './BadgeToast';
+import WhyBox from './quiz/WhyBox';
+import { BadgeToastQueue } from '@/components/BadgeToast';
 import { checkAndAwardBadges } from '@/lib/checkBadges';
 import type { BadgeDefinition } from '@/lib/badges';
 
@@ -21,6 +22,8 @@ export interface EngineQuestion {
     question: string;
     choices: string[];
     answer: string;
+    /** Pre-generated per-option explanations (keys "0","1","2","3"). Shown only when wrong. */
+    explanations?: Record<string, string>;
 }
 
 export interface QuizResult {
@@ -373,6 +376,11 @@ export default function QuizSession({
                                 : <><XCircle className="h-4 w-4" /> Correct answer: <strong>{current.answer}</strong></>
                             }
                         </div>
+                    )}
+                    {isSubmitted && selectedChoice !== null && selectedChoice !== current.answer && current.explanations && (
+                        <WhyBox
+                            explanation={current.explanations[String(current.choices.indexOf(selectedChoice))] ?? 'Incorrect.'}
+                        />
                     )}
                 </div>
             </Card>
