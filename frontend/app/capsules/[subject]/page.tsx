@@ -4,12 +4,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
-import { getLocalProfile } from '@/lib/indexeddb';
+import { getLocalProfile, getMasteryMap, recordQuizActivity } from '@/lib/indexeddb';
 import { ArrowLeft, CheckCircle2, XCircle, BarChart3, RefreshCw, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { EngineQuestion } from '@/components/QuizSession';
 import { formatSubjectId } from '@/lib/subjects';
+import { BadgeToastQueue } from '@/components/BadgeToast';
+import { checkAndAwardBadges } from '@/lib/checkBadges';
+import type { BadgeDefinition } from '@/lib/badges';
 import WhyBox from '@/components/quiz/WhyBox';
 
 const SEEN_KEY = 'kmap_seen_questions';
@@ -110,6 +113,7 @@ export default function CapsuleView() {
     const [showCompletedSummary, setShowCompletedSummary] = useState(false);
     const [lastScore, setLastScore] = useState(0);
     const [lastTotal, setLastTotal] = useState(0);
+    const [newBadges, setNewBadges] = useState<BadgeDefinition[]>([]);
 
     // ── Load all topics then pre-fetch 1 question per topic ───────────────────
     const runSession = useCallback(async (gb: number) => {
@@ -198,16 +202,33 @@ export default function CapsuleView() {
     }, [selected, items, currentIdx]);
 
     // ── Next / Submit — advance after user has read feedback (and Why box) ──────
-    const handleNextOrSubmit = useCallback(() => {
+    const handleNextOrSubmit = useCallback(async () => {
         if (selected === null) return;
         const next = currentIdx + 1;
         if (next >= items.length) {
+            // Last question — compute badges then go to results
+            const finalItems = items.map((it, i) =>
+                i === currentIdx && it.result === null
+                    ? { ...it, result: it.question?.answer === selected ? ('correct' as const) : ('incorrect' as const) }
+                    : it
+            );
+            const total = finalItems.length;
+            const correct = finalItems.filter(it => it.result === 'correct').length;
+            const isPerfect = correct === total && total > 0;
+            try {
+                const stats = await recordQuizActivity(correct, total, isPerfect);
+                const masteryMap = await getMasteryMap();
+                const earned = await checkAndAwardBadges(stats, masteryMap);
+                if (earned.length > 0) setNewBadges(earned);
+            } catch {
+                // badge failure is non-fatal
+            }
             setPhase('results');
         } else {
             setCurrentIdx(next);
             setSelected(null);
         }
-    }, [selected, currentIdx, items.length]);
+    }, [selected, currentIdx, items]);
 
     // ── Persist completed state when entering results ─────────────────────────
     useEffect(() => {
@@ -237,10 +258,27 @@ export default function CapsuleView() {
         const weak = items
             .filter(it => it.result === 'incorrect')
             .map(it => it.topic);
-        const params = new URLSearchParams({ grade_band: String(gradeBand) });
-        if (weak.length > 0) params.set('weak', weak.join(','));
+
+        // Derive skill level from quiz score:
+        // 0–59% → 1 (beginner), 60–89% → 2 (intermediate), 90–100% → 3 (advanced)
+        const skillLevel = overallPct >= 90 ? 3 : overallPct >= 60 ? 2 : 1;
+
+        const params = new URLSearchParams({
+            grade_band: String(gradeBand),
+            skill_level: String(skillLevel),
+        });
+
+        if (weak.length > 0) {
+            // Show resources targeted at weak subtopics
+            params.set('weak', weak.join(','));
+        } else {
+            // Perfect/high score — recommend enrichment for ALL studied topics
+            const allTopics = items.map(it => it.topic).filter(Boolean);
+            if (allTopics.length > 0) params.set('weak', allTopics.join(','));
+        }
+
         router.push(`/resources/${subject}?${params.toString()}`);
-    }, [items, gradeBand, router, subject]);
+    }, [items, gradeBand, overallScore, router, subject]);
 
     // ── Loading ───────────────────────────────────────────────────────────────
     if (!ready || !initialized) {
@@ -398,6 +436,8 @@ export default function CapsuleView() {
                     {/* ── Results Phase ──────────────────────────────────────────────────── */}
                     {!showCompletedSummary && phase === 'results' && (
                         <div className="space-y-5">
+                            {/* Badge toasts — shown above results */}
+                            <BadgeToastQueue badges={newBadges} />
 
                             {/* Overall score card */}
                             <div className="rounded-xl border border-border bg-card p-6 text-center shadow-sm">

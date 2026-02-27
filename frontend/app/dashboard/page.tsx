@@ -6,11 +6,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getLocalProfile, getAllCachedCapsules } from '@/lib/indexeddb';
-import { getGradeLabel } from '@/lib/grades';
-import { BookOpen, FlaskConical, Languages, ChevronRight, Trophy } from 'lucide-react';
+import { BookOpen, FlaskConical, Languages, ChevronRight, Trophy, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { fetchSubjects, FALLBACK_SUBJECTS, type SubjectId } from '@/lib/subjects';
+import { getLocalProfile, getAllCachedCapsules, getEarnedBadges } from '@/lib/indexeddb';
+import { getGradeLabel } from '@/lib/grades';
+import { ALL_BADGES } from '@/lib/badges';
 
 const SUBJECT_ICONS: Record<string, { tag: string; icon: React.ComponentType<React.SVGProps<SVGSVGElement>> }> = {
     math: { tag: 'STEM', icon: BookOpen },
@@ -27,6 +28,7 @@ export default function Dashboard() {
     const [subjects, setSubjects] = useState<string[]>([]);
     const [subjectOptions, setSubjectOptions] = useState<{ id: string; label: string }[]>([]);
     const [cacheCounts, setCacheCounts] = useState<Record<string, number>>({});
+    const [earnedBadgeCount, setEarnedBadgeCount] = useState(0);
 
     useEffect(() => {
         if (!ready) return;
@@ -49,6 +51,10 @@ export default function Dashboard() {
                 bySubject[c.subject] = (bySubject[c.subject] || 0) + 1;
             }
             setCacheCounts(bySubject);
+
+            const earnedBadges = await getEarnedBadges();
+            setEarnedBadgeCount(earnedBadges.length);
+
             setInitialized(true);
         })();
     }, [ready]);
@@ -99,62 +105,93 @@ export default function Dashboard() {
                         </h2>
                         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                             {subjectOptions.filter((s) => subjects.includes(s.id)).map(({ id, label }) => {
-                                    const meta = SUBJECT_ICONS[id] ?? { tag: id.toUpperCase(), icon: BookOpen };
-                                    const Icon = meta.icon;
-                                    const tag = meta.tag;
-                                    const cacheCount = cacheCounts[id] ?? 0;
-                                    const approxKb = cacheCount * 4; // rough estimate
-                                    return (
-                                        <Card
-                                            key={id}
-                                            className="group flex h-full flex-col overflow-hidden border border-border bg-card/80 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md"
-                                        >
-                                            <div className="relative h-24 bg-gradient-to-r from-primary/10 via-secondary/20 to-background" />
-                                            <div className="-mt-8 flex flex-1 flex-col justify-between px-5 pb-5">
-                                                <div className="flex items-start justify-between gap-3">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background shadow-sm">
-                                                            <Icon className="h-5 w-5 text-primary" />
-                                                        </div>
-                                                        <div>
-                                                            <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 text-[10px] font-brand uppercase tracking-wide text-muted-foreground">
-                                                                {tag}
-                                                            </span>
-                                                            <h3 className="mt-1 font-brand text-base font-semibold text-foreground">
-                                                                {label}
-                                                            </h3>
-                                                        </div>
+                                const meta = SUBJECT_ICONS[id] ?? { tag: id.toUpperCase(), icon: BookOpen };
+                                const Icon = meta.icon;
+                                const tag = meta.tag;
+                                const cacheCount = cacheCounts[id] ?? 0;
+                                const approxKb = cacheCount * 4; // rough estimate
+                                return (
+                                    <Card
+                                        key={id}
+                                        className="group flex h-full flex-col overflow-hidden border border-border bg-card/80 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md"
+                                    >
+                                        <div className="relative h-24 bg-gradient-to-r from-primary/10 via-secondary/20 to-background" />
+                                        <div className="-mt-8 flex flex-1 flex-col justify-between px-5 pb-5">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background shadow-sm">
+                                                        <Icon className="h-5 w-5 text-primary" />
                                                     </div>
-                                                    <Badge className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-brand text-primary">
-                                                        <Trophy className="h-3 w-3" />
-                                                        {getGradeLabel(gradeBand)}
-                                                    </Badge>
-                                                </div>
-
-                                                <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-                                                    <div className="flex flex-col">
-                                                        <span className="font-brand text-[11px] uppercase tracking-wide">
-                                                            Cache
+                                                    <div>
+                                                        <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 text-[10px] font-brand uppercase tracking-wide text-muted-foreground">
+                                                            {tag}
                                                         </span>
-                                                        <span className="font-medium text-foreground">
-                                                            {approxKb} KB
-                                                        </span>
+                                                        <h3 className="mt-1 font-brand text-base font-semibold text-foreground">
+                                                            {label}
+                                                        </h3>
                                                     </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => router.push(`/capsules/${id}`)}
-                                                        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90"
-                                                    >
-                                                        Open Lesson
-                                                        <ChevronRight className="ml-1 h-3.5 w-3.5" />
-                                                    </button>
                                                 </div>
+                                                <Badge className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-brand text-primary">
+                                                    <Trophy className="h-3 w-3" />
+                                                    {getGradeLabel(gradeBand)}
+                                                </Badge>
                                             </div>
-                                        </Card>
-                                    );
-                                })}
+
+                                            <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                                                <div className="flex flex-col">
+                                                    <span className="font-brand text-[11px] uppercase tracking-wide">
+                                                        Cache
+                                                    </span>
+                                                    <span className="font-medium text-foreground">
+                                                        {approxKb} KB
+                                                    </span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => router.push(`/capsules/${id}`)}
+                                                    className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90"
+                                                >
+                                                    Open Lesson
+                                                    <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                );
+                            })}
                         </div>
                     </section>
+
+                    {/* ── Badges ───────────────────────────────────────────────────── */}
+                    <section>
+                        <h2 className="font-brand text-lg font-semibold text-foreground mb-4">
+                            Achievements
+                        </h2>
+                        <button
+                            type="button"
+                            onClick={() => router.push('/badges')}
+                            className="group w-full flex items-center gap-4 rounded-xl border border-border bg-card px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md text-left"
+                        >
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                                <Award className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-brand text-base font-semibold text-foreground">Badges &amp; Milestones</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {earnedBadgeCount} / {ALL_BADGES.length} badges earned
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                {earnedBadgeCount > 0 && (
+                                    <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-bold font-brand text-primary-foreground">
+                                        {earnedBadgeCount}
+                                    </span>
+                                )}
+                                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            </div>
+                        </button>
+                    </section>
+
                 </div>
             </main>
         </div>
