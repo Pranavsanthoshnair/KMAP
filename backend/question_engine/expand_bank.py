@@ -213,12 +213,24 @@ eng_adds = {
     },
 }
 
-# ─── MERGE ────────────────────────────────────────────────────────────────────
+# ─── MERGE (only subtopics that exist in valid_topics / resources table) ────────
+valid_topics_path = Path(__file__).parent / "valid_topics.json"
+valid_topics = {}
+if valid_topics_path.exists():
+    valid_topics = json.loads(valid_topics_path.read_text(encoding="utf-8"))
+
+def is_valid_topic(subject_key: str, grade_key: str, sub_key: str) -> bool:
+    if not valid_topics:
+        return True
+    return sub_key in valid_topics.get(subject_key, {}).get(grade_key, [])
+
 for subject_adds, subject_key in [(math_adds,"math"),(sci_adds,"science"),(eng_adds,"english")]:
     for grade_key, subtopics in subject_adds.items():
         if grade_key not in bank[subject_key]:
             bank[subject_key][grade_key] = {}
         for sub_key, sub_data in subtopics.items():
+            if not is_valid_topic(subject_key, grade_key, sub_key):
+                continue
             if sub_key not in bank[subject_key][grade_key]:
                 bank[subject_key][grade_key][sub_key] = sub_data
             else:

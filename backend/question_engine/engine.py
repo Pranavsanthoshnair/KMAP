@@ -19,6 +19,7 @@ from typing import Dict, List, Optional, Set
 log = logging.getLogger(__name__)
 
 BANK_FILE = Path(__file__).parent / "question_bank.json"
+VALID_TOPICS_FILE = Path(__file__).parent / "valid_topics.json"
 _BANK: Optional[Dict] = None
 LEVEL_TO_DIFF = {1: "beginner", 2: "intermediate", 3: "advanced"}
 DIFF_FALLBACKS = {
@@ -63,6 +64,29 @@ def load_bank() -> Dict:
         with open(BANK_FILE, encoding="utf-8") as f:
             _BANK = json.load(f)
         log.info("Loaded question bank: %d subjects", len(_BANK))
+        if not VALID_TOPICS_FILE.exists():
+            raise FileNotFoundError(
+                "valid_topics.json not found. Run backend/question_engine/fetch_valid_topics.py "
+                "(requires Supabase resources table) to generate it."
+            )
+        with open(VALID_TOPICS_FILE, encoding="utf-8") as f:
+            valid = json.load(f)
+        filtered: Dict = {}
+        for subject, grades in _BANK.items():
+            if subject not in valid:
+                continue
+            filtered[subject] = {}
+            for grade_key, subtopics_data in grades.items():
+                if grade_key not in valid.get(subject, {}):
+                    continue
+                valid_subtopics = set(valid[subject][grade_key])
+                kept = {st: data for st, data in subtopics_data.items() if st in valid_subtopics}
+                if kept:
+                    filtered[subject][grade_key] = kept
+            if not filtered[subject]:
+                del filtered[subject]
+        _BANK = filtered
+        log.info("Filtered bank to valid_topics: %d subjects", len(_BANK))
     return _BANK
 
 
@@ -264,7 +288,7 @@ def generate_single_subtopic_question(
         return {
             "id":       f"fallback_{subject}_{grade}_{subtopic}",
             "type":     "auto_generated",
-            "question": f"[{disp} — {gdisp}] What is {a} + {b}?",
+            "question": f"What is {a} + {b}?",
             "choices":  choices[:4],
             "answer":   answer,
         }

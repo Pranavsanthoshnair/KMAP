@@ -1,0 +1,21 @@
+{
+  "math": {
+    "grade1": ["arithmetic"],
+    "grade2": ["fractions", "geometry"],
+    "grade3": ["algebra"],
+    "grade4": ["trigonometry", "statistics"],
+    "grade5": ["calculus"]
+  },
+  "science": {
+    "grade1": ["basic_biology"],
+    "grade2": ["cell_structure", "photosynthesis", "human_body"],
+    "grade3": ["genetics", "chemical_reactions"],
+    "grade4": ["electricity"]
+  },
+  "english": {
+    "grade1": ["parts_of_speech"],
+    "grade2": ["figures_of_speech"],
+    "grade3": ["literary_devices"],
+    "grade4": ["advanced_writing"]
+  }
+}

@@ -22,7 +22,13 @@ export async function GET(request: NextRequest) {
         return NextResponse.json([]);
     }
 
-    const supabase = createServerSupabase();
+    let supabase;
+    try {
+        supabase = createServerSupabase();
+    } catch (e) {
+        console.error('[GET /api/resources] Supabase unavailable:', e);
+        return NextResponse.json({ error: 'Resources service unavailable' }, { status: 503 });
+    }
 
     // Select only metadata — NOT storage_path (we never expose that directly)
     const { data, error } = await supabase

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { FileText, Video, AlignLeft, Download, ExternalLink, ChevronDown } from 'lucide-react';
 import { trackResourceOpen } from '@/lib/data-tracker';
 import { cn } from '@/lib/utils';
@@ -16,6 +17,9 @@ export interface ResourceMeta {
     preview_text?: string;
     thumbnail_url?: string | null;
     subtopic?: string;
+    subject?: string;
+    grade?: number;
+    difficulty?: number;
 }
 
 interface ResourceCardProps {
@@ -153,6 +157,14 @@ export default function ResourceCard({ resource, lowDataMode = false }: Resource
                             >
                                 <Download className="h-3 w-3" /> Download
                             </a>
+                            {resource.subtopic && resource.subject && resource.difficulty && (
+                                <Link
+                                    href={`/assess?subject=${encodeURIComponent(resource.subject)}&topic=${encodeURIComponent(resource.subtopic)}&level=${resource.difficulty}&title=${encodeURIComponent(resource.title)}`}
+                                    className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-green-600/30 bg-green-500/10 px-3 py-1.5 text-xs font-brand text-green-700 dark:text-green-400 transition-colors hover:bg-green-500/20"
+                                >
+                                    Assess Knowledge
+                                </Link>
+                            )}
                         </>
                     )}
                 </div>

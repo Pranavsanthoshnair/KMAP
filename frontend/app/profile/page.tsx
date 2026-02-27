@@ -14,11 +14,17 @@ import { Button } from '@/components/ui/button';
 import { User, Brain, Wifi, RotateCcw, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-
-const GRADE_BAND_LABELS: Record<number, string> = {
-    1: 'Classes 1–4', 2: 'Classes 5–8', 3: 'Classes 9–10',
-    4: 'Classes 11–12', 5: 'College',
-};
+import { SkillDashboard } from '@/components/profile/SkillDashboard';
+import { type SubjectId } from '@/lib/subjects';
+import { getGradeLabel, GRADE_BAND_OPTIONS } from '@/lib/grades';
+import { saveLocalProfile } from '@/lib/indexeddb';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 const DATA_CAP_KB = 10 * 1024; // 10 MB display cap
 
@@ -45,6 +51,7 @@ export default function Profile() {
 
     const [profileName, setProfileName] = useState('');
     const [gradeBand, setGradeBand] = useState(2);
+    const [subjects, setSubjects] = useState<string[]>([]);
     const [skills, setSkills] = useState<SkillData[]>([]);
     const [masteryMap, setMasteryMap] = useState<Record<string, number>>({});
     const [dataUsedKB, setDataUsedKB] = useState(0);
@@ -53,7 +60,11 @@ export default function Profile() {
         if (!ready) return;
 
         getLocalProfile().then(p => {
-            if (p) { setProfileName(p.name); setGradeBand(p.gradeBand ?? 2); }
+            if (p) {
+                setProfileName(p.name);
+                setGradeBand(p.gradeBand ?? 2);
+                setSubjects(p.subjects ?? []);
+            }
         });
 
         getSkillProfile().then(data =>
@@ -85,6 +96,14 @@ export default function Profile() {
                             <p className="mt-1 text-sm text-muted-foreground">Your local learning data</p>
                         </div>
                         <div className="flex items-center gap-1">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-xs font-brand"
+                                onClick={() => router.push('/subjects')}
+                            >
+                                Subjects
+                            </Button>
                             <Link href="/settings">
                                 <Button variant="ghost" size="sm">
                                     <Settings className="h-4 w-4" />
@@ -116,9 +135,26 @@ export default function Profile() {
                                 </p>
                                 <p className="text-xs text-muted-foreground">ID: {userId.slice(0, 8)}…</p>
                             </div>
-                            <Badge variant="outline" className="ml-auto font-brand text-xs">
-                                {GRADE_BAND_LABELS[gradeBand] ?? `Band ${gradeBand}`}
-                            </Badge>
+                            <Select
+                                value={String(gradeBand)}
+                                onValueChange={async (v) => {
+                                    const band = Number(v) as 1 | 2 | 3 | 4 | 5;
+                                    setGradeBand(band);
+                                    const profile = await getLocalProfile();
+                                    if (profile) await saveLocalProfile({ ...profile, gradeBand: band });
+                                }}
+                            >
+                                <SelectTrigger className="ml-auto h-8 w-auto min-w-[140px] border-border font-brand text-xs">
+                                    <SelectValue placeholder="Grade" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {GRADE_BAND_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={String(opt.value)}>
+                                            {opt.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </Card>
 
@@ -204,6 +240,13 @@ export default function Profile() {
                             </div>
                         </div>
                     )}
+
+                    {/* Subject skill dashboard & grade selection */}
+                    <SkillDashboard
+                        subjects={(subjects.length ? subjects : ['math', 'science', 'english']).filter(
+                            (s): s is SubjectId => ['math', 'science', 'english'].includes(s),
+                        )}
+                    />
 
                     {/* Per-concept skill cards */}
                     {skills.length > 0 && (

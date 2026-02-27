@@ -18,7 +18,13 @@ export async function GET(
         return NextResponse.json({ error: 'Resource ID required' }, { status: 400 });
     }
 
-    const supabase = createServerSupabase();
+    let supabase;
+    try {
+        supabase = createServerSupabase();
+    } catch (e) {
+        console.error('[GET /api/resource/[id]] Supabase unavailable:', e);
+        return NextResponse.json({ error: 'Resources service unavailable' }, { status: 503 });
+    }
 
     // Fetch the storage_path for this resource
     const { data: resource, error: fetchError } = await supabase

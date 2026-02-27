@@ -16,7 +16,13 @@ export async function GET(request: NextRequest) {
     const subtopic = searchParams.get('subtopic') || '';
     const low_data = searchParams.get('low_data') === 'true';
 
-    const supabase = createServerSupabase();
+    let supabase;
+    try {
+        supabase = createServerSupabase();
+    } catch (e) {
+        console.error('[API/resources/browse] Supabase unavailable:', e);
+        return NextResponse.json({ error: 'Resources service unavailable', resources: [] }, { status: 503 });
+    }
 
     // Grade tolerance ±1 band
     const grades = [grade_band - 1, grade_band, grade_band + 1].filter(g => g >= 1 && g <= 5);

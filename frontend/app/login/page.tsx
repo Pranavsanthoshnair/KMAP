@@ -6,7 +6,15 @@ import Navbar from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { getLocalProfile, saveLocalProfile, generateRecoveryKey } from '@/lib/indexeddb';
+import { GRADE_BAND_OPTIONS } from '@/lib/grades';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -16,6 +24,7 @@ export default function LoginPage() {
 
     const [name, setName] = useState('');
     const [gradeBand, setGradeBand] = useState(2);
+    const [nameError, setNameError] = useState<string | null>(null);
 
     useEffect(() => {
         let cancelled = false;
@@ -29,12 +38,20 @@ export default function LoginPage() {
         return () => { cancelled = true; };
     }, []);
 
-    const handleContinue = () => {
-        router.replace('/dashboard');
+    const handleContinue = async () => {
+        const profile = await getLocalProfile();
+        const hasSubjects = profile?.subjects && profile.subjects.length > 0;
+        router.replace(hasSubjects ? '/dashboard' : '/subjects');
     };
 
     const handleCreate = async () => {
-        const profileName = name.trim() || 'Learner';
+        const trimmed = name.trim();
+        if (!trimmed) {
+            setNameError('Please enter your name to continue.');
+            return;
+        }
+        setNameError(null);
+        const profileName = trimmed;
         const profile = {
             id: crypto.randomUUID(),
             name: profileName,
@@ -43,7 +60,7 @@ export default function LoginPage() {
             recoveryKey: generateRecoveryKey(),
         };
         await saveLocalProfile(profile);
-        router.replace('/dashboard');
+        router.replace('/subjects');
     };
 
     if (loading) {
@@ -87,27 +104,45 @@ export default function LoginPage() {
                                     <Input
                                         placeholder="Enter your name"
                                         value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        onChange={(e) => {
+                                            setName(e.target.value);
+                                            if (nameError && e.target.value.trim()) {
+                                                setNameError(null);
+                                            }
+                                        }}
                                     />
+                                    {nameError && (
+                                        <p className="mt-1 text-[11px] text-destructive">
+                                            {nameError}
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="space-y-1">
                                     <label className="block text-xs font-medium text-muted-foreground">
-                                        Grade band (1–5)
+                                        Grade
                                     </label>
-                                    <Input
-                                        type="number"
-                                        min={1}
-                                        max={5}
-                                        value={gradeBand}
-                                        onChange={(e) => {
-                                            const v = Number(e.target.value) || 2;
-                                            const clamped = Math.min(5, Math.max(1, v));
-                                            setGradeBand(clamped);
-                                        }}
-                                    />
+                                    <Select
+                                        value={String(gradeBand)}
+                                        onValueChange={(v) => setGradeBand(Number(v) as 1 | 2 | 3 | 4 | 5)}
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select grade" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {GRADE_BAND_OPTIONS.map((opt) => (
+                                                <SelectItem key={opt.value} value={String(opt.value)}>
+                                                    {opt.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
-                            <Button className="w-full mt-3" onClick={handleCreate}>
+                            <Button
+                                className="w-full mt-3"
+                                onClick={handleCreate}
+                                disabled={!name.trim()}
+                            >
                                 Get Started
                             </Button>
                         </>

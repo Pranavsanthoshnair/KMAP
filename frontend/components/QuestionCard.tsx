@@ -63,7 +63,9 @@ export default function QuestionCard({ question, index, topic }: QuestionCardPro
                 <div className="flex items-center gap-2">
                     <span className="font-brand text-xs text-muted-foreground">Q{index + 1}</span>
                     <Badge variant="outline" className="font-brand text-xs">
-                        {FORM_LABELS[question.form] ?? `Form ${question.form}`}
+                        {typeof question.form === 'number'
+                            ? (FORM_LABELS[question.form] ?? `Form ${question.form}`)
+                            : question.form}
                     </Badge>
                 </div>
                 {submitted && (
