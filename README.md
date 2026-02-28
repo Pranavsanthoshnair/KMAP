@@ -2,7 +2,7 @@
 
 KMAP is a low-bandwidth, privacy-preserving adaptive learning platform designed for rural environments. It uses a rule-driven procedural question engine and modular concept-based resource delivery to provide personalized learning without heavy AI dependency or large data transfers.
 
----
+
 
 ## 🚀 Problem Statement
 
@@ -19,7 +19,7 @@ KMAP solves this by:
 - Generating questions dynamically without relying on heavy AI APIs
 - Preserving student privacy
 
----
+
 
 ## 🧠 Core Innovation
 
