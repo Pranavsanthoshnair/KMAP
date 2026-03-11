@@ -127,6 +127,20 @@ export async function GET(request: NextRequest) {
         } catch {
             throw new Error('Question engine returned non‑JSON output');
         }
+
+        const payload = data as { questions?: unknown; error?: string };
+        if (Array.isArray(payload.questions) && payload.questions.length === 0 && payload.error) {
+            console.error('[API/questions] Engine validation error:', payload.error);
+            return NextResponse.json(
+                {
+                    questions: [],
+                    exhausted: true,
+                    error: payload.error,
+                },
+                { status: 500 },
+            );
+        }
+
         return NextResponse.json(data);
     } catch (err: unknown) {
         const e = err as { stderr?: string; message?: string };

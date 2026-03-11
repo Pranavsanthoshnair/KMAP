@@ -46,7 +46,8 @@ function ResourcesContent() {
 
     const subject = (params?.subject ?? '').toLowerCase();
     const gradeFromUrl = search.get('grade_band');
-    const [gradeBand, setGradeBand] = useState(() => parseInt(gradeFromUrl || '2', 10) || 2);
+    const clampGrade = (g: number) => Math.max(1, Math.min(5, g));
+    const [gradeBand, setGradeBand] = useState(() => clampGrade(parseInt(gradeFromUrl || '2', 10) || 2));
     const weakParam = search.get('weak') || '';
     const weakSubtopics = useMemo(() => Array.from(
         new Set(
@@ -69,7 +70,7 @@ function ResourcesContent() {
     useEffect(() => {
         if (gradeFromUrl != null && gradeFromUrl !== '') return;
         getLocalProfile().then(p => {
-            const gb = p?.gradeBand ?? 2;
+            const gb = clampGrade(p?.gradeBand ?? 2);
             setGradeBand(gb);
             const url = new URL(window.location.href);
             url.searchParams.set('grade_band', String(gb));
@@ -127,8 +128,52 @@ function ResourcesContent() {
                     throw new Error('Failed to load recommended resources');
                 }
 
-                const data = await res.json();
-                const rawSections = (data.sections || []) as ResourceSection[];
+                const data = await res.json() as {
+                    sections?: ResourceSection[];
+                    resources?: SimpleResource[];
+                };
+
+                let rawSections: ResourceSection[] = [];
+
+                if (Array.isArray(data.sections) && data.sections.length > 0) {
+                    rawSections = data.sections;
+                } else {
+                    const flatResources = Array.isArray(data.resources) ? data.resources : [];
+                    const bySubtopic = new Map<string, SimpleResource[]>();
+                    for (const r of flatResources) {
+                        const key = (r.subtopic || 'recommended').toLowerCase();
+                        const list = bySubtopic.get(key);
+                        if (list) list.push(r);
+                        else bySubtopic.set(key, [r]);
+                    }
+                    rawSections = Array.from(bySubtopic.entries()).map(([subtopic, resources]) => ({
+                        subtopicLabel: subtopic,
+                        resources,
+                    }));
+                }
+
+                // Fallback: if allocate returned nothing, fetch by subject+grade from browse
+                if (rawSections.length === 0 && !cancelled) {
+                    const browseRes = await fetch(
+                        `/api/resources/browse?subject=${encodeURIComponent(subject)}&grade_band=${gradeBand}`
+                    );
+                    if (cancelled) return;
+                    if (browseRes.ok) {
+                        const browseData = (await browseRes.json()) as { resources?: SimpleResource[] };
+                        const list = Array.isArray(browseData.resources) ? browseData.resources : [];
+                        const bySubtopicB = new Map<string, SimpleResource[]>();
+                        for (const r of list) {
+                            const key = (r.subtopic || 'general').toLowerCase();
+                            const arr = bySubtopicB.get(key);
+                            if (arr) arr.push(r);
+                            else bySubtopicB.set(key, [r]);
+                        }
+                        rawSections = Array.from(bySubtopicB.entries()).map(([st, resources]) => ({
+                            subtopicLabel: st,
+                            resources,
+                        }));
+                    }
+                }
 
                 // Track analytics for fetched resources
                 const allResources = rawSections.flatMap(s => s.resources || []);
