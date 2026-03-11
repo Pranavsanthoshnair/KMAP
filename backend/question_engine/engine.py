@@ -315,16 +315,25 @@ def generate_single_subtopic_question(
     gdisp = grade.replace("grade", "Grade ")
 
     if subject.lower() == "math":
-        a, b   = random.randint(2, 12), random.randint(2, 12)
-        answer = str(a + b)
-        choices = list(dict.fromkeys([answer, str(a+b+1), str(a+b-1), str(a*b)]))[:4]
-        while len(choices) < 4:
-            choices.append(str(a + b + len(choices)))
+        # Concept-style fallback so each subtopic still feels distinct even
+        # when we have no explicit patterns for it.
+        answer = disp
+        pool = [
+            "Fractions", "Geometry", "Algebra", "Statistics",
+            "Decimals", "Number Theory", "Probability",
+        ]
+        wrongs = [w for w in pool if w != answer][:3]
+        # Ensure we always have at least three distractors.
+        while len(wrongs) < 3:
+            filler = f"Concept {len(wrongs) + 1}"
+            if filler not in wrongs and filler != answer:
+                wrongs.append(filler)
+        choices = [answer] + wrongs[:3]
         random.shuffle(choices)
         return {
             "id":       f"fallback_{subject}_{grade}_{subtopic}",
             "type":     "auto_generated",
-            "question": f"What is {a} + {b}?",
+            "question": f"Which concept is most closely related to {disp} in {gdisp} Maths?",
             "choices":  choices[:4],
             "answer":   answer,
         }

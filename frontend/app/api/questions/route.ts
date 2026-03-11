@@ -32,20 +32,11 @@ export async function GET(request: NextRequest) {
 
     const engineDir = path.join(process.cwd(), '..', 'backend', 'question_engine');
 
-    // On Vercel, use the external Python engine over HTTP.
-    if (process.env.VERCEL === '1') {
-        const engineUrl = process.env.QUESTION_ENGINE_URL2 ?? process.env.QUESTION_ENGINE_URL;
-        if (!engineUrl) {
-            return NextResponse.json(
-                {
-                    questions: [],
-                    exhausted: true,
-                    error: 'QUESTION_ENGINE_URL2 not configured on server.',
-                },
-                { status: 500 },
-            );
-        }
-
+    // Prefer the external PYKMAP engine over HTTP whenever it is configured.
+    // If the remote call fails for any reason (404, 500, network), log it
+    // and transparently fall back to the local CLI so localhost keeps working.
+    const engineUrl = process.env.QUESTION_ENGINE_URL2 ?? process.env.QUESTION_ENGINE_URL;
+    if (engineUrl) {
         try {
             const res = await fetch(engineUrl, {
                 method: 'POST',
@@ -62,35 +53,18 @@ export async function GET(request: NextRequest) {
                 }),
             });
 
-            if (!res.ok) {
-                const text = await res.text();
-                console.error('[API/questions] HTTP engine error', res.status, text);
-                return NextResponse.json(
-                    {
-                        questions: [],
-                        exhausted: true,
-                        error: 'Remote question engine HTTP error.',
-                        details: text,
-                        status: res.status,
-                    },
-                    { status: 500 },
-                );
+            if (res.ok) {
+                const data = await res.json();
+                return NextResponse.json(data);
             }
 
-            const data = await res.json();
-            return NextResponse.json(data);
+            const text = await res.text();
+            console.error('[API/questions] HTTP engine error', res.status, text);
+            // fall through to local CLI
         } catch (err: unknown) {
             const e = err as { message?: string };
             console.error('[API/questions] HTTP engine exception', e?.message);
-            return NextResponse.json(
-                {
-                    questions: [],
-                    exhausted: true,
-                    error: 'Remote question engine network error.',
-                    details: e?.message ?? 'Unknown HTTP exception',
-                },
-                { status: 500 },
-            );
+            // fall through to local CLI
         }
     }
 
