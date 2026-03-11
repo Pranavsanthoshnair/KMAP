@@ -51,7 +51,8 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ resources: [] });
         }
 
-        const resources = (data ?? []).map((r: { thumbnail_url?: string | null }) => ({
+        const rows = (data ?? []) as Array<{ thumbnail_url?: string | null }>;
+        const resources = rows.map(r => ({
             ...r,
             thumbnail_url: low_data ? null : (r.thumbnail_url ?? null),
         }));
