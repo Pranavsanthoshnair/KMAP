@@ -61,34 +61,62 @@ def _stable_id_suffix(text: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def load_bank() -> Dict:
+    """
+    Load the question bank and, if available, intersect it with valid_topics.json.
+
+    In earlier versions the engine failed hard when valid_topics.json was missing
+    or produced an empty intersection for a subject/grade, which caused
+    {\"questions\": []} errors even when question_bank.json contained valid data.
+
+    To keep question generation robust (and independent of Supabase state) we now:
+      - Always load question_bank.json first.
+      - If valid_topics.json exists and yields matches for a subject/grade, we
+        filter to those subtopics.
+      - If valid_topics.json is missing or has no entries for a subject/grade,
+        we fall back to the raw bank for that subject/grade instead of dropping it.
+    """
     global _BANK
     if _BANK is None:
         with open(BANK_FILE, encoding="utf-8") as f:
-            _BANK = json.load(f)
-        log.info("Loaded question bank: %d subjects", len(_BANK))
-        if not VALID_TOPICS_FILE.exists():
-            raise FileNotFoundError(
-                "valid_topics.json not found. Run backend/question_engine/fetch_valid_topics.py "
-                "(requires Supabase resources table) to generate it."
-            )
-        with open(VALID_TOPICS_FILE, encoding="utf-8") as f:
-            valid = json.load(f)
-        filtered: Dict = {}
-        for subject, grades in _BANK.items():
-            if subject not in valid:
-                continue
-            filtered[subject] = {}
-            for grade_key, subtopics_data in grades.items():
-                if grade_key not in valid.get(subject, {}):
+            raw_bank = json.load(f)
+        log.info("Loaded question bank: %d subjects", len(raw_bank))
+
+        if VALID_TOPICS_FILE.exists():
+            try:
+                with open(VALID_TOPICS_FILE, encoding="utf-8") as f:
+                    valid = json.load(f)
+            except Exception as e:
+                log.warning("valid_topics.json unreadable (%s); using full bank.", e)
+                _BANK = raw_bank
+                return _BANK
+
+            filtered: Dict = {}
+            for subject, grades in raw_bank.items():
+                subj_valid = valid.get(subject) or {}
+                # If subject not in valid, keep its grades as-is (no filtering).
+                if subject not in valid:
+                    filtered[subject] = grades
                     continue
-                valid_subtopics = set(valid[subject][grade_key])
-                kept = {st: data for st, data in subtopics_data.items() if st in valid_subtopics}
-                if kept:
-                    filtered[subject][grade_key] = kept
-            if not filtered[subject]:
-                del filtered[subject]
-        _BANK = filtered
-        log.info("Filtered bank to valid_topics: %d subjects", len(_BANK))
+
+                kept_grades: Dict = {}
+                for grade_key, subtopics_data in grades.items():
+                    valid_subtopics = set(subj_valid.get(grade_key) or [])
+                    if not valid_subtopics:
+                        # No valid_topics entry for this grade → keep all subtopics.
+                        kept_grades[grade_key] = subtopics_data
+                        continue
+                    kept = {st: data for st, data in subtopics_data.items() if st in valid_subtopics}
+                    if kept:
+                        kept_grades[grade_key] = kept
+                # If filtering removed everything for this subject, fall back to raw.
+                filtered[subject] = kept_grades or grades
+
+            _BANK = filtered
+            log.info("Filtered bank to valid_topics where available: %d subjects", len(_BANK))
+        else:
+            log.warning("valid_topics.json not found; using full question bank without filtering.")
+            _BANK = raw_bank
+
     return _BANK
 
 
@@ -287,16 +315,25 @@ def generate_single_subtopic_question(
     gdisp = grade.replace("grade", "Grade ")
 
     if subject.lower() == "math":
-        a, b   = random.randint(2, 12), random.randint(2, 12)
-        answer = str(a + b)
-        choices = list(dict.fromkeys([answer, str(a+b+1), str(a+b-1), str(a*b)]))[:4]
-        while len(choices) < 4:
-            choices.append(str(a + b + len(choices)))
+        # Concept-style fallback so each subtopic still feels distinct even
+        # when we have no explicit patterns for it.
+        answer = disp
+        pool = [
+            "Fractions", "Geometry", "Algebra", "Statistics",
+            "Decimals", "Number Theory", "Probability",
+        ]
+        wrongs = [w for w in pool if w != answer][:3]
+        # Ensure we always have at least three distractors.
+        while len(wrongs) < 3:
+            filler = f"Concept {len(wrongs) + 1}"
+            if filler not in wrongs and filler != answer:
+                wrongs.append(filler)
+        choices = [answer] + wrongs[:3]
         random.shuffle(choices)
         return {
             "id":       f"fallback_{subject}_{grade}_{subtopic}",
             "type":     "auto_generated",
-            "question": f"What is {a} + {b}?",
+            "question": f"Which concept is most closely related to {disp} in {gdisp} Maths?",
             "choices":  choices[:4],
             "answer":   answer,
         }
@@ -492,12 +529,33 @@ def generate_questions(
     subj    = _infer_subject(topic, subject)
     primary = (subtopics[0] if subtopics else None) or topic
 
-    # Validate subject + grade (subtopic handled by generate_subtopic_quiz)
+    # Validate subject + grade (subtopic handled by generate_subtopic_quiz).
+    # If the exact grade key is missing but neighbouring grades exist for the
+    # same subject, fall back to the closest available grade to avoid hard
+    # failures when the bank is slightly out of sync with UI grade bands.
     try:
         validate_request(bank, subj, grade)
     except ValueError as e:
-        log.error("Validation failed: %s", e)
-        return {"questions": [], "exhausted": True, "error": str(e)}
+        grades_for_subject = sorted(bank.get(subj, {}).keys())
+        if not grades_for_subject:
+            log.error("Validation failed (no grades for subject %s): %s", subj, e)
+            return {"questions": [], "exhausted": True, "error": str(e)}
+
+        target_num = grade_band
+        def _grade_to_num(g: str) -> int:
+            try:
+                return int(str(g).replace("grade", ""))
+            except ValueError:
+                return target_num
+
+        closest = min(grades_for_subject, key=lambda g: abs(_grade_to_num(g) - target_num))
+        log.warning(
+            "Grade key %s missing for subject %s, falling back to closest existing grade %s",
+            grade,
+            subj,
+            closest,
+        )
+        grade = closest
 
     if session_sigs is None:
         session_sigs = set()

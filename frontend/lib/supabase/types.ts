@@ -59,6 +59,99 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          grade_band: number
+          id: string
+          name: string
+          recovery_blob: Json | null
+          recovery_key: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          grade_band?: number
+          id?: string
+          name: string
+          recovery_blob?: Json | null
+          recovery_key?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          grade_band?: number
+          id?: string
+          name?: string
+          recovery_blob?: Json | null
+          recovery_key?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          created_at: string | null
+          difficulty: number
+          grade: number
+          id: string
+          preview_text: string | null
+          size_kb: number
+          storage_path: string
+          subject: string
+          subtopic: string
+          thumbnail_url: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty?: number
+          grade: number
+          id: string
+          preview_text?: string | null
+          size_kb?: number
+          storage_path: string
+          subject: string
+          subtopic: string
+          thumbnail_url?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: number
+          grade?: number
+          id?: string
+          preview_text?: string | null
+          size_kb?: number
+          storage_path?: string
+          subject?: string
+          subtopic?: string
+          thumbnail_url?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      subjects: {
+        Row: {
+          id: string
+          label: string
+        }
+        Insert: {
+          id: string
+          label: string
+        }
+        Update: {
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -6,11 +6,13 @@ import { createClient } from '@supabase/supabase-js';
  * never import this in client components.
  */
 export function createServerSupabase() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
 
-    if (!url || !key) {
-        throw new Error('Missing Supabase server credentials in environment variables.');
+    if (!url.trim() || !key.trim()) {
+        throw new Error(
+            'Missing Supabase credentials. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in frontend/.env.local (or run dev from frontend/ with: cd frontend && npm run dev).'
+        );
     }
 
     return createClient(url, key, {
